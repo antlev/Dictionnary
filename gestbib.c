@@ -21,7 +21,7 @@ typedef struct dictionnary{
 #define TOO_LONG 2
 
 #define EXIT_SUCCESS 0
-#define EXIT_FAILURE -1
+#define EXIT_FAILURE 1
 
 // int const EXIT_FAILURE = -1;
 
@@ -34,7 +34,7 @@ int supWord(node* tree,char* wordToSup);
 void addWordMenu(dictionnary* dictionnary);
 void searchWordMenu(dictionnary* dictionnary);
 // -------------------------- Programm functions's menu  --------------------------
-void buildDicWithFileMenu(dictionnary* dicInUse);
+void buildDicWithFileMenu(dictionnary** library,int* numberOfDic,dictionnary** dicInUse);
 void chooseDicMenu(dictionnary* library,int numberOfDic,dictionnary** dicInUse);
 void addDicMenu(dictionnary** library,int numberOfDic,dictionnary** dicInUse);
 void eraseDicMenu(dictionnary* library,int numberOfDic,dictionnary** dicInUse);
@@ -161,7 +161,7 @@ void addDicMenu(dictionnary** library,int numberOfDic,dictionnary** dicInUse){
 
     addDicAndUse(library,numberOfDic,dicName,dicDesc,dicInUse);
 
-    printf("Vous utilisez maintenant le dictionnaire %s |\n",(*dicInUse)->name);
+    printf("---------- Vous utilisez maintenant le dictionnaire %s ----------\n",(*dicInUse)->name);
 }
 // Ask for dic to erase and call eraseDic
 void eraseDicMenu(dictionnary* library,int numberOfDic,dictionnary** dicInUse){
@@ -176,15 +176,39 @@ void eraseDicMenu(dictionnary* library,int numberOfDic,dictionnary** dicInUse){
     // eraseDic(library,dicToDel);
 }
 // Prompt a file path and call loadDictionnaryFromFile passing it the dicInUse
-void buildDicWithFileMenu(dictionnary* dicInUse){
+void buildDicWithFileMenu(dictionnary** library,int* numberOfDic,dictionnary** dicInUse){
     char pathToDicFile[255];
+    char input[2];
 
+    if(*numberOfDic == 0){
+        while(userInput("Vous n'avez pas de dictionnaire en mémoire voulez vous en créer un ? (O/N)\n>",input,sizeof(char)*2) != 0);
+        if(input[0] == 'O' || input[0] == 'o'){
+            addDicMenu(library,*numberOfDic,dicInUse);
+            (*numberOfDic)++;
+            printf("numberOfDic++\n");
+        }else{
+            return;
+        }
+    } else {
+        do{
+            while(userInput("Voulez vous (C)réer un nouveau dictionnaire ou (A)jouter le fichier à un dictionnaire existant ?\n>",input,sizeof(char)*2) != 0);
+        }
+        while(input[0] != 'a' && input[0] != 'A' && input[0] != 'c' && input[0] != 'C');
 
-    while(userInput("Veuillez entrer le chemin du fichier dictionnaire\n>",pathToDicFile,255) != 0); 
-
+        if(input[0] == 'a' || input[0] == 'A'){
+            chooseDicMenu(*library,*numberOfDic,dicInUse);
+        }else{
+            addDicMenu(library,*numberOfDic,dicInUse);
+            (*numberOfDic)++;
+            printf("numberOfDic++\n");
+        }
+    }
+    
+    while(userInput("Veuillez entrer le chemin du fichier dictionnaire\n>",pathToDicFile,sizeof(char)*255) != 0);
+    
     long int startMeasuringTime = getTime();
     long int finishMeasuringTime;
-    if(loadDictionnaryFromFile(pathToDicFile,dicInUse) == -1){
+    if(loadDictionnaryFromFile(pathToDicFile,*dicInUse) == -1){
         printf("file \'%s\' does not exist\n",pathToDicFile );
     }else{
         printf("\n");
@@ -284,6 +308,7 @@ int userInput (char *prmpt, char *buff, size_t sz) {
     fgets (buff, sz, stdin);
 
     if(*buff == '\n'){
+        printf("no input\n");
         return NO_INPUT;
     }
     // If it was too long, there'll be no newline. In that case, we flush
@@ -292,6 +317,7 @@ int userInput (char *prmpt, char *buff, size_t sz) {
         extra = 0;
         while (((ch = getchar()) != '\n') && (ch != EOF))
             extra = 1;
+        printf("%d \n",(extra == 1) ? TOO_LONG : OK );
         return (extra == 1) ? TOO_LONG : OK;
     }
     // Otherwise remove newline and give string back to caller.
@@ -399,8 +425,9 @@ void menu(dictionnary* library){
                 scanf("%d%*c",&choice);
             break;
             case 3:
-                buildDicWithFileMenu(dicInUse);
-                numberOfDic++; //TO CHECK
+                printf("numberOfDic=%d\n",numberOfDic );
+                buildDicWithFileMenu(&library,&numberOfDic,&dicInUse);
+                printf("numberOfDic=%d\n",numberOfDic );
                 printMenu();
                 scanf("%d%*c",&choice);
             break;
