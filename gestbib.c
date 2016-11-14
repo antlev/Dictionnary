@@ -49,7 +49,7 @@ int fileExist(char *filename);
 int userInput(char *prmpt, char *buff, size_t sz);
 clock_t getTime();
 
-void printMenu();
+void printMenu(dictionnary* dicInUse);
 void printLibrary(dictionnary* library, int numberOfDic);
 
 int isDicInUse(dictionnary* dicInUse);
@@ -160,8 +160,6 @@ void addDicMenu(dictionnary** library,int numberOfDic,dictionnary** dicInUse){
     askForDicInfo(dicName,dicDesc);
 
     addDicAndUse(library,numberOfDic,dicName,dicDesc,dicInUse);
-
-    printf("---------- Vous utilisez maintenant le dictionnaire %s ----------\n",(*dicInUse)->name);
 }
 // Ask for dic to erase and call eraseDic
 void eraseDicMenu(dictionnary* library,int numberOfDic,dictionnary** dicInUse){
@@ -185,7 +183,6 @@ void buildDicWithFileMenu(dictionnary** library,int* numberOfDic,dictionnary** d
         if(input[0] == 'O' || input[0] == 'o'){
             addDicMenu(library,*numberOfDic,dicInUse);
             (*numberOfDic)++;
-            printf("numberOfDic++\n");
         }else{
             return;
         }
@@ -200,7 +197,6 @@ void buildDicWithFileMenu(dictionnary** library,int* numberOfDic,dictionnary** d
         }else{
             addDicMenu(library,*numberOfDic,dicInUse);
             (*numberOfDic)++;
-            printf("numberOfDic++\n");
         }
     }
     
@@ -223,20 +219,15 @@ void chooseDicMenu(dictionnary* library,int numberOfDic,dictionnary** dicInUse){
     int i;
     *dicInUse = library;
 
-    printf("Dictionnaire en mémoire:\n");
     printLibrary(library,numberOfDic);
-    printf("Veuillez entrer le numéro du dictionnaire que vous voulez utiliser ?\n");
+    printf("Veuillez entrer le numéro du dictionnaire que vous voulez utiliser ?\n>");
     do{
         scanf("%d%*c",&dicToUse);
     } while(dicToUse > numberOfDic || dicToUse <= 0);
     *dicInUse += dicToUse-1;
-
-    printf("Vous utilisez maintenant le dictionnaire %s\n",(*dicInUse)->name );
 }
 // -------------------------- Dictionnary manipulation functions --------------------------
 void addDicAndUse(dictionnary** library,int numberOfDic,char name[255],char desc[255],dictionnary** dicCreated){
-
-    printf("Creating dictionnary of name >%s< and desc >%s<\n",name, desc );
 
     if(numberOfDic){ // if numberOfDic=0, the first dictionnary is already allocated by init()
         *library = realloc(*library,(numberOfDic+1)*sizeof(dictionnary));
@@ -251,9 +242,6 @@ void addDicAndUse(dictionnary** library,int numberOfDic,char name[255],char desc
     (*dicCreated)->nbWord=0;
     (*dicCreated)->tree = calloc(sizeof(node),1);
     (*dicCreated)->tree->endOfWord = -1;
-
-
-    printf("test : >%s< >%s<\n",(*dicCreated)->name,(*dicCreated)->description );
 }
 void eraseDic(dictionnary* library,int numberOfDicToDel){
     // dictionnnary* dicToDel = library;
@@ -308,7 +296,6 @@ int userInput (char *prmpt, char *buff, size_t sz) {
     fgets (buff, sz, stdin);
 
     if(*buff == '\n'){
-        printf("no input\n");
         return NO_INPUT;
     }
     // If it was too long, there'll be no newline. In that case, we flush
@@ -317,7 +304,6 @@ int userInput (char *prmpt, char *buff, size_t sz) {
         extra = 0;
         while (((ch = getchar()) != '\n') && (ch != EOF))
             extra = 1;
-        printf("%d \n",(extra == 1) ? TOO_LONG : OK );
         return (extra == 1) ? TOO_LONG : OK;
     }
     // Otherwise remove newline and give string back to caller.
@@ -336,7 +322,10 @@ int fileExist (char *filename)
     }
 }
 // What does the function is obvious
-void printMenu(){
+void printMenu(dictionnary* dicInUse){
+    if(dicInUse->name){
+        printf("---------- Vous utilisez maintenant le dictionnaire %s ----------\n",dicInUse->name);
+    }
     printf("1) Créer un fichier dictionnaire\n");
     printf("2) Utiliser un dictionnaire existant\n");
     printf("3) Fabriquer un dictionnaire à partir d'un fichier texte\n");
@@ -399,20 +388,18 @@ void menu(dictionnary* library){
     int numberOfDic = 0;
     dictionnary* dicInUse = NULL;
 
-    printMenu();
+    printMenu(dicInUse);
     scanf("%d%*c",&choice);
     do{
         isDicInMem = isDictionnaryInMemory(library);
-        printf("isDicInMem = %d\n",isDicInMem);
         if(isDicInMem){
 	        isDicInUse = isDictionnaryInUse(dicInUse);
-        	printf("isDicInUse = %d\n",isDicInUse);
         }
         switch(choice){
             case 1:
                 addDicMenu(&library,numberOfDic,&dicInUse);
                 numberOfDic++;
-                printMenu();
+                printMenu(dicInUse);
                 scanf("%d%*c",&choice);
             break;
             case 2:
@@ -421,14 +408,12 @@ void menu(dictionnary* library){
                 }else{
                     printf("Veuillez d'abord créer ou charger un dictionnaire\n");                
                 }                
-                printMenu();
+                printMenu(dicInUse);
                 scanf("%d%*c",&choice);
             break;
             case 3:
-                printf("numberOfDic=%d\n",numberOfDic );
                 buildDicWithFileMenu(&library,&numberOfDic,&dicInUse);
-                printf("numberOfDic=%d\n",numberOfDic );
-                printMenu();
+                printMenu(dicInUse);
                 scanf("%d%*c",&choice);
             break;
             case 4:
@@ -437,7 +422,7 @@ void menu(dictionnary* library){
                 }else{
                     printf("Veuillez d'abord créer un dictionnaire\n");                
                 }
-                printMenu();
+                printMenu(dicInUse);
                 scanf("%d%*c",&choice);
             break;
             case 5:
@@ -446,7 +431,7 @@ void menu(dictionnary* library){
                 }else{
                     printf("Veuillez d'abord charger un dictionnaire\n");
                 }
-                printMenu();
+                printMenu(dicInUse);
                 scanf("%d%*c",&choice);
             break;
             case 6:
@@ -455,7 +440,7 @@ void menu(dictionnary* library){
                 }else{
                     printf("Veuillez d'abord charger un dictionnaire\n");
                 }
-                printMenu();
+                printMenu(dicInUse);
                 scanf("%d%*c",&choice);
             break;
             case 7:
@@ -480,7 +465,8 @@ dictionnary* init(){
 // 1 -> debug output
 void test(int verbose){
 
-    printf("test getTime() = %ld\n",getTime() );
+    if(verbose){ printf("test getTime() = %ld\n",getTime() ); }
+    
     int passed=1;
 
     node* tree = calloc(sizeof(node),1);
@@ -560,11 +546,11 @@ void test(int verbose){
     	passed = 0 ;
     }
 
-
-    if(passed){
-        printf("All tests passed.\n");
-    }else{
-        printf("Some tests didn't passed\n");
+    if(verbose){
+        if(passed){
+            printf("All tests passed.\n");
+        }else{
+            printf("Some tests didn't passed\n");
+        }
     }
-
 }
