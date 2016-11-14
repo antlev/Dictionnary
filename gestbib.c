@@ -20,6 +20,9 @@ typedef struct dictionnary{
 #define NO_INPUT 1
 #define TOO_LONG 2
 
+#define EXIT_SUCCESS 0
+#define EXIT_FAILURE -1
+
 // int const EXIT_FAILURE = -1;
 
 // Prototypes
@@ -244,9 +247,11 @@ int loadDictionnaryFromFile(char pathToDicFile[255],dictionnary* dicInUse){
         return -1;
     }
     while ((read = getline(&line, &len, inputFile)) != -1) {
-        printf("Retrieved line of length %zu :\n", read);
-        printf("%s", line);
+        printf("Retrieved line of length %zu :\n", read-1);
         line[strlen(line)-1] = '\0';
+
+        printf(">%s<", line);
+
         addWord(dicInUse->tree,line);
         dicInUse->nbWord++;
         printf("word >%s< has been inserted in dictionnary >%s<\n",line,dicInUse->name );
