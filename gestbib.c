@@ -57,14 +57,10 @@ void test(int verbose);
 void addWord(node* tree,char* wordToAdd){
     int i=0;
     while(wordToAdd[i] != '\0'){
-        // printf("flag wordToAdd[i]=%d | i=%d | corresponding to letter : %c | node* = %p\n",wordToAdd[i],i,wordToAdd[i],tree);
         if(!tree->letter[wordToAdd[i] - 97]){
-            // printf("%p doesn't exist\n",tree->letter[wordToAdd[i] - 97] );
             // calloc same as malloc but initialise all bit at 0
             tree->letter[wordToAdd[i] - 97] = calloc(sizeof(node),1);
-            // printf("allocating memory : %p\n", tree->letter[wordToAdd[i] - 97]);
         }
-        // printf("passing from node* %p to node* %p\n",tree,tree->letter[wordToAdd[i] - 97] );
         tree = tree->letter[wordToAdd[i] - 97] ;
         i++;
     }
@@ -74,24 +70,18 @@ void addWord(node* tree,char* wordToAdd){
 int searchWord(node* tree,char* wordToSearch){
     int i=0;
     while(wordToSearch[i] != '\0'){
-
-        // printf("flag wordToSearch[i]=%d | i=%d | corresponding to letter : %c | node* = %p nextNode* = %p\n",wordToSearch[i],i,wordToSearch[i],tree,tree->letter[wordToSearch[i] - 97]);
         if(!tree->letter[wordToSearch[i] - 97]){
             return 0;
         }
-
-        // printf("passing from node* >%p< to node* >%p<\n",tree,tree->letter[wordToSearch[i] - 97] );
         tree = tree->letter[wordToSearch[i] - 97] ;
         i++;
     }
-
     if(tree->endOfWord == 1){
         return 1;
     }else{
         return 0;
     }
 }
-
 // Suppress the wordToSup into the tree tree
 // Return 1 if the word has been founnd and suppresed, else return 0
 int supWord(node* tree,char* wordToSup){
@@ -116,25 +106,21 @@ int supWord(node* tree,char* wordToSup){
                 }
             }
             // TODO
-            tree = &tree->letter[i];
+            // tree = &tree;
             free(tree->letter[i]);
         }
         return 1;   
     }
 }
-
 // Prompt a word and add it to the dictionnary
 void addWordMenu(dictionnary* dictionnary){
     node* tree = dictionnary->tree;
     char wordToInsert[255];
     printf("Veuillez entrer le mot à insérer dans le dictionnaire\n>");
-    fgets(wordToInsert,254,stdin); // en attendant le flush()
     
+    fgets(wordToInsert,254,stdin); // en attendant le flush()
     fgets(wordToInsert,254,stdin);
-
     wordToInsert[strlen(wordToInsert)-1] = '\0';
-
-    printf("wordToInsert=>%s<\n",wordToInsert );
 
     addWord(tree,wordToInsert);
     dictionnary->nbWord++;
@@ -144,12 +130,10 @@ void searchWordMenu(dictionnary* dictionnary){
     node* tree = dictionnary->tree;
     char wordToSearch[255];
     printf("Veuillez entrer le mot à chercher dans le dictionnaire\n>");
+    
     fgets(wordToSearch,254,stdin); // en attendant le flush()
     fgets(wordToSearch,254,stdin);
-
     wordToSearch[strlen(wordToSearch)-1] = '\0';
-
-    printf("wordToSearch=>%s<\n",wordToSearch );
 
     if(searchWord(tree,wordToSearch)){
         printf("Le mot %s est bien contenu dans le dictionnaire\n",wordToSearch );
@@ -157,7 +141,6 @@ void searchWordMenu(dictionnary* dictionnary){
         printf("Le mot %s n'est pas contenu dans le dictionnaire\n",wordToSearch );
     }
 }
-
 // -------------------------- Programm functions's menu  --------------------------
 
 // Prompt user for a name and description and add a new dictionnnary to the library
@@ -169,12 +152,9 @@ void addDicMenu(dictionnary** library,int numberOfDic,dictionnary** dicInUse){
     // char* dicName;
     // char* description;
 
-    printf("numberOfDic >%d<\n",numberOfDic );
-    printf("*library >%p<\n",*library );
-
     if(numberOfDic){
         *library = realloc(*library,(numberOfDic+1)*sizeof(dictionnary));
-        memset(*library+numberOfDic,0,sizeof(dictionnary));
+        memset(*library+numberOfDic,0,sizeof(dictionnary)); // Setting new space to 0
     }
     *dicInUse = *library;
 
@@ -185,24 +165,19 @@ void addDicMenu(dictionnary** library,int numberOfDic,dictionnary** dicInUse){
     fgets(dicName,254,stdin);
     dicName[strlen(dicName)-1] = '\0';
 
-    printf("dicName=>%s<\n",dicName );
     printf("Vous pouvez donner une description\n>");
     // TODO check user input
     fgets(description,254,stdin);
     description[strlen(description)-1] = '\0';
     
-    printf("desc=>%s<\n",description );
     // //TODO
     // askForDicInfo(&dicName,&description);
 
-    printf("*dicInUse->tree = %p\n",(*dicInUse)->tree);
     (*dicInUse)+=numberOfDic;    
 
-    printf("titi\n");
     strcpy((*dicInUse)->name,dicName);
     strcpy((*dicInUse)->description,description);
     (*dicInUse)->nbWord=0;
-
     (*dicInUse)->tree = calloc(sizeof(node),1);
     (*dicInUse)->tree->endOfWord = -1;
     // insertDicInLibrary((*dicInUse));
@@ -212,15 +187,12 @@ void addDicMenu(dictionnary** library,int numberOfDic,dictionnary** dicInUse){
 void eraseDicMenu(dictionnary* library,int numberOfDic,dictionnary** dicInUse){
     int dicToDel=0;
     printLibrary(library,numberOfDic);
-    printf("Quel dicionnaire voulez vous supprimer ?\n");
-
+    printf("Quel dictionnaire voulez vous supprimer ?\n");
     do{
         scanf("%d",&dicToDel);
     } while(dicToDel > numberOfDic || dicToDel <= 0);
     // eraseDic(library,dicToDel);
-
 }
-
 // Prompt a file path and call loadDictionnaryFromFile passing it the dicInUse
 void buildDicWithFileMenu(dictionnary* dicInUse){
     char pathToDicFile[255];
@@ -233,7 +205,6 @@ void buildDicWithFileMenu(dictionnary* dicInUse){
     loadDictionnaryFromFile(pathToDicFile,dicInUse);
     printf("\n");
 }
-
 // Print the library and ask user to choose a dictionnary
 // The choosen dictionnary will be pointed by dicInUse
 void chooseDicMenu(dictionnary* library,int numberOfDic,dictionnary** dicInUse){
@@ -243,12 +214,10 @@ void chooseDicMenu(dictionnary* library,int numberOfDic,dictionnary** dicInUse){
 
     printf("Dictionnaire en mémoire:\n");
     printLibrary(library,numberOfDic);
-    printf("*dicInUse = %p\n",*dicInUse );
     printf("Veuillez entrer le numéro du dictionnaire que vous voulez utiliser ?\n");
     do{
         scanf("%d",&dicToUse);
     } while(dicToUse > numberOfDic || dicToUse <= 0);
-
     *dicInUse += dicToUse-1;
 
     printf("Vous utilisez maintenant le dictionnaire %s\n",(*dicInUse)->name );
@@ -264,41 +233,33 @@ void chooseDicMenu(dictionnary* library,int numberOfDic,dictionnary** dicInUse){
 //     }
 // }
 void eraseDic(dictionnary* library,int numberOfDicToDel){
-
-    dictionnnary* dicToDel = library;
-    dicToDel+=numberOfDicToDel;
-    
-
+    // dictionnnary* dicToDel = library;
+    // dicToDel+=numberOfDicToDel;
 }
-
 // Read the file passed as 1st parameter and enter each line as a word in dicInUse
-int loadDictionnaryFromFile(char pathToDicFile[255],dictionnary* dicInUse){
-   
+int loadDictionnaryFromFile(char pathToDicFile[255],dictionnary* dicInUse){   
     FILE * inputFile;
     char * line = NULL;
     size_t len = 0;
     ssize_t read;
 
     inputFile = fopen(pathToDicFile, "r");
-    if (inputFile == NULL)
-        return EXIT_FAILURE;
-
+    if (inputFile == NULL){
+        return -1;
+    }
     while ((read = getline(&line, &len, inputFile)) != -1) {
         printf("Retrieved line of length %zu :\n", read);
         printf("%s", line);
         line[strlen(line)-1] = '\0';
         addWord(dicInUse->tree,line);
         dicInUse->nbWord++;
-
         printf("word >%s< has been inserted in dictionnary >%s<\n",line,dicInUse->name );
     }
-
     fclose(inputFile);
     if (line){
         free(line);
     }
     return EXIT_SUCCESS;
-
 }
 void askForDicInfo(char** dicName,char** description){
     printf("Choisissez un nom de dictionnaire\n");
@@ -315,7 +276,6 @@ void askForDicInfo(char** dicName,char** description){
     *description[strlen(*description)-1] = '\0';
     
     printf("desc=>%s<\n",*description );
-
 }
 // -------------------------- Utils functions's  --------------------------
 
@@ -349,8 +309,6 @@ void printLibrary(dictionnary* library, int numberOfDic){
     int i;
 	for (i = 0; i < numberOfDic; ++i){
         printf("Dictionnaire n°%d : %s\n",count+1,dictionnary->name);
-
-        printf("pointeur dictionnary n°%d >%p<\n",count+1,dictionnary);
         if(dictionnary->description){
             printf("desc : >%s<\n",dictionnary->description );
         }
@@ -359,7 +317,6 @@ void printLibrary(dictionnary* library, int numberOfDic){
         count++;
         printf("---------------------------------------\n");
     }
-
 }
 // Return 0 if dicInUse point on NULL, else return 1
 int isDicInUse(dictionnary* dicInUse){
@@ -371,24 +328,20 @@ int isDicInUse(dictionnary* dicInUse){
 }
 // Return 1 if dictionnary contain a dictionnary
 int isDictionnaryInUse(dictionnary* dictionnary){
-    printf("entering isDictionnaryInUse -> dictionnary >%p< dictionnary->name=%s\n",dictionnary,dictionnary->name );
     if(dictionnary->tree->endOfWord == -1){
         return 1;
     }else{
         return 0;
     }
 }
-
 // Return 0 if dictionnary is empty, else return 1
 int isDictionnaryInMemory(dictionnary* dictionnary){
-    printf("entering isDictionnaryInMemory -> dictionnary >%p< dictionnary->name=%s\n",dictionnary,dictionnary->name );
     if(dictionnary->tree == NULL){
         return 0;
     }else{
         return 1;
     }
 }
-
 // -------------------------- Programm Menu  --------------------------
 void menu(dictionnary* library){
     int choice;
@@ -406,11 +359,8 @@ void menu(dictionnary* library){
 	        isDicInUse = isDictionnaryInUse(dicInUse);
         	printf("isDicInUse = %d\n",isDicInUse);
         }
-
-        printf("flag isDicInMem=%d\n",isDicInMem );
         switch(choice){
             case 1:
-            	printf("flaggggg library = %p\n",library );
                 addDicMenu(&library,numberOfDic,&dicInUse);
                 numberOfDic++;
                 printMenu();
