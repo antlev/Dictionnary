@@ -14,6 +14,7 @@ typedef struct dictionnary{
 #include <stdlib.h>
 #include <math.h>
 #include <string.h>
+#include <time.h>
 
 #define OK       0
 #define NO_INPUT 1
@@ -43,6 +44,7 @@ void addDicAndUse(dictionnary** library,int numberOfDic,char name[255],char desc
 int loadDictionnaryFromFile(char pathToDicFile[255],dictionnary* dicInUse);
 int fileExist(char *filename);
 int userInput(char *prmpt, char *buff, size_t sz);
+clock_t getTime();
 
 void printMenu();
 void printLibrary(dictionnary* library, int numberOfDic);
@@ -162,23 +164,30 @@ void addDicMenu(dictionnary** library,int numberOfDic,dictionnary** dicInUse){
 void eraseDicMenu(dictionnary* library,int numberOfDic,dictionnary** dicInUse){
     int dicToDel=0;
     printLibrary(library,numberOfDic);
+
     printf("Quel dictionnaire voulez vous supprimer ?\n");
     do{
         scanf("%d%*c",&dicToDel);
     } while(dicToDel > numberOfDic || dicToDel <= 0);
+
     // eraseDic(library,dicToDel);
 }
 // Prompt a file path and call loadDictionnaryFromFile passing it the dicInUse
 void buildDicWithFileMenu(dictionnary* dicInUse){
     char pathToDicFile[255];
 
+
     while(userInput("Veuillez entrer le chemin du fichier dictionnaire\n>",pathToDicFile,255) != 0); 
 
+    long int startMeasuringTime = getTime();
+    long int finishMeasuringTime;
     if(loadDictionnaryFromFile(pathToDicFile,dicInUse) == -1){
         printf("file \'%s\' does not exist\n",pathToDicFile );
     }else{
         printf("\n");
     }
+    finishMeasuringTime = getTime();
+    printf("Dictionnary import time = %ld\n",finishMeasuringTime-startMeasuringTime );
 }
 // Print the library and ask user to choose a dictionnary
 // The choosen dictionnary will be pointed by dicInUse
@@ -347,6 +356,10 @@ int isDictionnaryInMemory(dictionnary* dictionnary){
         return 1;
     }
 }
+clock_t getTime(){
+    clock_t uptime = clock() / (1000000 / 1000);
+    return uptime;
+}
 // -------------------------- Programm Menu  --------------------------
 void menu(dictionnary* library){
     int choice;
@@ -434,6 +447,8 @@ dictionnary* init(){
 // 0 -> no output
 // 1 -> debug output
 void test(int verbose){
+
+    printf("test getTime() = %ld\n",getTime() );
     int passed=1;
 
     node* tree = calloc(sizeof(node),1);
@@ -519,4 +534,5 @@ void test(int verbose){
     }else{
         printf("Some tests didn't passed\n");
     }
+
 }
