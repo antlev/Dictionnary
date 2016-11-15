@@ -52,6 +52,21 @@ Algo de la distance de Levenstein
  
    renvoyer d[longueurChaine1, longueurChaine2]
 */
+
+
+
+void printTab(int* tab,int lenStr1,int lenStr2){
+  int i,j;
+
+
+  for(i=1;i<lenStr1;i++){
+    for(j=1;j<lenStr2;j++){
+      printf("%d", tab[i+j*lenStr1]);
+    }
+    printf("\n");
+  }
+}
+
 int DamerauLevenshteinDistance(char* str1, int lenStr1, char* str2, int lenStr2){
   // d is a table with lenStr1+1 rows and lenStr2+1 columns
   int d[lenStr1+1][lenStr2+1];
@@ -64,6 +79,8 @@ int DamerauLevenshteinDistance(char* str1, int lenStr1, char* str2, int lenStr2)
   for(j=0;j<lenStr2;j++){
     d[0][j] = j;
   }
+
+  // printTab(d,lenStr1,lenStr2);
   for(i=1;i<lenStr1;i++){
     for(j=1;j<lenStr2;j++){
       if(str1[i-1] == str2[j-1]){ 
@@ -97,10 +114,17 @@ int main(){
   // printf("minimum>%d<\n",minimum(2,1,3) );
   // printf("minimum>%d<\n",minimum(1,1,3) );
   // printf("minimum>%d<\n",minimum(2,3,1) );
-
-  printf("DamerauLevenshteinDistance(antoine,antine)=%d (expected 1)\n",DamerauLevenshteinDistance("antoine",7,"antine",6) );
-  printf("DamerauLevenshteinDistance(toto,titi)=%d (expected 2)\n",DamerauLevenshteinDistance("toto",4,"titi",4) );
-  printf("DamerauLevenshteinDistance(test,tet)=%d (expected 1)\n", DamerauLevenshteinDistance("test",4,"tet",3) );
-  printf("DamerauLevenshteinDistance(ok,ko)=%d (expected ?2)\n",DamerauLevenshteinDistance("ok",2,"ko",2) );
+  int* tab;
+  int i,j;
+  for(i=0;i<3;i++){
+    for(j=0;j<3;j++){
+        tab[i+j*3] = i+j*3;
+    }
+  }
+  printTab(tab,3,3);
+  // printf("DamerauLevenshteinDistance(antoine,antine)=%d (expected 1)\n",DamerauLevenshteinDistance("antoine",7,"antine",6) );
+  // printf("DamerauLevenshteinDistance(toto,titi)=%d (expected 2)\n",DamerauLevenshteinDistance("toto",4,"titi",4) );
+  // printf("DamerauLevenshteinDistance(test,tet)=%d (expected 1)\n", DamerauLevenshteinDistance("test",4,"tet",3) );
+  // printf("DamerauLevenshteinDistance(ok,ko)=%d (expected ?2)\n",DamerauLevenshteinDistance("ok",2,"ko",2) );
 	return 0;
 }
