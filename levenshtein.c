@@ -54,18 +54,18 @@ Algo de la distance de Levenstein
 */
 int DamerauLevenshteinDistance(char* str1, int lenStr1, char* str2, int lenStr2){
   // d is a table with lenStr1+1 rows and lenStr2+1 columns
-  int d[lenStr1][lenStr2];
+  int d[lenStr1+1][lenStr2+1];
   // i and j are used to iterate over str1 and str2
   int i, j, cost;
 
   for(i=0;i<lenStr1;i++){
         d[i][0] = i;
   }
-  for(i=0;i<lenStr2;i++){
+  for(j=0;j<lenStr2;j++){
     d[0][j] = j;
   }
   for(i=1;i<lenStr1;i++){
-    for(j=1;i<lenStr2;j++){
+    for(j=1;j<lenStr2;j++){
       if(str1[i-1] == str2[j-1]){ 
         cost = 0;
       }else {
@@ -94,9 +94,9 @@ int main(){
 
 	//printf("%d\n", EditDistance("toto", "titi"));
 
-  printf("minimum>%d<\n",minimum(2,1,3) );
-  printf("minimum>%d<\n",minimum(1,1,3) );
-  printf("minimum>%d<\n",minimum(2,3,1) );
+  // printf("minimum>%d<\n",minimum(2,1,3) );
+  // printf("minimum>%d<\n",minimum(1,1,3) );
+  // printf("minimum>%d<\n",minimum(2,3,1) );
 
   printf("DamerauLevenshteinDistance(antoine,antine)=%d (expected 1)\n",DamerauLevenshteinDistance("antoine",7,"antine",6) );
   printf("DamerauLevenshteinDistance(toto,titi)=%d (expected 2)\n",DamerauLevenshteinDistance("toto",4,"titi",4) );
