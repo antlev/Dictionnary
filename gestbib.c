@@ -51,7 +51,6 @@ clock_t getTime();
 void printMenu(dictionnary* dicInUse);
 void printLibrary(dictionnary* library, int numberOfDic);
 
-int isDicInUse(dictionnary* dicInUse);
 int isDictionnaryInUse(dictionnary* dictionnary);
 int isDictionnaryInMemory(dictionnary* dictionnary);
 
@@ -338,14 +337,6 @@ void printLibrary(dictionnary* library, int numberOfDic){
         dictionnary++;
         count++;
         printf("---------------------------------------\n");
-    }
-}
-// Return 0 if dicInUse point on NULL, else return 1
-int isDicInUse(dictionnary* dicInUse){
-    if(dicInUse == NULL){
-        return 0;
-    }else{
-        return 1;
     }
 }
 // Return 1 if dictionnary contain a dictionnary
