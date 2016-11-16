@@ -68,7 +68,7 @@ void printTab(int* tab,int lenStr1,int lenStr2){
   printf("\n");
 }
 
-int* DamerauLevenshteinDistance(char* str1, int lenStr1, char* str2, int lenStr2){
+int DamerauLevenshteinDistance(char* str1, int lenStr1, char* str2, int lenStr2){
   // d is a table with lenStr1+1 rows and lenStr2+1 columns
   int* d = malloc(sizeof(int)*(lenStr1+lenStr2));
   // i and j are used to iterate over str1 and str2
@@ -82,24 +82,24 @@ int* DamerauLevenshteinDistance(char* str1, int lenStr1, char* str2, int lenStr2
   }
 
   // printTab(d,lenStr1,lenStr2);
-  for(i=1;i<lenStr1;i++){
-    for(j=1;j<lenStr2;j++){
+  for(i=0;i<=lenStr1;i++){
+    for(j=0;j<=lenStr2;j++){
 
 
-      if(str1[i-1] == str2[j-1]){ 
+      if(str1[i+1] == str2[j+1]){ 
         cost = 0;
       }else {
         cost = 1;
       }
-      d[i+j*lenStr1] = minimum(
-                          d[i-1+j*lenStr1] + 1,     // deletion
-                          d[i+j*lenStr1-1] + 1,     // insertion
-                          d[i-1+j*lenStr1-1] + cost   // substitution
+      d[i+1+(j+1)*lenStr1] = minimum(
+                          d[i+(j+1)*lenStr1] + 1,     // deletion
+                          d[i+1+j*lenStr1] + 1,     // insertion
+                          d[i+j*lenStr1] + cost   // substitution
                 );
-      if(i > 1 && j > 1 && str1[i-1] == str2[j-2] && str1[i-2] == str2[j-1]){
-                d[i+j*lenStr1] = minimum2(
-                                    d[i+j*lenStr1],
-                                    d[i-2+j*lenStr1-2] + 1      // transposition
+      if(i > 0 && j > 0 && str1[i] == str2[j-1] && str1[i-1] == str2[j]){
+                d[i+1+(j+1)*lenStr1] = minimum2(
+                                    d[i+1+(j+1)*lenStr1],
+                                    d[i-1+j*lenStr1-1] + cost      // transposition
                           );
       }
 
@@ -107,7 +107,7 @@ int* DamerauLevenshteinDistance(char* str1, int lenStr1, char* str2, int lenStr2
   }                                
 
   printTab(d,lenStr1+1,lenStr2+1);
-  return d;
+  return d[lenStr1+lenStr1*lenStr2];
 }
 
 
