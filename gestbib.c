@@ -45,7 +45,6 @@ void askForDicInfo(char* dicName,char* description);
 void addDicAndUse(dictionnary** library,int numberOfDic,char name[255],char desc[255],dictionnary** dicCreated);
 // -------------------------- Utils functions's  --------------------------
 int loadDictionnaryFromFile(char pathToDicFile[255],dictionnary* dicInUse);
-int fileExist(char *filename);
 int userInput(char *prmpt, char *buff, size_t sz);
 clock_t getTime();
 
@@ -309,17 +308,6 @@ int userInput (char *prmpt, char *buff, size_t sz) {
     // Otherwise remove newline and give string back to caller.
     buff[strlen(buff)-1] = '\0';
     return OK;
-}
-// TO TEST return 1 if file exist else return 0
-int fileExist (char *filename)
-{
-    FILE *file;
-    if((fopen(filename,"r"))!=NULL){
-        fclose(file);
-        return 1;
-    }else{
-        return 0;
-    }
 }
 // What does the function is obvious
 void printMenu(dictionnary* dicInUse){
