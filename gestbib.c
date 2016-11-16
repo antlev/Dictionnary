@@ -254,7 +254,7 @@ int loadDictionnaryFromFile(char pathToDicFile[255],dictionnary* dicInUse){
 
     inputFile = fopen(pathToDicFile, "r");
     if (inputFile == NULL){
-        return -1;
+        return EXIT_FAILURE;
     }
     while ((read = getline(&line, &len, inputFile)) != -1) {
         printf("Retrieved line of length %zu :\n", read-1);
