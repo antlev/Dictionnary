@@ -30,13 +30,18 @@ int minimum2(int val1, int val2){
 // Print a bidemsionnal table passing it's pointer and size
 void printTab(int* tab,int nbLine,int nbCol){
   int i,j;
-  for(j=0;j<nbCol;j++){
-    for(i=0;i<nbLine;i++){
-      printf("%d", tab[i+j*lenStr1]);
+  for(j=0;j<nbLine;j++){
+    for(i=0;i<nbCol;i++){
+      printf("%d ", tab[i+j*nbCol]);
     }
     printf("\n");
   }
   printf("\n");
+}
+
+int* aide(int* ptr,int nbCol,int i,int j){
+    return &ptr[i+j*nbCol];
+
 }
 // Return the Damerau Levenshtein Distance between 2 strings.
 // the distance returned is increased by one for each deletion,insertion,substitution or transposition.
@@ -50,13 +55,16 @@ int DamerauLevenshteinDistance(char* str1, int lenStr1, char* str2, int lenStr2)
 
   printf("---------- INITIALISATION ---------->\n");
 
-  for(i=0;i<lenStr1;i++){
-    d[i*lenStr1] = i;
-  printTab(d,lenStr1+1,lenStr2+1);
+  for(i=0;i<=lenStr1;i++){
+    // d[i*lenStr1] = i;
+    *aide(d,lenStr1+1,i,0) = i ;
+    // printTab(d,lenStr1+1,lenStr2+1);
   }
-  for(j=0;j<lenStr2;j++){
-    d[j*lenStr2] = j;
-      printTab(d,lenStr1+1,lenStr2+1);
+  for(j=0;j<=lenStr2;j++){
+
+    *aide(d,lenStr1+1,0,j) = j ;
+    // d[j*lenStr2] = j;
+      // printTab(d,lenStr1+1,lenStr2+1);
 
   }
 
@@ -93,3 +101,5 @@ int DamerauLevenshteinDistance(char* str1, int lenStr1, char* str2, int lenStr2)
   printTab(d,lenStr1+1,lenStr2+1);
   return d[lenStr1+lenStr1*lenStr2];
 }
+
+

@@ -10,6 +10,8 @@ typedef struct dictionnary{
     node* tree;
 }dictionnary;
 
+    // map = mmap(0, FILESIZE, PROT_READ | PROT_WRITE, MAP_SHARED,MAP_ANONYMOUS fd, 0);
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
