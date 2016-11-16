@@ -1,6 +1,6 @@
 // Structs
 typedef struct node{
-    int endOfWord;
+    short endOfWord;
     struct node* letter[26];
 }node;
 typedef struct dictionnary{
