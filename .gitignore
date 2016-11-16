@@ -10,3 +10,5 @@ testDictionnaries/*
 2000000
 3000000
 4000000
+levenshtein
+levenshtein.c

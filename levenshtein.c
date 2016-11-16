@@ -74,12 +74,23 @@ int DamerauLevenshteinDistance(char* str1, int lenStr1, char* str2, int lenStr2)
   // i and j are used to iterate over str1 and str2
   int i, j, cost;
 
+  printf("---------- START ---------->\n");
+
+  printf("---------- INITIALISATION ---------->\n");
+
   for(i=0;i<lenStr1;i++){
     d[i*lenStr1] = i;
+  printTab(d,lenStr1+1,lenStr2+1);
   }
   for(j=0;j<lenStr2;j++){
     d[j*lenStr2] = j;
+      printTab(d,lenStr1+1,lenStr2+1);
+
   }
+
+  printTab(d,lenStr1+1,lenStr2+1);
+
+  printf("---------- TREATMENT ---------->\n");
 
   // printTab(d,lenStr1,lenStr2);
   for(i=0;i<=lenStr1;i++){
@@ -102,6 +113,7 @@ int DamerauLevenshteinDistance(char* str1, int lenStr1, char* str2, int lenStr2)
                                     d[i-1+j*lenStr1-1] + cost      // transposition
                           );
       }
+      printTab(d,lenStr1+1,lenStr2+1);
 
     }
   }                                
@@ -119,10 +131,10 @@ int main(){
   // printf("minimum>%d<\n",minimum(1,1,3) );
   // printf("minimum>%d<\n",minimum(2,3,1) );
 
-  printf("DamerauLevenshteinDistance(antoine,antine)=%d (expected 1)\n",DamerauLevenshteinDistance("antoine",7,"antine",6) );
   printf("DamerauLevenshteinDistance(toto,titi)=%d (expected 2)\n",DamerauLevenshteinDistance("toto",4,"titi",4) );
-  printf("DamerauLevenshteinDistance(test,tet)=%d (expected 1)\n", DamerauLevenshteinDistance("test",4,"tet",3) );
-  printf("DamerauLevenshteinDistance(ok,ko)=%d (expected ?2)\n",DamerauLevenshteinDistance("ok",2,"ko",2) );
+  printf("DamerauLevenshteinDistance(antoine,antine)=%d (expected 1)\n",DamerauLevenshteinDistance("antoine",7,"antine",6) );
+  // printf("DamerauLevenshteinDistance(test,tet)=%d (expected 1)\n", DamerauLevenshteinDistance("test",4,"tet",3) );
+  // printf("DamerauLevenshteinDistance(ok,ko)=%d (expected ?2)\n",DamerauLevenshteinDistance("ok",2,"ko",2) );
 	
   return 0;
 }
