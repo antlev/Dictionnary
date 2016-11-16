@@ -1,5 +1,5 @@
 // Structs
-typedef struct node{
+typedef struct __attribute__((__packed__)) node{
     short endOfWord;
     struct node* letter[26];
 }node;
@@ -535,6 +535,11 @@ void test(int verbose){
     }
 
     if(verbose){
+
+        printf("sizeof(node)=%d\n",sizeof(node) );
+
+
+
         if(passed){
             printf("All tests passed.\n");
         }else{
