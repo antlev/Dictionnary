@@ -215,16 +215,19 @@ void buildDicWithFileMenu(dictionnary** library,int* numberOfDic,dictionnary** d
 // Print the library and ask user to choose a dictionnary
 // The choosen dictionnary will be pointed by dicInUse
 void chooseDicMenu(dictionnary* library,int numberOfDic,dictionnary** dicInUse){
-    int dicToUse=0;
+    // int dicToUse=0;
     int i;
     *dicInUse = library;
+    char* dicToUse;
 
     printLibrary(library,numberOfDic);
-    printf("Veuillez entrer le numéro du dictionnaire que vous voulez utiliser ?\n>");
     do{
-        scanf("%d%*c",&dicToUse);
-    } while(dicToUse > numberOfDic || dicToUse <= 0);
-    *dicInUse += dicToUse-1;
+        while(userInput("Veuillez entrer le numéro du dictionnaire que vous voulez utiliser ?\n>",dicToUse,255*sizeof(char)) != 0);
+        // scanf("%d%*c",&dicToUse);
+        printf("DEBUG>>>%c\n",dicToUse[0] );
+        printf("DEBUG>>>%d\n",dicToUse[0]-48 );
+    } while((int)dicToUse[0]-48 > numberOfDic || (int)dicToUse[0]-48 <= 0);
+    *dicInUse += (int)dicToUse[0]-1;
 }
 // -------------------------- Dictionnary manipulation functions --------------------------
 void addDicAndUse(dictionnary** library,int numberOfDic,char name[255],char desc[255],dictionnary** dicCreated){
