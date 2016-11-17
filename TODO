@@ -2,3 +2,9 @@
 #---------------------------- TODO FILE ----------------------------#
 ********** Every issue spotted on program is wrtitten here **********
 #####################################################################
+
+Part 1 : gestbib.c
+
+userInput() -> asking for numerical value cannot be more than 9 (means that we cannot use more than 9 dictionnaries)
+
+make a function userInputNumeric for numerical values
