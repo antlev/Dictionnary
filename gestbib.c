@@ -289,13 +289,14 @@ void askForDicInfo(char* dicName,char* dicDesc){
 int userInput (char *prmpt, char *buff, size_t sz) {
     int ch, extra;
 
+
     // Get line with buffer overrun protection.
     if (prmpt != NULL) {
         printf ("%s", prmpt);
         fflush (stdout);
     }
 
-    fgets (buff, sz, stdin);
+    fgets(buff, sz, stdin);
 
     if(*buff == '\n'){
         return NO_INPUT;
@@ -310,11 +311,46 @@ int userInput (char *prmpt, char *buff, size_t sz) {
     }
     // Otherwise remove newline and give string back to caller.
     buff[strlen(buff)-1] = '\0';
+    int i;
+    for(i=0;i<strlen(buff);i++){
+        printf("buff[i] = %d\n",buff[i] );
+    }
     return OK;
 }
+// call userInput
+// return value entered by user, if invalid return -1
+// lowLimit = numerical values under it won't be accepted
+// highLimit = numerical values upper it won't be accepted
+int numericUserInput(char* prmpt, char* buff, size_t sz,short lowLimit,short highLimitn){
+
+    if( userInput(prmpt,buff,sz) == 0 ){
+        short nbDigit=0;
+        short i=0,j=0;
+
+        while( buff[i]-48 >= 0 && buff[i]-48 <= 9 ){
+            printf("buff[i]=%d ; i=%d \n",buff[i]-48,i);
+            printf("buff[i+1]=%d ; i=%d \n",buff[i+1]-48,i);
+            printf("buff[i+2]=%d ; i=%d \n",buff[i+2]-48,i);
+            printf("buff[i]=%+3d ; i=%d \n",buff[i]-+348,i);
+
+            nbDigit++;   
+            i++;
+        }
+        int returnValue = 0;
+        for(i=nbDigit-1;i>=0;i--){
+            printf("buff[i]=%d ; i=%d ; j=%d\n",buff[i]-48,i,j);
+            printf("returnValue=%d\n",returnValue );
+            
+            returnValue+=(buff[i]-48)*pow(10,j);
+            j++;
+        }
+        return returnValue;
+    }else{
+        return -1;
+    }
+}
 // TO TEST return 1 if file exist else return 0
-int fileExist (char *filename)
-{
+int fileExist (char *filename){
     FILE *file;
     if((fopen(filename,"r"))!=NULL){
         fclose(file);
@@ -569,6 +605,11 @@ void test(int verbose){
     if(!isDictionnaryInMemory(library)){
     	passed = 0 ;
     }
+
+    char* test = calloc(sizeof(char)*255,1);
+
+    printf("TEST>%d\n",numericUserInput("test\n>",test,255,0,9));
+
 
     if(verbose){
         if(passed){
