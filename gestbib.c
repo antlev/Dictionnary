@@ -142,9 +142,9 @@ void searchWordMenu(dictionnary* dictionnary){
     while(userInput("Veuillez entrer le mot à chercher dans le dictionnaire\n>",wordToSearch,30) != 0);
 
     if(searchWord(tree,wordToSearch)){
-        printf("Le mot %s est bien contenu dans le dictionnaire\n",wordToSearch );
+        printf("Le mot \'%s\' EST BIEN CONTENU dans le dictionnaire %s\n",wordToSearch,dictionnary->name );
     }else{
-        printf("Le mot %s n'est pas contenu dans le dictionnaire\n",wordToSearch );
+        printf("Le mot \'%s\' N'EST PAS CONTENU dans le dictionnaire %s\n",wordToSearch,dictionnary->name );
     }
 }
 // -------------------------- Programm functions's menu  --------------------------
@@ -164,12 +164,13 @@ void addDicMenu(dictionnary** library,int numberOfDic,dictionnary** dicInUse){
 // Ask for dic to erase and call eraseDic
 void eraseDicMenu(dictionnary* library,int numberOfDic,dictionnary** dicInUse){
     int dicToDel=0;
+    char* input = malloc(sizeof(char)*255);
     printLibrary(library,numberOfDic);
 
-    printf("Quel dictionnaire voulez vous supprimer ?\n");
     do{
-        scanf("%d%*c",&dicToDel);
-    } while(dicToDel > numberOfDic || dicToDel <= 0);
+        while(userInput("Quel dictionnaire voulez vous supprimer ?\n>",input,sizeof(char)*255) != 0);
+    }while(input[0]-48 <= 0 || input[0]-48 > numberOfDic);
+    dicToDel = input[0]-48;
 
     // eraseDic(library,dicToDel);
 }
@@ -205,29 +206,27 @@ void buildDicWithFileMenu(dictionnary** library,int* numberOfDic,dictionnary** d
     long int startMeasuringTime = getTime();
     long int finishMeasuringTime;
     if(loadDictionnaryFromFile(pathToDicFile,*dicInUse) == -1){
-        printf("file \'%s\' does not exist\n",pathToDicFile );
+        printf("Le fichier dictionnaire \'%s\' n'éxiste pas\n",pathToDicFile );
     }else{
         printf("\n");
     }
     finishMeasuringTime = getTime();
-    printf("Dictionnary import time = %ld\n",finishMeasuringTime-startMeasuringTime );
+    printf("DEBUG>>>Dictionnary import time = %ld\n",finishMeasuringTime-startMeasuringTime );
 }
 // Print the library and ask user to choose a dictionnary
 // The choosen dictionnary will be pointed by dicInUse
 void chooseDicMenu(dictionnary* library,int numberOfDic,dictionnary** dicInUse){
     // int dicToUse=0;
     int i;
-    *dicInUse = library;
-    char* dicToUse;
+    *dicInUse = library; // using first dictionnary of library
+    char* dicToUse = malloc(sizeof(char)*255);
 
     printLibrary(library,numberOfDic);
     do{
         while(userInput("Veuillez entrer le numéro du dictionnaire que vous voulez utiliser ?\n>",dicToUse,255*sizeof(char)) != 0);
-        // scanf("%d%*c",&dicToUse);
-        printf("DEBUG>>>%c\n",dicToUse[0] );
-        printf("DEBUG>>>%d\n",dicToUse[0]-48 );
-    } while((int)dicToUse[0]-48 > numberOfDic || (int)dicToUse[0]-48 <= 0);
-    *dicInUse += (int)dicToUse[0]-1;
+    } while(dicToUse[0]-48 > numberOfDic || dicToUse[0]-48 <= 0);
+    
+    *dicInUse += dicToUse[0]-48-1; // using the dictionnary n° dicToUse[0] of library
 }
 // -------------------------- Dictionnary manipulation functions --------------------------
 void addDicAndUse(dictionnary** library,int numberOfDic,char name[255],char desc[255],dictionnary** dicCreated){
@@ -335,7 +334,7 @@ void printMenu(dictionnary* dicInUse){
     printf("4) Détruire un fichier dictionnaire\n");
     printf("5) Insérer un mot dans un dictionnaire\n");
     printf("6) Rechercher un mot dans un dictionnaire\n");
-    printf("7) Quitter l'application\n>");    
+    printf("7) Quitter l'application\n");    
 }
 // Print all the dictionnaries contained in the library
 void printLibrary(dictionnary* library, int numberOfDic){
@@ -386,24 +385,31 @@ clock_t getTime(){
 // -------------------------- Programm Menu  --------------------------
 void menu(dictionnary* library){
     int choice;
+    char* input = malloc(sizeof(char)*255);
     int isDicInMem=0;
     int isDicInUse=0;
     int numberOfDic = 0;
     dictionnary* dicInUse = NULL;
 
     printMenu(dicInUse);
-    scanf("%d%*c",&choice);
+    do{
+        while(userInput(">",input,sizeof(char)*255) != 0);
+    }while(input[0]-48 <= 0 || input[0]-48 > 7);
+    choice = input[0]-48;    
     do{
         isDicInMem = isDictionnaryInMemory(library);
         if(isDicInMem){
-	        isDicInUse = isDictionnaryInUse(dicInUse);
+            isDicInUse = isDictionnaryInUse(dicInUse);
         }
         switch(choice){
             case 1:
                 addDicMenu(&library,numberOfDic,&dicInUse);
                 numberOfDic++;
                 printMenu(dicInUse);
-                scanf("%d%*c",&choice);
+                do{
+                    while(userInput(">",input,sizeof(char)*255) != 0);
+                }while(input[0]-48 <= 0 || input[0]-48 > 7);
+                choice = input[0]-48;
             break;
             case 2:
                 if(isDicInMem){
@@ -412,12 +418,18 @@ void menu(dictionnary* library){
                     printf("Veuillez d'abord créer ou charger un dictionnaire\n");                
                 }                
                 printMenu(dicInUse);
-                scanf("%d%*c",&choice);
+                do{
+                    while(userInput(">",input,sizeof(char)*255) != 0);
+                }while(input[0]-48 <= 0 || input[0]-48 > 7);
+                choice = input[0]-48;            
             break;
             case 3:
                 buildDicWithFileMenu(&library,&numberOfDic,&dicInUse);
                 printMenu(dicInUse);
-                scanf("%d%*c",&choice);
+                do{
+                    while(userInput(">",input,sizeof(char)*255) != 0);
+                }while(input[0]-48 <= 0 || input[0]-48 > 7);
+                choice = input[0]-48;            
             break;
             case 4:
                 if(isDicInMem){
@@ -426,7 +438,10 @@ void menu(dictionnary* library){
                     printf("Veuillez d'abord créer un dictionnaire\n");                
                 }
                 printMenu(dicInUse);
-                scanf("%d%*c",&choice);
+                do{
+                    while(userInput(">",input,sizeof(char)*255) != 0);
+                }while(input[0]-48 <= 0 || input[0]-48 > 7);
+                choice = input[0]-48;            
             break;
             case 5:
                 if(dicInUse != NULL){
@@ -435,7 +450,10 @@ void menu(dictionnary* library){
                     printf("Veuillez d'abord charger un dictionnaire\n");
                 }
                 printMenu(dicInUse);
-                scanf("%d%*c",&choice);
+                do{
+                    while(userInput(">",input,sizeof(char)*255) != 0);
+                }while(input[0]-48 <= 0 || input[0]-48 > 7);
+                choice = input[0]-48;            
             break;
             case 6:
                 if(dicInUse != NULL){
@@ -444,7 +462,10 @@ void menu(dictionnary* library){
                     printf("Veuillez d'abord charger un dictionnaire\n");
                 }
                 printMenu(dicInUse);
-                scanf("%d%*c",&choice);
+                do{
+                    while(userInput(">",input,sizeof(char)*255) != 0);
+                }while(input[0]-48 <= 0 || input[0]-48 > 7);
+                choice = input[0]-48;            
             break;
             case 7:
                 printf("Au-revoir\n");
