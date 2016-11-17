@@ -20,7 +20,7 @@ int main(){
 
     test(1); 
 
-    // menu(init());
+    menu(init());
 
     return 0;
 }
