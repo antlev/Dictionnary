@@ -3,6 +3,7 @@ typedef struct __attribute__((__packed__)) node{
     short endOfWord;
     struct node* letter[26];
 }node;
+
 typedef struct dictionnary{
     char name[255];
     char description[255];
@@ -24,6 +25,9 @@ typedef struct dictionnary{
 #define EXIT_FAILURE 1
 
 // int const EXIT_FAILURE = -1;
+
+
+// map = mmap(0, FILESIZE, PROT_READ | PROT_WRITE, MAP_SHARED,MAP_ANONYMOUS fd, 0);
 
 // Prototypes
 // -------------------------- Inside Dictionnary functions --------------------------
@@ -527,7 +531,7 @@ void test(int verbose){
 
     if(verbose){
 
-        printf("sizeof(node)=%d\n",sizeof(node) );
+        printf("sizeof(node)=%ld\n",sizeof(node) );
 
 
 
