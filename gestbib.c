@@ -1,8 +1,9 @@
 // Structs
-typedef struct node{
-    int endOfWord;
+typedef struct __attribute__((__packed__)) node{
+    short endOfWord;
     struct node* letter[26];
 }node;
+
 typedef struct dictionnary{
     char name[255];
     char description[255];
@@ -24,6 +25,9 @@ typedef struct dictionnary{
 #define EXIT_FAILURE 1
 
 // int const EXIT_FAILURE = -1;
+
+
+// map = mmap(0, FILESIZE, PROT_READ | PROT_WRITE, MAP_SHARED,MAP_ANONYMOUS fd, 0);
 
 // Prototypes
 // -------------------------- Inside Dictionnary functions --------------------------
@@ -52,7 +56,6 @@ clock_t getTime();
 void printMenu(dictionnary* dicInUse);
 void printLibrary(dictionnary* library, int numberOfDic);
 
-int isDicInUse(dictionnary* dicInUse);
 int isDictionnaryInUse(dictionnary* dictionnary);
 int isDictionnaryInMemory(dictionnary* dictionnary);
 
@@ -253,7 +256,7 @@ int loadDictionnaryFromFile(char pathToDicFile[255],dictionnary* dicInUse){
 
     inputFile = fopen(pathToDicFile, "r");
     if (inputFile == NULL){
-        return -1;
+        return EXIT_FAILURE;
     }
     while ((read = getline(&line, &len, inputFile)) != -1) {
         printf("Retrieved line of length %zu :\n", read-1);
@@ -307,6 +310,7 @@ int userInput (char *prmpt, char *buff, size_t sz) {
     buff[strlen(buff)-1] = '\0';
     return OK;
 }
+<<<<<<< HEAD
 // call userInput
 // return value entered by user, if invalid return -1
 // lowLimit = numerical values under it won't be accepted
@@ -335,6 +339,8 @@ int numericUserInput(char* prmpt, char* buff, size_t sz,short lowLimit,short hig
         return -1;
     }
 }
+=======
+>>>>>>> 2bddb8e5ea566ba67f7a04e20f71588b0bed0317
 // What does the function is obvious
 void printMenu(dictionnary* dicInUse){
     if(dicInUse->name){
@@ -364,14 +370,6 @@ void printLibrary(dictionnary* library, int numberOfDic){
         dictionnary++;
         count++;
         printf("---------------------------------------\n");
-    }
-}
-// Return 0 if dicInUse point on NULL, else return 1
-int isDicInUse(dictionnary* dicInUse){
-    if(dicInUse == NULL){
-        return 0;
-    }else{
-        return 1;
     }
 }
 // Return 1 if dictionnary contain a dictionnary
@@ -572,6 +570,11 @@ void test(int verbose){
 
 
     if(verbose){
+
+        printf("sizeof(node)=%ld\n",sizeof(node) );
+
+
+
         if(passed){
             printf("All tests passed.\n");
         }else{
