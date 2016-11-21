@@ -27,7 +27,6 @@ typedef struct dictionnary{
 // int const EXIT_FAILURE = -1;
 
 
-// map = mmap(0, FILESIZE, PROT_READ | PROT_WRITE, MAP_SHARED,MAP_ANONYMOUS fd, 0);
 
 // Prototypes
 // -------------------------- Inside Dictionnary functions --------------------------
@@ -121,6 +120,7 @@ int supWord(node* tree,char* wordToSup){
             // TODO
             // tree = &tree;
             free(tree->letter[i]);
+            i--;
         }
         return 1;   
     }
@@ -240,6 +240,8 @@ void addDicAndUse(dictionnary** library,int numberOfDic,char name[255],char desc
     strcpy((*dicCreated)->name,name);
     strcpy((*dicCreated)->description,desc);
     (*dicCreated)->nbWord=0;
+    // (*dicCreated)->tree = mmap(0, FILESIZE, PROT_READ | PROT_WRITE, MAP_SHARED,MAP_ANONYMOUS fd, 0);
+
     (*dicCreated)->tree = calloc(sizeof(node),1);
     (*dicCreated)->tree->endOfWord = -1;
 }
@@ -310,7 +312,6 @@ int userInput (char *prmpt, char *buff, size_t sz) {
     buff[strlen(buff)-1] = '\0';
     return OK;
 }
-<<<<<<< HEAD
 // call userInput
 // return value entered by user, if invalid return -1
 // lowLimit = numerical values under it won't be accepted
@@ -339,8 +340,6 @@ int numericUserInput(char* prmpt, char* buff, size_t sz,short lowLimit,short hig
         return -1;
     }
 }
-=======
->>>>>>> 2bddb8e5ea566ba67f7a04e20f71588b0bed0317
 // What does the function is obvious
 void printMenu(dictionnary* dicInUse){
     if(dicInUse->name){
