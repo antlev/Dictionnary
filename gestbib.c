@@ -281,7 +281,6 @@ void askForDicInfo(char* dicName,char* dicDesc){
     while(userInput("Choisissez un nom de dictionnaire\n>",dicName,255*sizeof(char)) != 0);
 
     while(userInput("Vous pouvez donner une description\n>",dicDesc,255*sizeof(char)) > 1);
-
 }
 // -------------------------- Utils functions's  --------------------------
 
