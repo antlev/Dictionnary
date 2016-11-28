@@ -33,6 +33,7 @@ typedef struct dictionnary{
 void addWord(node* tree,char* wordToAdd);
 int searchWord(node* tree,char* wordToSearch);
 int supWord(node* tree,char* wordToSup);
+node* getAllWordInDictionnary(node* tree,char* word);
 
 void addWordMenu(dictionnary* dictionnary);
 void searchWordMenu(dictionnary* dictionnary);
@@ -125,6 +126,38 @@ int supWord(node* tree,char* wordToSup){
         return 1;   
     }
 }
+
+ node* getAllWordInDictionnary(node* tree,char* word){
+    int i;
+    short nbLetterInWord=0;
+    while(word[nbLetterInWord] != '\0'){
+        nbLetterInWord++;
+    }
+    word[nbLetterInWord+1] = '\0';
+
+    if(tree->endOfWord == 1){
+        printf("DEBUG>>>End of word!!\nThe word ");
+        while(word[i] != '\0'){
+            printf("%c",word[i] );
+            i++;
+        }
+        printf(" has been found in dictionnary\n");
+
+        return tree;
+    }
+    node* res = NULL;
+    for (i = 0; i < 26; ++i)
+    {
+        if(tree->letter[i] != NULL){        
+            printf("DEBUG>>>letter %c spotted ! \n",i+97);
+            word[nbLetterInWord] = i+97;
+            res = getAllWordInDictionnary(tree->letter[i],word);
+        }
+    }
+    return res;
+
+ }
+
 // Prompt a word and add it to the dictionnary
 void addWordMenu(dictionnary* dictionnary){
     node* tree = dictionnary->tree;
@@ -402,7 +435,7 @@ void menu(dictionnary* library){
 
     printMenu(dicInUse);
     
-    while((choice = numericUserInput(">",input,sizeof(char)*255, 1, 7)) == -1);
+    while((choice = numericUserInput(">",input,sizeof(char)*255, 1, 8)) == -1);
 
     do{
         isDicInMem = isDictionnaryInMemory(library);
@@ -414,7 +447,7 @@ void menu(dictionnary* library){
                 addDicMenu(&library,numberOfDic,&dicInUse);
                 numberOfDic++;
                 printMenu(dicInUse);
-                while((choice = numericUserInput(">",input,sizeof(char)*255, 1, 7)) == -1);
+                while((choice = numericUserInput(">",input,sizeof(char)*255, 1, 8)) == -1);
 
             break;
             case 2:
@@ -424,13 +457,13 @@ void menu(dictionnary* library){
                     printf("Veuillez d'abord créer ou charger un dictionnaire\n");                
                 }                
                 printMenu(dicInUse);
-                while((choice = numericUserInput(">",input,sizeof(char)*255, 1, 7)) == -1);
+                while((choice = numericUserInput(">",input,sizeof(char)*255, 1, 8)) == -1);
            
             break;
             case 3:
                 buildDicWithFileMenu(&library,&numberOfDic,&dicInUse);
                 printMenu(dicInUse);
-                while((choice = numericUserInput(">",input,sizeof(char)*255, 1, 7)) == -1);
+                while((choice = numericUserInput(">",input,sizeof(char)*255, 1, 8)) == -1);
           
             break;
             case 4:
@@ -440,7 +473,7 @@ void menu(dictionnary* library){
                     printf("Veuillez d'abord créer un dictionnaire\n");                
                 }
                 printMenu(dicInUse);
-                while((choice = numericUserInput(">",input,sizeof(char)*255, 1, 7)) == -1);
+                while((choice = numericUserInput(">",input,sizeof(char)*255, 1, 8)) == -1);
          
             break;
             case 5:
@@ -450,7 +483,7 @@ void menu(dictionnary* library){
                     printf("Veuillez d'abord charger un dictionnaire\n");
                 }
                 printMenu(dicInUse);
-                while((choice = numericUserInput(">",input,sizeof(char)*255, 1, 7)) == -1);
+                while((choice = numericUserInput(">",input,sizeof(char)*255, 1, 8)) == -1);
 
                 choice = input[0]-48;            
             break;
@@ -461,13 +494,25 @@ void menu(dictionnary* library){
                     printf("Veuillez d'abord charger un dictionnaire\n");
                 }
                 printMenu(dicInUse);
-                while((choice = numericUserInput(">",input,sizeof(char)*255, 1, 7)) == -1);
+                while((choice = numericUserInput(">",input,sizeof(char)*255, 1, 8)) == -1);
                
             break;
             case 7:
                 printf("Au-revoir\n");
                 free(library);
                 exit(0);
+            break;
+            case 8:
+               if(dicInUse != NULL){
+                   
+                    printf("---------- TEST ----------\n");
+                    char word[10];
+                    getAllWordInDictionnary(dicInUse->tree,word);
+                }else{
+                    printf("Veuillez d'abord charger un dictionnaire\n");
+                }
+                printMenu(dicInUse);
+                while((choice = numericUserInput(">",input,sizeof(char)*255, 1, 8)) == -1);
             break;
             default:
             break;
