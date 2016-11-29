@@ -33,7 +33,7 @@ typedef struct dictionnary{
 void addWord(node* tree,char* wordToAdd);
 int searchWord(node* tree,char* wordToSearch);
 int supWord(node* tree,char* wordToSup);
-node* getAllWordInDictionnary(node* tree,char* word);
+node* getAllWordInDictionnary(node* tree,char* word,short level);
 
 void addWordMenu(dictionnary* dictionnary);
 void searchWordMenu(dictionnary* dictionnary);
@@ -127,16 +127,12 @@ int supWord(node* tree,char* wordToSup){
     }
 }
 
- node* getAllWordInDictionnary(node* tree,char* word){
-    int i;
-    short nbLetterInWord=0;
-    while(word[nbLetterInWord] != '\0'){
-        nbLetterInWord++;
-    }
-    word[nbLetterInWord+1] = '\0';
+ node* getAllWordInDictionnary(node* tree,char* word,short level){
+    int i=0;
 
     if(tree->endOfWord == 1){
-        printf("DEBUG>>>End of word!!\nThe word ");
+        printf("DEBUG>>End of word!!\n");
+        // printf("The word ");
         while(word[i] != '\0'){
             printf("%c",word[i] );
             i++;
@@ -150,8 +146,10 @@ int supWord(node* tree,char* wordToSup){
     {
         if(tree->letter[i] != NULL){        
             printf("DEBUG>>>letter %c spotted ! \n",i+97);
-            word[nbLetterInWord] = i+97;
-            res = getAllWordInDictionnary(tree->letter[i],word);
+            word[level] = i+97;
+            res = getAllWordInDictionnary(tree->letter[i],word,level+1);
+            word[level] = '\0';
+
         }
     }
     return res;
@@ -507,7 +505,7 @@ void menu(dictionnary* library){
                    
                     printf("---------- TEST ----------\n");
                     char word[10];
-                    getAllWordInDictionnary(dicInUse->tree,word);
+                    getAllWordInDictionnary(dicInUse->tree,word,0);
                 }else{
                     printf("Veuillez d'abord charger un dictionnaire\n");
                 }
