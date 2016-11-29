@@ -24,7 +24,7 @@ typedef struct dictionnary{
 #define EXIT_SUCCESS 0
 #define EXIT_FAILURE 1
 
-// int const EXIT_FAILURE = -1;
+// static int const EXIT_FAILURE = 1;
 
 
 
@@ -133,12 +133,13 @@ node* getAllWordInDictionnary(node* tree,char* word,short level){
     int i=0;
 
     if(tree->endOfWord == 1){
-        printf("DEBUG>>End of word!!\n");
+        // printf("DEBUG>>End of word!!\n");
         while(word[i] != '\0'){
             printf("%c",word[i] );
             i++;
         }
-        printf(" has been found in dictionnary\n");
+        printf("\n");
+        // printf(" has been found in dictionnary\n");
 
         return tree;
     }
@@ -147,7 +148,7 @@ node* getAllWordInDictionnary(node* tree,char* word,short level){
     {
 
         if(tree->letter[i] != NULL){        
-            printf("DEBUG>>>letter %c spotted ! \n",i+97);
+            // printf("DEBUG>>>letter %c spotted ! \n",i+97);
             word[level] = i+97;
             res = getAllWordInDictionnary(tree->letter[i],word,level+1);
             word[level] = '\0';
@@ -155,19 +156,20 @@ node* getAllWordInDictionnary(node* tree,char* word,short level){
         }
     }
     return res;
-
  }
 
 
  
 node* levensteinInDictionnary(node* tree,char* word,short level,char* wordToCompare,short threshold,short diff){
     int i=0;
+    int distance;
 
-    printf("flag\n");
     if(tree->endOfWord == 1){
-        printf("DEBUG>>End of word!!\n");
-        // if(DamerauLevenshteinDistance(word,wordToCompare) <= threshold){
-        //     printf("word >%s< has a levenstein difference of %d with >%s<\n",word,DamerauLevenshteinDistance(word,wordToCompare),wordToCompare);
+        // printf("DEBUG>>End of word!!\n");
+        if((distance = DamerauLevenshteinDistance(word,strlen(word),wordToCompare,strlen(wordToCompare))) <= threshold){
+            printf("word >%s< has a levenstein difference of %d with >%s<\n",word,distance,wordToCompare);
+         }//else{
+        //     printf("word >%s< has a" " levenstein difference of %d with >%s<\n",word,distance,wordToCompare);
         // }
 
         return tree;
@@ -177,15 +179,15 @@ node* levensteinInDictionnary(node* tree,char* word,short level,char* wordToComp
     {
 
         if(tree->letter[i] != NULL){        
-            printf("DEBUG>>>letter %c spotted ! \n",i+97);
+            // printf("DEBUG>>>letter %c spotted ! \n",i+97);
             
-            // if(strchr(wordToCompare,i+97) == NULL){
-            //     diff++;
-            // }
+            if(strchr(wordToCompare,i+97) == NULL){
+                diff++;
+            }
 
-            // if(diff > threshold){
-            //     continue;
-            // }
+            if(diff > threshold){
+                continue;
+            }
             word[level] = i+97;
             res = levensteinInDictionnary(tree->letter[i],word,level+1,wordToCompare,threshold,diff);
             word[level] = '\0';
@@ -543,8 +545,10 @@ void menu(dictionnary* library){
                if(dicInUse != NULL){
                    
                     printf("---------- TEST ----------\n");
-                    char word[10];
-                     getAllWordInDictionnary(dicInUse->tree,word,0);
+                    char* word = calloc(sizeof(char)*255,1);
+                    printf("Dictionnary %s :\n", dicInUse->name);
+                    getAllWordInDictionnary(dicInUse->tree,word,0);
+                    printf("Searching for a word looking like 'titi' \n");
                     levensteinInDictionnary(dicInUse->tree,word,0,"titi",2,0);
                 }else{
                     printf("Veuillez d'abord charger un dictionnaire\n");
