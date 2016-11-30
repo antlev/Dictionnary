@@ -167,8 +167,10 @@ node* getAllWordInDictionnary(node* tree,char* word,short level){
     return res;
  }
 
+int nbNodeParcoured = 0;
 // Search recursivly in the dictionnary for word that have a levenstein distance smaller than threshold and print them on screen
 node* levensteinInDictionnary(node* tree,char* word,short level,char* wordToCompare,short threshold,short diff){
+    nbNodeParcoured++;
     int i=0;
     int distance;
 
@@ -183,19 +185,19 @@ node* levensteinInDictionnary(node* tree,char* word,short level,char* wordToComp
         }
     }
     node* res = NULL;
-    for (i = 0; i < 26; ++i)
-    {
+    for (i = 0; i < 26; ++i){
 
         if(tree->letter[i] != NULL){        
             // printf("DEBUG>>>letter %c spotted ! \n",i+97);
             
             // if(strchr(wordToCompare,i+97) == NULL){
-            //     diff++;
+            //     if(diff >= threshold){
+            //         continue;
+            //    }
+            //    diff++;
             // }
 
-            // if(diff > threshold){
-            //     continue;
-            // }
+
             word[level] = i+97;
             res = levensteinInDictionnary(tree->letter[i],word,level+1,wordToCompare,threshold,diff);
             word[level] = '\0';
@@ -292,7 +294,7 @@ void buildDicWithFileMenu(dictionnary** library,int* numberOfDic,dictionnary** d
         printf("\n");
     }
     finishMeasuringTime = getTime();
-    printf("DEBUG>>>Dictionnary import time = %ld\n",finishMeasuringTime-startMeasuringTime );
+    printf("DEBUG>>>Dictionnary import time = %ld milliseconds\n",finishMeasuringTime-startMeasuringTime );
 }
 // Print the library and ask user to choose a dictionnary
 // The choosen dictionnary will be pointed by dicInUse
@@ -342,18 +344,24 @@ int loadDictionnaryFromFile(char pathToDicFile[255],dictionnary* dicInUse){
         return EXIT_FAILURE;
     }
     while ((read = getline(&line, &len, inputFile)) != -1) {
-        if(DEBUG){
-            printf("Retrieved line of length %zu :\n", read-1);
-        }
+
         line[strlen(line)-1] = '\0';
-
-        // printf(">%s<", line);
-
-        addWord(dicInUse->tree,line);
-        dicInUse->nbWord++;
         if(DEBUG){
-            printf("word >%s< has been inserted in dictionnary >%s<\n",line,dicInUse->name );
+            printf("Retrieved line %s of length %zu :\n",line, read-1);
         }
+        // If line has a special char ignore the line
+        if(strspn(line,"abcdefghijklmnopqrstuvwxyz") != 0){
+            printf("trying to add word >%s<\n",line);
+            addWord(dicInUse->tree,line);
+            dicInUse->nbWord++;
+            if(DEBUG){
+            printf("word >%s< has been inserted in dictionnary >%s<\n",line,dicInUse->name );
+            }
+        }else{
+            printf("line %s ignored\n",line );
+        }
+
+
     }
     fclose(inputFile);
     if (line){
@@ -558,13 +566,26 @@ void menu(dictionnary* library){
             break;
             case 8:
                if(dicInUse != NULL){
-                   
+                    unsigned long int startMeasuringTime;
+                    unsigned long int finishMeasuringTime;
+
                     printf("---------- TEST ----------\n");
                     char* word = calloc(sizeof(char)*255,1);
+
+
                     printf("Dictionnary %s :\n", dicInUse->name);
+
+                    startMeasuringTime = getTime();
                     getAllWordInDictionnary(dicInUse->tree,word,0);
+                    finishMeasuringTime = getTime();
+                    printf("%ld milliseconds to access all dictionnary's word\n",(finishMeasuringTime-startMeasuringTime) );
+                    
                     printf("Searching for a word looking like 'titi' \n");
+                    startMeasuringTime = getTime();
                     levensteinInDictionnary(dicInUse->tree,word,0,"titi",2,0);
+                    finishMeasuringTime = getTime();
+                    printf("nbNodeParcoured=%d\n",nbNodeParcoured );
+                    printf("%ld milliseconds to access all dictionnary's word and compare the levenstein distance with 'titi'\n",(finishMeasuringTime-startMeasuringTime) );
                 }else{
                     printf("Veuillez d'abord charger un dictionnaire\n");
                 }
