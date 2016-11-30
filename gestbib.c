@@ -72,9 +72,23 @@ void test(int verbose);
 // -------------------------- Inside Dictionnary functions --------------------------
 
 // Add the 'wordToAdd' into the tree 'tree'
-// Return 1 if the word has been successfully added and O if word is already in tree
+// Return 1 if the word has been successfully added and 
+// Return O if word is already in tree
+// Return -1 if word contain unaccepted character
 int addWord(node* tree,char* wordToAdd){
     int i=0;
+    // TODO see why thisline doesn't work
+    // if(strspn(line,"abcdefghijklmnopqrstuvwxyz") != 0){  
+    while(wordToAdd[i] != '\0'){
+        if (wordToAdd[i] < 97 || wordToAdd[i] > (97+26)){
+            if(DEBUG){
+                printf("word %s has been ignored because it contains an unaccepted char (%c)\n",wordToAdd,wordToAdd[i] );
+            }
+            return -1;
+        }
+        i++;
+    }
+    i=0;
     while(wordToAdd[i] != '\0'){
         if(!tree->letter[wordToAdd[i] - 97]){
             // calloc same as malloc but initialise all bit at 0
@@ -84,9 +98,15 @@ int addWord(node* tree,char* wordToAdd){
         i++;
     }
     if (tree->endOfWord == 1){
+        if(DEBUG){
+            printf("word %s already exist in dictionnary\n",wordToAdd );
+        }
         return 0;
     }else{
         tree->endOfWord = 1 ;
+        if(DEBUG){
+            printf("word %s has been successfully added to dictionnary\n", wordToAdd);
+        }
         return 1;
     }
 }
@@ -180,7 +200,7 @@ node* levensteinInDictionnary(node* tree,char* word,short level,char* wordToComp
             if((distance = DamerauLevenshteinDistance(word,wordToCompare)) <= threshold){
                 printf("word >%s< has a levenstein difference of %d with >%s<\n",word,distance,wordToCompare);
             }else{
-                 printf("word >%s< has a" " levenstein difference of %d with >%s<\n",word,distance,wordToCompare);
+                 // printf("word >%s< has a" " levenstein difference of %d with >%s<\n",word,distance,wordToCompare);
             }
         }
     }
@@ -196,6 +216,7 @@ node* levensteinInDictionnary(node* tree,char* word,short level,char* wordToComp
             //    }
             //    diff++;
             // }
+
 
 
             word[level] = i+97;
@@ -344,24 +365,13 @@ int loadDictionnaryFromFile(char pathToDicFile[255],dictionnary* dicInUse){
         return EXIT_FAILURE;
     }
     while ((read = getline(&line, &len, inputFile)) != -1) {
-
         line[strlen(line)-1] = '\0';
         if(DEBUG){
             printf("Retrieved line %s of length %zu :\n",line, read-1);
         }
-        // If line has a special char ignore the line
-        if(strspn(line,"abcdefghijklmnopqrstuvwxyz") != 0){
-            printf("trying to add word >%s<\n",line);
-            addWord(dicInUse->tree,line);
+        if(addWord(dicInUse->tree,line) == 1){
             dicInUse->nbWord++;
-            if(DEBUG){
-            printf("word >%s< has been inserted in dictionnary >%s<\n",line,dicInUse->name );
-            }
-        }else{
-            printf("line %s ignored\n",line );
         }
-
-
     }
     fclose(inputFile);
     if (line){
