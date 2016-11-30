@@ -21,7 +21,6 @@ typedef struct dictionnary{
     #define DEBUG (0)
 #endif
 
-
 #define OK       0
 #define NO_INPUT 1
 #define TOO_LONG 2
@@ -31,7 +30,6 @@ typedef struct dictionnary{
 
 static const int MAXNBLETTERINWORD = 20;
 static const int THRESHOLD = 2;
-
 // Prototypes
 // -------------------------- Inside Dictionnary functions --------------------------
 int addWord(node* tree,char* wordToAdd);
@@ -39,42 +37,37 @@ int searchWord(node* tree,char* wordToSearch);
 int supWord(node* tree,char* wordToSup);
 node* getAllWordInDictionnary(node* tree,char* word,short level);
 node* levensteinInDictionnary(node* tree,char* word,short level,char* wordToCompare,short threshold,short diff);
-
+// -------------------------- User Interface --------------------------
 void addWordMenu(dictionnary* dictionnary);
 void searchWordMenu(dictionnary* dictionnary);
-// -------------------------- Programm functions's menu  --------------------------
 void buildDicWithFileMenu(dictionnary** library,int* numberOfDic,dictionnary** dicInUse);
 void chooseDicMenu(dictionnary* library,int numberOfDic,dictionnary** dicInUse);
 void addDicMenu(dictionnary** library,int numberOfDic,dictionnary** dicInUse);
 void eraseDicMenu(dictionnary* library,int numberOfDic,dictionnary** dicInUse);
-
 // -------------------------- Dictionnary manipulation functions --------------------------
 void eraseDic(dictionnary* library,int dicToDel);
-void askForDicInfo(char* dicName,char* description);
 void addDicAndUse(dictionnary** library,int numberOfDic,char name[255],char desc[255],dictionnary** dicCreated);
 // -------------------------- Utils functions's  --------------------------
 int loadDictionnaryFromFile(char pathToDicFile[255],dictionnary* dicInUse);
 int userInput(char *prmpt, char *buff, size_t sz);
 int numericUserInput(char* prmpt, char* buff, size_t sz,short lowLimit,short highLimit);
 unsigned long getTime();
-
 void printMenu(dictionnary* dicInUse);
 void printLibrary(dictionnary* library, int numberOfDic);
-
 int isDictionnaryInUse(dictionnary* dictionnary);
 int isDictionnaryInMemory(dictionnary* dictionnary);
-
 void menu(dictionnary* library);
 dictionnary* init();
 // -------------------------- Test function  --------------------------
 void test(int verbose);
-
 // -------------------------- Inside Dictionnary functions --------------------------
 
-// Add the 'wordToAdd' into the tree 'tree'
-// Return 1 if the word has been successfully added and 
-// Return O if word is already in tree
-// Return -1 if word contain unaccepted character
+// Add the 'wordToAdd' into dictionnary
+// @param tree : root of the dictionnary
+// @param wordToAdd : word to add in the dictionnary
+// @return 1 if the word has been successfully added 
+// @return O if word is already in tree
+// @return -1 if word contain unaccepted character
 int addWord(node* tree,char* wordToAdd){
     int i=0;
     // TODO see why thisline doesn't work
@@ -110,7 +103,9 @@ int addWord(node* tree,char* wordToAdd){
         return 1;
     }
 }
-// Return 1 if word exist in tree, 0 if not
+// @param tree : root of the dictionnary
+// @param wordToSearch : word to search in the dictionnary
+// @Return 1 if wordToSearch exist in dictionnary, 0 if not
 int searchWord(node* tree,char* wordToSearch){
     int i=0;
     while(wordToSearch[i] != '\0'){
@@ -126,8 +121,9 @@ int searchWord(node* tree,char* wordToSearch){
         return 0;
     }
 }
-// Suppress the wordToSup into the tree tree
-// Return 1 if the word has been founnd and suppresed, else return 0
+// @param tree : root of the dictionnary
+// @param wordToSup : word to erase from the dictionnary
+// @Return 1 if wordToSup has been found and suppresed, 0 if not
 int supWord(node* tree,char* wordToSup){
     int i=0;
     int j;
@@ -157,11 +153,12 @@ int supWord(node* tree,char* wordToSup){
         return 1;   
     }
 }
-// Search recursivly in the dictionnary and print
-// on screen all word contained in the dictionnary
+// Search recursivly in the dictionnary
+// @param tree : root of the dictionnary
+// @param word : strig use to store word while recursively browsing into dictionnary
+// @param level  used to store the current level in tree
 node* getAllWordInDictionnary(node* tree,char* word,short level){
     int i=0;
-
     if(tree->endOfWord == 1){
         // printf("DEBUG>>End of word!!\n");
         while(word[i] != '\0'){
@@ -186,9 +183,15 @@ node* getAllWordInDictionnary(node* tree,char* word,short level){
     }
     return res;
  }
-
+// TODO
 int nbNodeParcoured = 0;
 // Search recursivly in the dictionnary for word that have a levenstein distance smaller than threshold and print them on screen
+// @param tree : root of the dictionnary
+// @param word : strig use to store word while recursively browsing into dictionnary
+// @param level : used to store the current level in tree
+// @param wordToCompare : string containing word to compare to every word of the tree
+// @param threshold : maximum difference between the wordToCompare and potential word in dictionnary
+// @param diff : used to optiimise and stop searching if word are too different on branches below
 node* levensteinInDictionnary(node* tree,char* word,short level,char* wordToCompare,short threshold,short diff){
     nbNodeParcoured++;
     int i=0;
@@ -206,29 +209,25 @@ node* levensteinInDictionnary(node* tree,char* word,short level,char* wordToComp
     }
     node* res = NULL;
     for (i = 0; i < 26; ++i){
-
-        if(tree->letter[i] != NULL){        
+        if(tree->letter[i] != NULL){ 
+            // TODO       
             // printf("DEBUG>>>letter %c spotted ! \n",i+97);
-            
             // if(strchr(wordToCompare,i+97) == NULL){
             //     if(diff >= threshold){
             //         continue;
             //    }
             //    diff++;
             // }
-
-
-
             word[level] = i+97;
             res = levensteinInDictionnary(tree->letter[i],word,level+1,wordToCompare,threshold,diff);
             word[level] = '\0';
-
         }
     }
     return res;
 
 }
-// Prompt a word and add it to the dictionnary
+// Prompt a word and call addWord() to add it to the dictionnary
+// @param dictionnary : pointer on dictionnary in which we want to add a word
 void addWordMenu(dictionnary* dictionnary){
     node* tree = dictionnary->tree;
     char wordToInsert[MAXNBLETTERINWORD];    
@@ -241,7 +240,8 @@ void addWordMenu(dictionnary* dictionnary){
         printf("%s already exist in dictionnary\n",wordToInsert);
     }
 }
-// Prompt a word and search it in the dictionnary
+// Prompt a word and call searchWord() to search it to the dictionnary
+// @param dictionnary : pointer on dictionnary in which we want to search a word
 void searchWordMenu(dictionnary* dictionnary){
     node* tree = dictionnary->tree;
     char wordToSearch[MAXNBLETTERINWORD];
@@ -264,7 +264,9 @@ void addDicMenu(dictionnary** library,int numberOfDic,dictionnary** dicInUse){
  
     char* pdicName = dicName;
 
-    askForDicInfo(dicName,dicDesc);
+    while(userInput("Choisissez un nom de dictionnaire\n>",dicName,255) != 0);
+
+    while(userInput("Vous pouvez donner une description\n>",dicDesc,255) > 1);
 
     addDicAndUse(library,numberOfDic,dicName,dicDesc,dicInUse);
 }
@@ -379,13 +381,6 @@ int loadDictionnaryFromFile(char pathToDicFile[255],dictionnary* dicInUse){
     }
     return EXIT_SUCCESS;
 }
-void askForDicInfo(char* dicName,char* dicDesc){
-
-    while(userInput("Choisissez un nom de dictionnaire\n>",dicName,255) != 0);
-
-    while(userInput("Vous pouvez donner une description\n>",dicDesc,255) > 1);
-
-}
 // -------------------------- Utils functions's  --------------------------
 
 // Function used to prompt something to user
@@ -490,6 +485,7 @@ int isDictionnaryInMemory(dictionnary* dictionnary){
         return 1;
     }
 }
+// Return the time of the day in milliseconds
 unsigned long getTime(){
     struct timeval tv;
     gettimeofday(&tv,NULL);
