@@ -24,13 +24,12 @@ typedef struct dictionnary{
 #define EXIT_SUCCESS 0
 #define EXIT_FAILURE 1
 
-// static int const EXIT_FAILURE = 1;
-
-
+static int const MAXNBLETTERINWORD = 20;
+static int const THRESHOLD = 2;
 
 // Prototypes
 // -------------------------- Inside Dictionnary functions --------------------------
-void addWord(node* tree,char* wordToAdd);
+int addWord(node* tree,char* wordToAdd);
 int searchWord(node* tree,char* wordToSearch);
 int supWord(node* tree,char* wordToSup);
 node* getAllWordInDictionnary(node* tree,char* word,short level);
@@ -67,8 +66,9 @@ void test(int verbose);
 
 // -------------------------- Inside Dictionnary functions --------------------------
 
-// Add the wordToAdd into the tree 'tree'
-void addWord(node* tree,char* wordToAdd){
+// Add the 'wordToAdd' into the tree 'tree'
+// Return 1 if the word has been successfully added and O if word is already in tree
+int addWord(node* tree,char* wordToAdd){
     int i=0;
     while(wordToAdd[i] != '\0'){
         if(!tree->letter[wordToAdd[i] - 97]){
@@ -78,7 +78,12 @@ void addWord(node* tree,char* wordToAdd){
         tree = tree->letter[wordToAdd[i] - 97] ;
         i++;
     }
-    tree->endOfWord = 1 ;
+    if (tree->endOfWord == 1){
+        return 0;
+    }else{
+        tree->endOfWord = 1 ;
+        return 1;
+    }
 }
 // Return 1 if word exist in tree, 0 if not
 int searchWord(node* tree,char* wordToSearch){
