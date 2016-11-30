@@ -74,7 +74,7 @@ int addWord(node* tree,char* wordToAdd){
     // if(strspn(line,"abcdefghijklmnopqrstuvwxyz") != 0){  
     while(wordToAdd[i] != '\0'){
         if (wordToAdd[i] < 97 || wordToAdd[i] > (97+26)){
-            if(DEBUG){
+            if(DEBUG >= 3){
                 printf("word %s has been ignored because it contains an unaccepted char (%c)\n",wordToAdd,wordToAdd[i] );
             }
             return -1;
@@ -91,13 +91,13 @@ int addWord(node* tree,char* wordToAdd){
         i++;
     }
     if (tree->endOfWord == 1){
-        if(DEBUG){
+        if(DEBUG >= 3){
             printf("word %s already exist in dictionnary\n",wordToAdd );
         }
         return 0;
     }else{
         tree->endOfWord = 1 ;
-        if(DEBUG){
+        if(DEBUG >= 3){
             printf("word %s has been successfully added to dictionnary\n", wordToAdd);
         }
         return 1;
@@ -162,12 +162,12 @@ node* getAllWordInDictionnary(node* tree,char* word,short level){
     if(tree->endOfWord == 1){
         // printf("DEBUG>>End of word!!\n");
         while(word[i] != '\0'){
-            if(DEBUG){
+            if(DEBUG >= 3){
                 printf("%c",word[i] );
             }
             i++;
         }
-        if(DEBUG){
+        if(DEBUG >= 3){
             printf("\n");
         }
         // printf(" has been found in dictionnary\n");
@@ -199,12 +199,13 @@ node* levensteinInDictionnary(node* tree,char* word,short level,char* wordToComp
 
     if(tree->endOfWord == 1){
         // printf("DEBUG>>End of word!!\n");
-        if(DEBUG){
-            if((distance = DamerauLevenshteinDistance(word,wordToCompare)) <= threshold){
+
+        if((distance = DamerauLevenshteinDistance(word,wordToCompare)) <= threshold){
+            if(DEBUG >= 2){
                 printf("word >%s< has a levenstein difference of %d with >%s<\n",word,distance,wordToCompare);
-            }else{
-                 // printf("word >%s< has a" " levenstein difference of %d with >%s<\n",word,distance,wordToCompare);
             }
+        }else{
+             // printf("word >%s< has a" " levenstein difference of %d with >%s<\n",word,distance,wordToCompare);
         }
     }
     node* res = NULL;
@@ -246,13 +247,21 @@ void searchWordMenu(dictionnary* dictionnary){
     node* tree = dictionnary->tree;
     char wordToSearch[MAXNBLETTERINWORD];
 
-    while(userInput("Veuillez entrer le mot à chercher dans le dictionnaire\n>",wordToSearch,MAXNBLETTERINWORD) != 0);
 
+    unsigned long int startMeasuringTime;
+    unsigned long int finishMeasuringTime;
+
+    while(userInput("Veuillez entrer le mot à chercher dans le dictionnaire\n>",wordToSearch,MAXNBLETTERINWORD) != 0);
+   
+    startMeasuringTime = getTime();
     if(searchWord(tree,wordToSearch)){
+        finishMeasuringTime = getTime();
         printf("Le mot \'%s\' EST BIEN CONTENU dans le dictionnaire %s\n",wordToSearch,dictionnary->name );
     }else{
+        finishMeasuringTime = getTime();
         printf("Le mot \'%s\' N'EST PAS CONTENU dans le dictionnaire %s\n",wordToSearch,dictionnary->name );
     }
+    printf("searchWord time = %ld\n",(finishMeasuringTime-startMeasuringTime) );
 }
 // -------------------------- Programm functions's menu  --------------------------
 
@@ -309,8 +318,8 @@ void buildDicWithFileMenu(dictionnary** library,int* numberOfDic,dictionnary** d
     
     while(userInput("Veuillez entrer le chemin du fichier dictionnaire\n>",pathToDicFile,255) != 0);
     
-    unsigned long int startMeasuringTime = getTime();
     unsigned long int finishMeasuringTime;
+    unsigned long int startMeasuringTime = getTime();
     if(loadDictionnaryFromFile(pathToDicFile,*dicInUse) == -1){
         printf("Le fichier dictionnaire \'%s\' n'éxiste pas\n",pathToDicFile );
     }else{
@@ -361,6 +370,7 @@ int loadDictionnaryFromFile(char pathToDicFile[255],dictionnary* dicInUse){
     char * line = NULL;
     size_t len = 0;
     ssize_t read;
+    int wordIgnored = 0;
 
     inputFile = fopen(pathToDicFile, "r");
     if (inputFile == NULL){
@@ -368,12 +378,17 @@ int loadDictionnaryFromFile(char pathToDicFile[255],dictionnary* dicInUse){
     }
     while ((read = getline(&line, &len, inputFile)) != -1) {
         line[strlen(line)-1] = '\0';
-        if(DEBUG){
+        if(DEBUG >= 2){
             printf("Retrieved line %s of length %zu :\n",line, read-1);
         }
         if(addWord(dicInUse->tree,line) == 1){
             dicInUse->nbWord++;
+        }else{
+            wordIgnored++;
         }
+    }
+    if(DEBUG >= 1){
+        printf("word added = %d ignored = %d\n",dicInUse->nbWord,wordIgnored );
     }
     fclose(inputFile);
     if (line){
@@ -586,12 +601,12 @@ void menu(dictionnary* library){
                     finishMeasuringTime = getTime();
                     printf("%ld milliseconds to access all dictionnary's word\n",(finishMeasuringTime-startMeasuringTime) );
                     
-                    // printf("Searching for a word looking like 'titi' \n");
-                    // startMeasuringTime = getTime();
-                    // levensteinInDictionnary(dicInUse->tree,word,0,"titi",2,0);
-                    // finishMeasuringTime = getTime();
-                    // printf("nbNodeParcoured=%d\n",nbNodeParcoured );
-                    // printf("%ld milliseconds to access all dictionnary's word and compare the levenstein distance with 'titi'\n",(finishMeasuringTime-startMeasuringTime) );
+                    printf("Searching for a word looking like 'titi' \n");
+                    startMeasuringTime = getTime();
+                    levensteinInDictionnary(dicInUse->tree,word,0,"titi",2,0);
+                    finishMeasuringTime = getTime();
+                    printf("nbNodeParcoured=%d\n",nbNodeParcoured );
+                    printf("%ld milliseconds to access all dictionnary's word and compare the levenstein distance with 'titi'\n",(finishMeasuringTime-startMeasuringTime) );
                 }else{
                     printf("Veuillez d'abord charger un dictionnaire\n");
                 }
