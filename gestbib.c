@@ -15,7 +15,12 @@ typedef struct dictionnary{
 #include <stdlib.h>
 #include <math.h>
 #include <string.h>
-#include <time.h>
+#include <sys/time.h>
+
+#ifndef DEBUG
+    #define DEBUG (0)
+#endif
+
 
 #define OK       0
 #define NO_INPUT 1
@@ -24,8 +29,8 @@ typedef struct dictionnary{
 #define EXIT_SUCCESS 0
 #define EXIT_FAILURE 1
 
-static int const MAXNBLETTERINWORD = 20;
-static int const THRESHOLD = 2;
+static const int MAXNBLETTERINWORD = 20;
+static const int THRESHOLD = 2;
 
 // Prototypes
 // -------------------------- Inside Dictionnary functions --------------------------
@@ -51,7 +56,7 @@ void addDicAndUse(dictionnary** library,int numberOfDic,char name[255],char desc
 int loadDictionnaryFromFile(char pathToDicFile[255],dictionnary* dicInUse);
 int userInput(char *prmpt, char *buff, size_t sz);
 int numericUserInput(char* prmpt, char* buff, size_t sz,short lowLimit,short highLimit);
-clock_t getTime();
+unsigned long getTime();
 
 void printMenu(dictionnary* dicInUse);
 void printLibrary(dictionnary* library, int numberOfDic);
@@ -140,12 +145,15 @@ node* getAllWordInDictionnary(node* tree,char* word,short level){
     if(tree->endOfWord == 1){
         // printf("DEBUG>>End of word!!\n");
         while(word[i] != '\0'){
-            printf("%c",word[i] );
+            if(DEBUG){
+                printf("%c",word[i] );
+            }
             i++;
         }
-        printf("\n");
+        if(DEBUG){
+            printf("\n");
+        }
         // printf(" has been found in dictionnary\n");
-        return tree;
     }
     node* res = NULL;
     for (i = 0; i < 26; ++i){
@@ -166,12 +174,13 @@ node* levensteinInDictionnary(node* tree,char* word,short level,char* wordToComp
 
     if(tree->endOfWord == 1){
         // printf("DEBUG>>End of word!!\n");
-        if((distance = DamerauLevenshteinDistance(word,strlen(word),wordToCompare,strlen(wordToCompare))) <= threshold){
-            printf("word >%s< has a levenstein difference of %d with >%s<\n",word,distance,wordToCompare);
-         }//else{
-        //     printf("word >%s< has a" " levenstein difference of %d with >%s<\n",word,distance,wordToCompare);
-        // }
-        return tree;
+        if(DEBUG){
+            if((distance = DamerauLevenshteinDistance(word,wordToCompare)) <= threshold){
+                printf("word >%s< has a levenstein difference of %d with >%s<\n",word,distance,wordToCompare);
+            }else{
+                 printf("word >%s< has a" " levenstein difference of %d with >%s<\n",word,distance,wordToCompare);
+            }
+        }
     }
     node* res = NULL;
     for (i = 0; i < 26; ++i)
@@ -180,13 +189,13 @@ node* levensteinInDictionnary(node* tree,char* word,short level,char* wordToComp
         if(tree->letter[i] != NULL){        
             // printf("DEBUG>>>letter %c spotted ! \n",i+97);
             
-            if(strchr(wordToCompare,i+97) == NULL){
-                diff++;
-            }
+            // if(strchr(wordToCompare,i+97) == NULL){
+            //     diff++;
+            // }
 
-            if(diff > threshold){
-                continue;
-            }
+            // if(diff > threshold){
+            //     continue;
+            // }
             word[level] = i+97;
             res = levensteinInDictionnary(tree->letter[i],word,level+1,wordToCompare,threshold,diff);
             word[level] = '\0';
@@ -275,8 +284,8 @@ void buildDicWithFileMenu(dictionnary** library,int* numberOfDic,dictionnary** d
     
     while(userInput("Veuillez entrer le chemin du fichier dictionnaire\n>",pathToDicFile,255) != 0);
     
-    long int startMeasuringTime = getTime();
-    long int finishMeasuringTime;
+    unsigned long int startMeasuringTime = getTime();
+    unsigned long int finishMeasuringTime;
     if(loadDictionnaryFromFile(pathToDicFile,*dicInUse) == -1){
         printf("Le fichier dictionnaire \'%s\' n'éxiste pas\n",pathToDicFile );
     }else{
@@ -333,14 +342,18 @@ int loadDictionnaryFromFile(char pathToDicFile[255],dictionnary* dicInUse){
         return EXIT_FAILURE;
     }
     while ((read = getline(&line, &len, inputFile)) != -1) {
-        printf("Retrieved line of length %zu :\n", read-1);
+        if(DEBUG){
+            printf("Retrieved line of length %zu :\n", read-1);
+        }
         line[strlen(line)-1] = '\0';
 
-        printf(">%s<", line);
+        // printf(">%s<", line);
 
         addWord(dicInUse->tree,line);
         dicInUse->nbWord++;
-        printf("word >%s< has been inserted in dictionnary >%s<\n",line,dicInUse->name );
+        if(DEBUG){
+            printf("word >%s< has been inserted in dictionnary >%s<\n",line,dicInUse->name );
+        }
     }
     fclose(inputFile);
     if (line){
@@ -459,9 +472,11 @@ int isDictionnaryInMemory(dictionnary* dictionnary){
         return 1;
     }
 }
-clock_t getTime(){
-    clock_t uptime = clock() / (1000000 / 1000);
-    return uptime;
+unsigned long getTime(){
+    struct timeval tv;
+    gettimeofday(&tv,NULL);
+    unsigned long millisec;
+    return millisec = (tv.tv_usec / 1000)+(tv.tv_sec * 1000) ;
 }
 // -------------------------- Programm Menu  --------------------------
 void menu(dictionnary* library){

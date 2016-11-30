@@ -44,7 +44,15 @@ int* getTab(int* tab,int nbCol,int i,int j){
 }
 // Return the Damerau Levenshtein Distance between 2 strings.
 // the distance returned is increased by one for each deletion,insertion,substitution or transposition.
-int DamerauLevenshteinDistance(char* str1, int strlen1, char* str2, int strlen2){
+int DamerauLevenshteinDistance(char* str1, char* str2){
+    // TODO strlen
+    short strlen1 = strlen(str1);
+    short strlen2 = strlen(str2);
+
+    // printf("str1:>%s<\n",str1 );
+    // printf("str2:>%s<\n",str2 );
+    // printf("strlen1:%d\n",strlen1 );
+    // printf("strlen2:%d\n",strlen2 );
     // d is a table with strlen1+1 rows and strlen2+1 columns
     int* d = calloc(sizeof(int)*((strlen1+1)*(strlen2+1)),1);
     // i and j are used to iterate over str1 and str2
@@ -67,8 +75,8 @@ int DamerauLevenshteinDistance(char* str1, int strlen1, char* str2, int strlen2)
     }
     // printf("---------- TREATMENT ---------->\n");
 
-    for(i=0;i<=strlen1;i++){
-        for(j=0;j<=strlen2;j++){
+    for(i=0;i<strlen1;i++){
+        for(j=0;j<strlen2;j++){
             if(str1[i+1] == str2[j+1]){ 
                 cost = 0;
             }else {
@@ -76,19 +84,19 @@ int DamerauLevenshteinDistance(char* str1, int strlen1, char* str2, int strlen2)
             }
                  // printf("!!!!!!!!!!!!!!! DEBUG i=%d j=%d !!!!!!!!!!\n",i,j );
            
-            *getTab(d,strlen1,i+1,j+1) = minimum3(
-                    *getTab(d,strlen1,i,j+1) + 1, // deletion
-                    *getTab(d,strlen1,i+1,j) + 1, // insertion
-                    *getTab(d,strlen1,i,j) + cost); // substitution
+            *getTab(d,strlen1+1,i+1,j+1) = minimum3(
+                    *getTab(d,strlen1+1,i,j+1) + 1, // deletion
+                    *getTab(d,strlen1+1,i+1,j) + 1, // insertion
+                    *getTab(d,strlen1+1,i,j) + cost); // substitution
       
             if(i > 0 && j > 0 && str1[i] == str2[j-1] && str1[i-1] == str2[j]){
-                    *getTab(d,strlen1,i+1,j+1) = minimum2(
-                    *getTab(d,strlen1,i+1,j+1),
-                    *getTab(d,strlen1,i-1,j)); // transposition
+                    *getTab(d,strlen1+1,i+1,j+1) = minimum2(
+                    *getTab(d,strlen1+1,i+1,j+1),
+                    *getTab(d,strlen1+1,i-1,j)); // transposition
             }
         }
     }          
-    int returnValue = *getTab(d,strlen1,strlen1,strlen2);
+    int returnValue = *getTab(d,strlen1+1,strlen1,strlen2);
     free(d);             
     return returnValue;
 }
