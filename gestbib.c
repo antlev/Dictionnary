@@ -586,12 +586,12 @@ void menu(dictionnary* library){
                     finishMeasuringTime = getTime();
                     printf("%ld milliseconds to access all dictionnary's word\n",(finishMeasuringTime-startMeasuringTime) );
                     
-                    printf("Searching for a word looking like 'titi' \n");
-                    startMeasuringTime = getTime();
-                    levensteinInDictionnary(dicInUse->tree,word,0,"titi",2,0);
-                    finishMeasuringTime = getTime();
-                    printf("nbNodeParcoured=%d\n",nbNodeParcoured );
-                    printf("%ld milliseconds to access all dictionnary's word and compare the levenstein distance with 'titi'\n",(finishMeasuringTime-startMeasuringTime) );
+                    // printf("Searching for a word looking like 'titi' \n");
+                    // startMeasuringTime = getTime();
+                    // levensteinInDictionnary(dicInUse->tree,word,0,"titi",2,0);
+                    // finishMeasuringTime = getTime();
+                    // printf("nbNodeParcoured=%d\n",nbNodeParcoured );
+                    // printf("%ld milliseconds to access all dictionnary's word and compare the levenstein distance with 'titi'\n",(finishMeasuringTime-startMeasuringTime) );
                 }else{
                     printf("Veuillez d'abord charger un dictionnaire\n");
                 }
