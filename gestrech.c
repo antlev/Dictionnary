@@ -6,40 +6,54 @@
 // Include from our own file
 #include "gestrech.h"
 
+#ifndef DEBUG
+    #define DEBUG (0)
+#endif
 
 // Return the Damerau Levenshtein Distance between 2 strings.
-// the distance returned is increased by one for each deletion,insertion,substitution or transposition.
+// Distance correspond to number of deletion,insertion,substitution or transposition.
+// @param str1 : string of first word to compare
+// @param str2 : string of second word to compare
+// @return levenstein distance as int
 int DamerauLevenshteinDistance(char* str1, char* str2){
     // TODO strlen
     short strlen1 = strlen(str1);
     short strlen2 = strlen(str2);
 
-    // printf("str1:>%s<\n",str1 );
-    // printf("str2:>%s<\n",str2 );
-    // printf("strlen1:%d\n",strlen1 );
-    // printf("strlen2:%d\n",strlen2 );
+    if(DEBUG >= 2){
+        printf("str1:>%s<\n",str1 );
+        printf("str2:>%s<\n",str2 );
+        printf("strlen1:%d\n",strlen1 );
+        printf("strlen2:%d\n",strlen2 );
+    }
     // d is a table with strlen1+1 rows and strlen2+1 columns
     int* d = calloc(sizeof(int)*((strlen1+1)*(strlen2+1)),1);
     // i and j are used to iterate over str1 and str2
     int i, j, cost;
-
-    // printf("---------- INITIALISATION ---------->\n");
+    
+    if(DEBUG >= 3){
+        printf("---------- INITIALISATION ---------->\n");
+    }
 
     for(i=0;i<=strlen1;i++){
         for(j=0;j<=strlen2;j++){
             if(j == 0){
                 *getTab(d,strlen1+1,i,j) = i ; 
-                // printf("!!!!!!!!!!!!!!! DEBUG i=%d j=%d !!!!!!!!!!\n",i,j );
+                if(DEBUG >= 3){
+                    printf("!!!!!!!!!!!!!!! DEBUG i=%d j=%d !!!!!!!!!!\n",i,j );
+                }
             }else if(i == 0){
                 *getTab(d,strlen1+1,i,j) = j ; 
-                // printf("!!!!!!!!!!!!!!! DEBUG i=%d j=%d !!!!!!!!!!\n",i,j );
-            }else{
+                if(DEBUG >= 3){
+                    printf("!!!!!!!!!!!!!!! DEBUG i=%d j=%d !!!!!!!!!!\n",i,j );
+                }            }else{
                 *getTab(d,strlen1+1,i,j) = 0 ; 
             }
         } 
     }
-    // printf("---------- TREATMENT ---------->\n");
-
+    if(DEBUG >= 3){
+        printf("---------- TREATMENT ---------->\n");
+    }
     for(i=0;i<strlen1;i++){
         for(j=0;j<strlen2;j++){
             if(str1[i+1] == str2[j+1]){ 
@@ -47,7 +61,9 @@ int DamerauLevenshteinDistance(char* str1, char* str2){
             }else {
                 cost = 1;
             }
-                 // printf("!!!!!!!!!!!!!!! DEBUG i=%d j=%d !!!!!!!!!!\n",i,j );
+            if(DEBUG >= 3){
+                printf("!!!!!!!!!!!!!!! DEBUG i=%d j=%d !!!!!!!!!!\n",i,j );
+            }
            
             *getTab(d,strlen1+1,i+1,j+1) = minimum3(
                     *getTab(d,strlen1+1,i,j+1) + 1, // deletion
@@ -89,7 +105,10 @@ int minimum2(int val1, int val2){
     }
     return 0;
 }
-// Print a bidemsionnal table passing it's pointer and size
+// Print a bidemsionnal table using a simple table of int
+// @param tab : pointer on table of int
+// @param nbLine : number of line of bidimensionnal table
+// @param nbCol : number of column of bidimensionnal table
 void printTab(int* tab,int nbLine,int nbCol){
     int i,j;
     for(j=0;j<nbLine;j++){
@@ -100,10 +119,11 @@ void printTab(int* tab,int nbLine,int nbCol){
     }
     printf("\n");
 }
-// Return pointer of the 'tab' of 'nbCol' at position : column 'i' line 'j'
-int* getTab(int* tab,int nbCol,int i,int j){
-    return &tab[i+j*nbCol];
+// function used to manipulate a bidimensionnal table using a simple table
+// @return value of int in table at line 'line' and column 'column' 
+// @param tab : pointer on table of int
+// @param nbLine : number of line of bidimensionnal table
+// @param nbCol : number of column of bidimensionnal table
+int* getTab(int* tab,int nbCol,int column,int line){
+    return &tab[column+line*nbCol];
 }
-
-
-
