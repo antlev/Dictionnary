@@ -1,4 +1,5 @@
 // Structs
+//----------------------------------------------------------------------------------------
 typedef struct __attribute__((__packed__)) node{
     short endOfWord;
     struct node* letter[26];
@@ -13,6 +14,7 @@ typedef struct dictionary{
 
 
 // Prototypes
+//----------------------------------------------------------------------------------------
 // -------------------------- Inside Dictionary functions --------------------------
 int addWord(node* tree,char* wordToAdd);
 int searchWord(node* tree,char* wordToSearch);

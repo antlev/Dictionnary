@@ -1,22 +1,18 @@
+// Include from tiers library
 #include <stdio.h>
 #include <stdlib.h>
-
-int minimum3(int val1, int val2, int val3);
-
-int minimum2(int val1, int val2);
-
-void printTab(int* tab,int nbLine,int nbCol);
-
-int DamerauLevenshteinDistance(char* str1, int lenStr1, char* str2, int lenStr2);
+// Include from our own file
+#include "gestrech.h"
 
 
 int main(){
 
-	printf("DamerauLevenshteinDistance(toto,titi)=%d (expected 2)\n",DamerauLevenshteinDistance("toto",4,"titi",4) );
-	printf("DamerauLevenshteinDistance(antoine,antine)=%d (expected 1)\n",DamerauLevenshteinDistance("antoine",7,"antine",6) );
-	printf("DamerauLevenshteinDistance(test,tet)=%d (expected 1)\n", DamerauLevenshteinDistance("test",4,"tet",3) );
-	printf("DamerauLevenshteinDistance(ok,ko)=%d (expected 1)\n",DamerauLevenshteinDistance("ok",2,"ko",2) );
+	printf("DamerauLevenshteinDistance(toto,titi)=%d (expected 2)\n",DamerauLevenshteinDistance("toto","titi") );
+	printf("DamerauLevenshteinDistance(antoine,antine)=%d (expected 1)\n",DamerauLevenshteinDistance("antoine","antine") );
+	printf("DamerauLevenshteinDistance(test,tet)=%d (expected 1)\n", DamerauLevenshteinDistance("test","tet") );
+	printf("DamerauLevenshteinDistance(ok,ko)=%d (expected 1)\n",DamerauLevenshteinDistance("ok","ko") );
 	
+	printf("DamerauLevenshteinDistance(vomit,titi)=%d (expected 3)\n",DamerauLevenshteinDistance("vomit","titi") );
 
 
     return 0;

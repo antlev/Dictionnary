@@ -1,33 +1,88 @@
-// Structs
-typedef struct __attribute__((__packed__)) node{
-    short endOfWord;
-    struct node* letter[26];
-}node;
-
-typedef struct dictionnary{
-    char name[255];
-    char description[255];
-    int nbWord;
-    node* tree;
-}dictionnary;
-
+// Include from tiers library
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 #include <string.h>
 #include <sys/time.h>
+// Include from our own file
+#include "gestbib.h"
+#include "gestorth.h"
 
 #ifndef DEBUG
     #define DEBUG (0)
 #endif
 
+// Search recursivly in the dictionary
+// @param tree : root of the dictionary
+// @param word : strig use to store word while recursively browsing into dictionary
+// @param level  used to store the current level in tree
+node* getAllWordInDictionary(node* tree,char* word,short level){
+    int i=0;
+    if(tree->endOfWord == 1){
+        // printf("DEBUG>>End of word!!\n");
+        while(word[i] != '\0'){
+            if(DEBUG >= 3){
+                printf("%c",word[i] );
+            }
+            i++;
+        }
+        if(DEBUG >= 3){
+            printf("\n");
+        }
+        // printf(" has been found in dictionary\n");
+    }
+    node* res = NULL;
+    for (i = 0; i < 26; ++i){
+        if(tree->letter[i] != NULL){        
+            // printf("DEBUG>>>letter %c spotted ! \n",i+97);
+            word[level] = i+97;
+            res = getAllWordInDictionary(tree->letter[i],word,level+1);
+            word[level] = '\0';
+        }
+    }
+    return res;
+ }
+// TODO
+int nbNodeParcoured = 0;
+// Search recursivly in the dictionary for word that have a levenstein distance smaller than threshold and print them on screen
+// @param tree : root of the dictionary
+// @param word : strig use to store word while recursively browsing into dictionary
+// @param level : used to store the current level in tree
+// @param wordToCompare : string containing word to compare to every word of the tree
+// @param threshold : maximum difference between the wordToCompare and potential word in dictionary
+// @param diff : used to optiimise and stop searching if word are too different on branches below
+node* levensteinInDictionary(node* tree,char* word,short level,char* wordToCompare,short threshold,short diff){
+    nbNodeParcoured++;
+    int i=0;
+    int distance;
 
-#define OK       0
-#define NO_INPUT 1
-#define TOO_LONG 2
+    if(tree->endOfWord == 1){
+        // printf("DEBUG>>End of word!!\n");
 
-#define EXIT_SUCCESS 0
-#define EXIT_FAILURE 1
+        if((distance = DamerauLevenshteinDistance(word,wordToCompare)) <= threshold){
+            if(DEBUG >= 1){
+                printf("word >%s< has a levenstein difference of %d with >%s<\n",word,distance,wordToCompare);
+            }
+        }else{
+             // printf("word >%s< has a" " levenstein difference of %d with >%s<\n",word,distance,wordToCompare);
+        }
+    }
+    node* res = NULL;
+    for (i = 0; i < 26; ++i){
+        if(tree->letter[i] != NULL){ 
+            // TODO       
+            // printf("DEBUG>>>letter %c spotted ! \n",i+97);
+            // if(strchr(wordToCompare,i+97) == NULL){
+            //     if(diff >= threshold){
+            //         continue;
+            //    }
+            //    diff++;
+            // }
+            word[level] = i+97;
+            res = levensteinInDictionary(tree->letter[i],word,level+1,wordToCompare,threshold,diff);
+            word[level] = '\0';
+        }
+    }
+    return res;
 
-static const int MAXNBLETTERINWORD = 20;
-static const int THRESHOLD = 2;
+}
