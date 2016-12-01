@@ -1,47 +1,12 @@
+// Include from tiers library
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 #include <string.h>
+// Include from our own file
+#include "gestrech.h"
 
-// Return the lowest val between val1,val2 and val3
-int minimum3(int val1, int val2, int val3){
-    if(val1 <= val2){
-        if(val1 <= val3){
-            return val1;
-        }else{
-            return val3;
-        }  
-    } else if(val2 <= val3){
-        return val2;
-    }else{
-        return val3;
-    }
-    return 0;
-}
-// Return the lowest val between val1 and val2
-int minimum2(int val1, int val2){
-    if(val1 <= val2){
-        return val1;
-    }else{
-        return val2;
-    }
-    return 0;
-}
-// Print a bidemsionnal table passing it's pointer and size
-void printTab(int* tab,int nbLine,int nbCol){
-    int i,j;
-    for(j=0;j<nbLine;j++){
-        for(i=0;i<nbCol;i++){
-            printf("%d ", tab[i+j*nbCol]);
-        }
-        printf("\n");
-    }
-    printf("\n");
-}
-// Return pointer of the 'tab' of 'nbCol' at position : column 'i' line 'j'
-int* getTab(int* tab,int nbCol,int i,int j){
-    return &tab[i+j*nbCol];
-}
+
 // Return the Damerau Levenshtein Distance between 2 strings.
 // the distance returned is increased by one for each deletion,insertion,substitution or transposition.
 int DamerauLevenshteinDistance(char* str1, char* str2){
@@ -100,5 +65,45 @@ int DamerauLevenshteinDistance(char* str1, char* str2){
     free(d);             
     return returnValue;
 }
+// Return the lowest val between val1,val2 and val3
+int minimum3(int val1, int val2, int val3){
+    if(val1 <= val2){
+        if(val1 <= val3){
+            return val1;
+        }else{
+            return val3;
+        }  
+    } else if(val2 <= val3){
+        return val2;
+    }else{
+        return val3;
+    }
+    return 0;
+}
+// Return the lowest val between val1 and val2
+int minimum2(int val1, int val2){
+    if(val1 <= val2){
+        return val1;
+    }else{
+        return val2;
+    }
+    return 0;
+}
+// Print a bidemsionnal table passing it's pointer and size
+void printTab(int* tab,int nbLine,int nbCol){
+    int i,j;
+    for(j=0;j<nbLine;j++){
+        for(i=0;i<nbCol;i++){
+            printf("%d ", tab[i+j*nbCol]);
+        }
+        printf("\n");
+    }
+    printf("\n");
+}
+// Return pointer of the 'tab' of 'nbCol' at position : column 'i' line 'j'
+int* getTab(int* tab,int nbCol,int i,int j){
+    return &tab[i+j*nbCol];
+}
+
 
 
