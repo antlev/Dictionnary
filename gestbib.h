@@ -2,26 +2,25 @@
 //----------------------------------------------------------------------------------------
 typedef struct __attribute__((__packed__)) node{
     short endOfWord;
-    struct node* letter[26];
-    // int letter[26];
+    // struct node* letter[26];
+    unsigned int letter[26];
 }node;
 
 typedef struct dictionary{
     char name[255];
     char description[255];
     int nbWord;
-    node* tree;
+    unsigned int tree;
 }dictionary;
-
 
 // Prototypes
 //----------------------------------------------------------------------------------------
 // -------------------------- Inside Dictionary functions --------------------------
-int addWord(node* tree,char* wordToAdd);
-int searchWord(node* tree,char* wordToSearch);
-int supWord(node* tree,char* wordToSup);
-node* getAllWordInDictionary(node* tree,char* word,short level);
-node* levensteinInDictionary(node* tree,char* word,short level,char* wordToCompare,short threshold,short diff);
+int addWord(unsigned int tree,char* wordToAdd);
+int searchWord(unsigned int tree,char* wordToSearch);
+// int supWord(unsigned int tree,char* wordToSup);
+// unsigned int getAllWordInDictionary(unsigned int tree,char* word,short level);
+// unsigned int levensteinInDictionary(unsigned int tree,char* word,short level,char* wordToCompare,short threshold,short diff);
 // -------------------------- User Interface --------------------------
 void addWordMenu(dictionary* dictionary);
 void searchWordMenu(dictionary* dictionary);

@@ -1,5 +1,5 @@
 // Prototypes
 //----------------------------------------------------------------------------------------
-node* getAllWordInDictionary(node* tree,char* word,short level);
+unsigned int getAllWordInDictionary(unsigned int tree,char* word,short level);
 
-node* levensteinInDictionary(node* tree,char* word,short level,char* wordToCompare,short threshold,short diff);
+unsigned int levensteinInDictionary(unsigned int tree,char* word,short level,char* wordToCompare,short threshold,short diff);

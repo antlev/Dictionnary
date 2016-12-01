@@ -12,13 +12,15 @@
     #define DEBUG (0)
 #endif
 
+extern node* map;
+
 // Search recursivly in the dictionary
 // @param tree : root of the dictionary
 // @param word : strig use to store word while recursively browsing into dictionary
 // @param level  used to store the current level in tree
-node* getAllWordInDictionary(node* tree,char* word,short level){
+unsigned int getAllWordInDictionary(unsigned int tree,char* word,short level){
     int i=0;
-    if(tree->endOfWord == 1){
+    if(map[tree].endOfWord == 1){
         // printf("DEBUG>>End of word!!\n");
         while(word[i] != '\0'){
             if(DEBUG >= 3){
@@ -31,12 +33,12 @@ node* getAllWordInDictionary(node* tree,char* word,short level){
         }
         // printf(" has been found in dictionary\n");
     }
-    node* res = NULL;
+    unsigned int res = 0;
     for (i = 0; i < 26; ++i){
-        if(tree->letter[i] != NULL){        
+        if(map[tree].letter[i] != 0){        
             // printf("DEBUG>>>letter %c spotted ! \n",i+97);
             word[level] = i+97;
-            res = getAllWordInDictionary(tree->letter[i],word,level+1);
+            res = getAllWordInDictionary(map[tree].letter[i],word,level+1);
             word[level] = '\0';
         }
     }
@@ -51,12 +53,12 @@ int nbNodeParcoured = 0;
 // @param wordToCompare : string containing word to compare to every word of the tree
 // @param threshold : maximum difference between the wordToCompare and potential word in dictionary
 // @param diff : used to optiimise and stop searching if word are too different on branches below
-node* levensteinInDictionary(node* tree,char* word,short level,char* wordToCompare,short threshold,short diff){
+unsigned int levensteinInDictionary(unsigned int tree,char* word,short level,char* wordToCompare,short threshold,short diff){
     nbNodeParcoured++;
     int i=0;
     int distance;
 
-    if(tree->endOfWord == 1){
+    if(map[tree].endOfWord == 1){
         // printf("DEBUG>>End of word!!\n");
 
         if((distance = DamerauLevenshteinDistance(word,wordToCompare)) <= threshold){
@@ -67,9 +69,9 @@ node* levensteinInDictionary(node* tree,char* word,short level,char* wordToCompa
              // printf("word >%s< has a" " levenstein difference of %d with >%s<\n",word,distance,wordToCompare);
         }
     }
-    node* res = NULL;
+    unsigned int res = 0;
     for (i = 0; i < 26; ++i){
-        if(tree->letter[i] != NULL){ 
+        if(map[tree].letter[i] != 0){ 
             // TODO       
             // printf("DEBUG>>>letter %c spotted ! \n",i+97);
             // if(strchr(wordToCompare,i+97) == NULL){
@@ -79,7 +81,7 @@ node* levensteinInDictionary(node* tree,char* word,short level,char* wordToCompa
             //    diff++;
             // }
             word[level] = i+97;
-            res = levensteinInDictionary(tree->letter[i],word,level+1,wordToCompare,threshold,diff);
+            res = levensteinInDictionary(map[tree].letter[i],word,level+1,wordToCompare,threshold,diff);
             word[level] = '\0';
         }
     }

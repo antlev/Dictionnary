@@ -24,8 +24,8 @@
 static const int MAXNBLETTERINWORD = 20;
 static const int THRESHOLD = 2;
 
-char* map=0;
-long int next=0; 
+node* map=0;
+long int next=1; 
 // -------------------------- Inside Dictionary functions --------------------------
 
 // Add the 'wordToAdd' into dictionary
@@ -34,7 +34,7 @@ long int next=0;
 // @return 1 if the word has been successfully added 
 // @return O if word is already in tree
 // @return -1 if word contain unaccepted character
-int addWord(node* tree,char* wordToAdd){
+int addWord(unsigned int tree,char* wordToAdd){
     int i=0;
     // TODO see why thisline doesn't work
     // if(strspn(line,"abcdefghijklmnopqrstuvwxyz") != 0){  
@@ -49,24 +49,24 @@ int addWord(node* tree,char* wordToAdd){
     }
     i=0;
     while(wordToAdd[i] != '\0'){
-        if(!tree->letter[wordToAdd[i] - 97]){
+        if(!map[tree].letter[wordToAdd[i] - 97]){
+        // if(!map[tree].letter[wordToAdd[i] - 97]){
             // calloc same as malloc but initialise all bit at 0
-            // tree->letter[wordToAdd[i] - 97] = calloc(sizeof(node),1);
-
-            tree->letter[wordToAdd[i] - 97] = (node*)(map+next);
-            next += sizeof(node);
+            // map[tree].letter[wordToAdd[i] - 97] = calloc(sizeof(node),1);
+            map[tree].letter[wordToAdd[i] - 97] = next;
+            next ++;
 
         }
-        tree = tree->letter[wordToAdd[i] - 97] ;
+        tree = map[tree].letter[wordToAdd[i] - 97] ;
         i++;
     }
-    if (tree->endOfWord == 1){
+    if (map[tree].endOfWord == 1){
         if(DEBUG >= 3){
             printf("word %s already exist in dictionary\n",wordToAdd );
         }
         return 0;
     }else{
-        tree->endOfWord = 1 ;
+        map[tree].endOfWord = 1 ;
         if(DEBUG >= 3){
             printf("word %s has been successfully added to dictionary\n", wordToAdd);
         }
@@ -76,16 +76,16 @@ int addWord(node* tree,char* wordToAdd){
 // @param tree : root of the dictionary
 // @param wordToSearch : word to search in the dictionary
 // @Return 1 if wordToSearch exist in dictionary, 0 if not
-int searchWord(node* tree,char* wordToSearch){
+int searchWord(unsigned int tree,char* wordToSearch){
     int i=0;
     while(wordToSearch[i] != '\0'){
-        if(!tree->letter[wordToSearch[i] - 97]){
+        if(!map[tree].letter[wordToSearch[i] - 97]){
             return 0;
         }
-        tree = tree->letter[wordToSearch[i] - 97] ;
+        tree = map[tree].letter[wordToSearch[i] - 97] ;
         i++;
     }
-    if(tree->endOfWord == 1){
+    if(map[tree].endOfWord == 1){
         return 1;
     }else{
         return 0;
@@ -94,30 +94,30 @@ int searchWord(node* tree,char* wordToSearch){
 // @param tree : root of the dictionary
 // @param wordToSup : word to erase from the dictionary
 // @Return 1 if wordToSup has been found and suppresed, 0 if not
-int supWord(node* tree,char* wordToSup){
+int supWord(unsigned int tree,char* wordToSup){
     int i=0;
     int j;
     while(wordToSup[i] != '\0'){
-        if(!tree->letter[wordToSup[i] - 97]){
+        if(!map[tree].letter[wordToSup[i] - 97]){
             return 0;
         }
-        tree = tree->letter[wordToSup[i] - 97] ;
+        tree = map[tree].letter[wordToSup[i] - 97] ;
         i++;
     }
-    if(tree->endOfWord == 0){
+    if(map[tree].endOfWord == 0){
         return 0;
     }else{
-        tree->endOfWord = 0 ;
+        map[tree].endOfWord = 0 ;
         i--;
         while(i >= 0){
             for (j = 0; j < 26; ++j){
-                if(tree->letter[j]){
+                if(map[tree].letter[j]){
                     return 1;
                 }
             }
             // TODO
             // tree = &tree;
-            free(tree->letter[i]);
+            // free(map[tree].letter[i]);
             i--;
         }
         return 1;   
@@ -126,7 +126,7 @@ int supWord(node* tree,char* wordToSup){
 // Prompt a word and call addWord() to add it to the dictionary
 // @param dictionary : pointer on dictionary in which we want to add a word
 void addWordMenu(dictionary* dictionary){
-    node* tree = dictionary->tree;
+    unsigned int tree = dictionary->tree;
     char wordToInsert[MAXNBLETTERINWORD];    
     while(userInput("Veuillez entrer le mot à insérer dans le dictionnaire\n>",wordToInsert,MAXNBLETTERINWORD) != 0);
     
@@ -140,7 +140,7 @@ void addWordMenu(dictionary* dictionary){
 // Prompt a word and call searchWord() to search it to the dictionary
 // @param dictionary : pointer on dictionary in which we want to search a word
 void searchWordMenu(dictionary* dictionary){
-    node* tree = dictionary->tree;
+    unsigned int tree = dictionary->tree;
     char wordToSearch[MAXNBLETTERINWORD];
 
 
@@ -274,11 +274,11 @@ void addDicAndUse(dictionary** library,int numberOfDic,char name[255],char desc[
 
 
     // (*dicCreated)->tree = calloc(sizeof(node),1);
-    (*dicCreated)->tree = (node*)(map+next);
-    next += sizeof(node);
+    (*dicCreated)->tree = next;
+    next ++;
 
     // (*dicCreated)->tree = calloc(sizeof(node),1);
-    (*dicCreated)->tree->endOfWord = -1;
+    map[(*dicCreated)->tree].endOfWord = -1;
 }
 // Erase dictionary from memory
 void eraseDic(dictionary* library,int numberOfDicToDel){
@@ -427,7 +427,7 @@ void printLibrary(dictionary* library, int numberOfDic){
 // @return 1 if dictionary contain a dictionary
 // @return 0 if dictionary in use is empty
 int isDictionaryInUse(dictionary* dicInUse){
-    if(dicInUse->tree->endOfWord == -1){
+    if(map[dicInUse->tree].endOfWord == -1){
         return 1;
     }else{
         return 0;
@@ -437,7 +437,7 @@ int isDictionaryInUse(dictionary* dicInUse){
 // @return 1 if library contain a dictionary
 // @return 0 if library in use is empty
 int isDictionaryInMemory(dictionary* library){
-    if(library->tree == NULL){
+    if(library->tree == 0){
         return 0;
     }else{
         return 1;
@@ -527,6 +527,7 @@ void menu(dictionary* library){
             case 7:
                 printf("Au-revoir\n");
                 free(library);
+                munmap(map,1L<<32);
                 exit(0);
             break;
             case 8:
@@ -577,112 +578,112 @@ dictionary* init(){
 // Test function, can be verbose and print debug option 
 // 0 -> no output
 // 1 -> debug output
-void test(int verbose){
+// void test(int verbose){
 
-    if(verbose){ printf("test getTime() = %ld\n",getTime() ); }
+//     if(verbose){ printf("test getTime() = %ld\n",getTime() ); }
     
-    int passed=1;
+//     int passed=1;
 
-    node* tree = calloc(sizeof(node),1);
+//     unsigned int tree = calloc(sizeof(node),1);
 
-    char* testString = "toto";
-    char* testString2 = "tototutu";
-    char* testString3 = "camion";
-    char* testString4 = "voiture";
-    char* testString5 = "chat";
-    char* testString6 = "chatte";
+//     char* testString = "toto";
+//     char* testString2 = "tototutu";
+//     char* testString3 = "camion";
+//     char* testString4 = "voiture";
+//     char* testString5 = "chat";
+//     char* testString6 = "chatte";
 
-    char* unexistantString = "tot";
-    char* unexistantString2 = "helloworld";
-    char* unexistantString3 = "abcdefghijklmnopqrstuvwxyz";
+//     char* unexistantString = "tot";
+//     char* unexistantString2 = "helloworld";
+//     char* unexistantString3 = "abcdefghijklmnopqrstuvwxyz";
 
-    // TESTING ADDING WORD
-    addWord(tree,testString);
-    addWord(tree,testString2);
-    addWord(tree,testString3);
-    addWord(tree,testString4);
-    addWord(tree,testString5);
-    addWord(tree,testString6);
+//     // TESTING ADDING WORD
+//     addWord(tree,testString);
+//     addWord(tree,testString2);
+//     addWord(tree,testString3);
+//     addWord(tree,testString4);
+//     addWord(tree,testString5);
+//     addWord(tree,testString6);
 
-    if(verbose){
-        printf("searchWord(tree,testString)=%d (expected:1)\n",searchWord(tree,testString) );
-        printf("searchWord(tree,testString2)=%d (expected:1)\n",searchWord(tree,testString2) );
-        printf("searchWord(tree,testString3)=%d (expected:1)\n",searchWord(tree,testString3) );
-        printf("searchWord(tree,testString4)=%d (expected:1)\n",searchWord(tree,testString4) );
-        printf("searchWord(tree,testString5)=%d (expected:1)\n",searchWord(tree,testString5) );
-        printf("searchWord(tree,testString6)=%d (expected:1)\n",searchWord(tree,testString6) );
-        printf("searchWord(tree,unexistantString)=%d (expected:0)\n",searchWord(tree,unexistantString) );
-        printf("searchWord(tree,unexistantString2)=%d (expected:0)\n",searchWord(tree,unexistantString2) );
-        printf("searchWord(tree,unexistantString3)=%d (expected:0)\n",searchWord(tree,unexistantString3) );
+//     if(verbose){
+//         printf("searchWord(tree,testString)=%d (expected:1)\n",searchWord(tree,testString) );
+//         printf("searchWord(tree,testString2)=%d (expected:1)\n",searchWord(tree,testString2) );
+//         printf("searchWord(tree,testString3)=%d (expected:1)\n",searchWord(tree,testString3) );
+//         printf("searchWord(tree,testString4)=%d (expected:1)\n",searchWord(tree,testString4) );
+//         printf("searchWord(tree,testString5)=%d (expected:1)\n",searchWord(tree,testString5) );
+//         printf("searchWord(tree,testString6)=%d (expected:1)\n",searchWord(tree,testString6) );
+//         printf("searchWord(tree,unexistantString)=%d (expected:0)\n",searchWord(tree,unexistantString) );
+//         printf("searchWord(tree,unexistantString2)=%d (expected:0)\n",searchWord(tree,unexistantString2) );
+//         printf("searchWord(tree,unexistantString3)=%d (expected:0)\n",searchWord(tree,unexistantString3) );
 
-    }
-    if(searchWord(tree,testString) != 1 || searchWord(tree,testString2) != 1 || searchWord(tree,testString3) != 1 || searchWord(tree,testString4) != 1 || searchWord(tree,testString5) != 1 || searchWord(tree,testString6) != 1){
-        passed = 0 ;
-    }
-    if(searchWord(tree,unexistantString) != 0 || searchWord(tree,unexistantString) != 0 || searchWord(tree,unexistantString) != 0){
-        passed = 0 ;
-    }
-
-
-    if(supWord(tree,testString) != 1 || supWord(tree,unexistantString) != 0 || supWord(tree,unexistantString2) != 0){
-        passed = 0;
-        printf("toto\n");
-    }
-
-    if(searchWord(tree,testString) != 0){
-        passed = 0;
-        printf("tutu\n");
-    }
-
-    free(tree);
+//     }
+//     if(searchWord(tree,testString) != 1 || searchWord(tree,testString2) != 1 || searchWord(tree,testString3) != 1 || searchWord(tree,testString4) != 1 || searchWord(tree,testString5) != 1 || searchWord(tree,testString6) != 1){
+//         passed = 0 ;
+//     }
+//     if(searchWord(tree,unexistantString) != 0 || searchWord(tree,unexistantString) != 0 || searchWord(tree,unexistantString) != 0){
+//         passed = 0 ;
+//     }
 
 
+//     if(supWord(tree,testString) != 1 || supWord(tree,unexistantString) != 0 || supWord(tree,unexistantString2) != 0){
+//         passed = 0;
+//         printf("toto\n");
+//     }
 
-    dictionary* library = calloc(sizeof(dictionary),1);
+//     if(searchWord(tree,testString) != 0){
+//         passed = 0;
+//         printf("tutu\n");
+//     }
 
-    if(verbose){
-    	printf("%d (expected 0)\n",isDictionaryInMemory(library));    	
-    }
-    if(isDictionaryInMemory(library)){
-    	passed = 0 ;
-    }
-
-	strcpy(library->name , "test");
-	strcpy(library->description , "desc");
+//     free(tree);
 
 
-    library->tree = calloc(sizeof(node),1);
-    library->tree->endOfWord = -1; 
 
-	// library->tree->letter[0] = malloc(sizeof(node));
-    if(verbose){
-    	printf("%d (expected 1)\n",isDictionaryInMemory(library));
-    }
-    if(!isDictionaryInMemory(library)){
-    	passed = 0 ;
-    }
+//     dictionary* library = calloc(sizeof(dictionary),1);
 
-    if(verbose){
-        char word[25];
-        printf("flag2\n");
+//     if(verbose){
+//     	printf("%d (expected 0)\n",isDictionaryInMemory(library));    	
+//     }
+//     if(isDictionaryInMemory(library)){
+//     	passed = 0 ;
+//     }
+
+// 	strcpy(library->name , "test");
+// 	strcpy(library->description , "desc");
+
+
+//     library->tree = calloc(sizeof(node),1);
+//     library->map[tree].endOfWord = -1; 
+
+// 	// library->map[tree].letter[0] = malloc(sizeof(node));
+//     if(verbose){
+//     	printf("%d (expected 1)\n",isDictionaryInMemory(library));
+//     }
+//     if(!isDictionaryInMemory(library)){
+//     	passed = 0 ;
+//     }
+
+//     if(verbose){
+//         char word[25];
+//         printf("flag2\n");
    
-        loadDictionaryFromFile("testDicInFile.dic",library);
-        // getAllWordInDictionary(library->tree,word,0);
-        levensteinInDictionary(library->tree,word,0,"titi",2,0);
-    }
+//         loadDictionaryFromFile("testDicInFile.dic",library);
+//         // getAllWordInDictionary(library->tree,word,0);
+//         levensteinInDictionary(library->tree,word,0,"titi",2,0);
+//     }
 
 
 
-    if(verbose){
+//     if(verbose){
 
-        printf("sizeof(node)=%ld\n",sizeof(node) );
+//         printf("sizeof(node)=%ld\n",sizeof(node) );
 
 
 
-        if(passed){
-            printf("All tests passed.\n");
-        }else{
-            printf("Some tests didn't passed\n");
-        }
-    }
-}
+//         if(passed){
+//             printf("All tests passed.\n");
+//         }else{
+//             printf("Some tests didn't passed\n");
+//         }
+//     }
+// }
