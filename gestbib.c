@@ -266,6 +266,9 @@ void searchWordMenu(dictionnary* dictionnary){
 // -------------------------- Programm functions's menu  --------------------------
 
 // Prompt user for a name and description and add a new dictionnnary to the library
+// @param library : pointer on library
+// @param numberOfDic : Total number of dictionnary in memory
+// @param dicInUse : pointer on dictionnary in use
 void addDicMenu(dictionnary** library,int numberOfDic,dictionnary** dicInUse){
     int i;
     char dicName[255] = "";
@@ -280,6 +283,9 @@ void addDicMenu(dictionnary** library,int numberOfDic,dictionnary** dicInUse){
     addDicAndUse(library,numberOfDic,dicName,dicDesc,dicInUse);
 }
 // Ask for dic to erase and call eraseDic
+// @param library : pointer on library
+// @param numberOfDic : Total number of dictionnary in memory
+// @param dicInUse : pointer on dictionnary in use
 void eraseDicMenu(dictionnary* library,int numberOfDic,dictionnary** dicInUse){
     int numOfDicToDel=0;
     char* input = malloc(sizeof(char)*255);
@@ -290,6 +296,9 @@ void eraseDicMenu(dictionnary* library,int numberOfDic,dictionnary** dicInUse){
     // eraseDic(library,numOfDicToDel);
 }
 // Prompt a file path and call loadDictionnaryFromFile passing it the dicInUse
+// @param library : pointer on library
+// @param numberOfDic : pointer on total number of dictionnary in memory
+// @param dicInUse : pointer on dictionnary in use
 void buildDicWithFileMenu(dictionnary** library,int* numberOfDic,dictionnary** dicInUse){
     char pathToDicFile[255];
     char input[2];
@@ -320,16 +329,20 @@ void buildDicWithFileMenu(dictionnary** library,int* numberOfDic,dictionnary** d
     
     unsigned long int finishMeasuringTime;
     unsigned long int startMeasuringTime = getTime();
-    if(loadDictionnaryFromFile(pathToDicFile,*dicInUse) == -1){
+    if(loadDictionnaryFromFile(pathToDicFile,*dicInUse) == 1){
         printf("Le fichier dictionnaire \'%s\' n'éxiste pas\n",pathToDicFile );
     }else{
-        printf("\n");
+        finishMeasuringTime = getTime();
+        if(DEBUG >= 1){
+            printf("Dictionnary import time = %ld milliseconds\n",finishMeasuringTime-startMeasuringTime );
+        }
     }
-    finishMeasuringTime = getTime();
-    printf("DEBUG>>>Dictionnary import time = %ld milliseconds\n",finishMeasuringTime-startMeasuringTime );
-}
+ }
 // Print the library and ask user to choose a dictionnary
 // The choosen dictionnary will be pointed by dicInUse
+// @param library : pointer on library
+// @param numberOfDic : Total number of dictionnary in memory
+// @param dicInUse : pointer on dictionnary in use
 void chooseDicMenu(dictionnary* library,int numberOfDic,dictionnary** dicInUse){
     int numOfDicToUse;
     int i;
@@ -342,6 +355,12 @@ void chooseDicMenu(dictionnary* library,int numberOfDic,dictionnary** dicInUse){
     *dicInUse += numOfDicToUse-1; // using the dictionnary n° numOfDicToUse of library
 }
 // -------------------------- Dictionnary manipulation functions --------------------------
+// Add a new dictionnary with the name and description passed as parameters
+// @param library : pointer on library
+// @param numberOfDic : Total number of dictionnary in memory
+// @param name : name of dictionnary to create
+// @param desc : description of dictionnary to create
+// @param dicCreated : pointer on dictionnary created
 void addDicAndUse(dictionnary** library,int numberOfDic,char name[255],char desc[255],dictionnary** dicCreated){
 
     if(numberOfDic){ // if numberOfDic=0, the first dictionnary is already allocated by init()
@@ -360,11 +379,16 @@ void addDicAndUse(dictionnary** library,int numberOfDic,char name[255],char desc
     (*dicCreated)->tree = calloc(sizeof(node),1);
     (*dicCreated)->tree->endOfWord = -1;
 }
+// Erase dictionnary from memory
 void eraseDic(dictionnary* library,int numberOfDicToDel){
     // dictionnnary* dicToDel = library;
     // dicToDel+=numberOfDicToDel;
 }
-// Read the file passed as 1st parameter and enter each line as a word in dicInUse
+// Read file and call addWord on each line
+// @param pathToDicFile : path to dictionnary file to load 
+// @param dicInUse : pointer on dictionnary in use
+// @return 1 : failure
+// @return 0 : success
 int loadDictionnaryFromFile(char pathToDicFile[255],dictionnary* dicInUse){   
     FILE * inputFile;
     char * line = NULL;
@@ -399,6 +423,12 @@ int loadDictionnaryFromFile(char pathToDicFile[255],dictionnary* dicInUse){
 // -------------------------- Utils functions's  --------------------------
 
 // Function used to prompt something to user
+// @param prmpt : store the message to print on screen
+// @param buff : store the user input
+// @param sz : maximum size of input 
+// @return 0 if input is ok
+// @return 1 if input is empty
+// @return 2 if input is too long
 int userInput (char *prmpt, char *buff, size_t sz) {
     int ch, extra;
 
@@ -425,10 +455,16 @@ int userInput (char *prmpt, char *buff, size_t sz) {
     buff[strlen(buff)-1] = '\0';
     return OK;
 }
-// call userInput
-// return value entered by user, if invalid return -1
-// lowLimit = numerical values under it won't be accepted
-// highLimit = numerical values upper it won't be accepted
+// Function used to prompt numeric value to user (call userInput)
+// @param prmpt : store the message to print on screen
+// @param buff : store the user input
+// @param sz : maximum size of input 
+// @param lowLimit : numerical values under it won't be accepted
+// @param highLimit : numerical values upper it won't be accepted
+// @return 0 if input is ok
+// @return 1 if input is empty
+// @return 2 if input is too long
+// @return -1 if input is out of bound
 int numericUserInput(char* prmpt, char* buff, size_t sz,short lowLimit,short highLimit){
 
     if( userInput(prmpt,buff,sz) == 0 ){
@@ -467,6 +503,8 @@ void printMenu(dictionnary* dicInUse){
     printf("7) Quitter l'application\n");    
 }
 // Print all the dictionnaries contained in the library
+// @param library : pointer on library (first dictionnary)
+// @param numberOfDic : number of dictionnary in memory
 void printLibrary(dictionnary* library, int numberOfDic){
     dictionnary* dictionnary = library;
     printf("Bibliothèque :\n");
@@ -484,23 +522,27 @@ void printLibrary(dictionnary* library, int numberOfDic){
         printf("---------------------------------------\n");
     }
 }
-// Return 1 if dictionnary contain a dictionnary
-int isDictionnaryInUse(dictionnary* dictionnary){
-    if(dictionnary->tree->endOfWord == -1){
+// @param dicInUse : pointer on dicInUse
+// @return 1 if dictionnary contain a dictionnary
+// @return 0 if dictionnary in use is empty
+int isDictionnaryInUse(dictionnary* dicInUse){
+    if(dicInUse->tree->endOfWord == -1){
         return 1;
     }else{
         return 0;
     }
 }
-// Return 0 if dictionnary is empty, else return 1
-int isDictionnaryInMemory(dictionnary* dictionnary){
-    if(dictionnary->tree == NULL){
+// @param dicInUse : pointer on dicInUse
+// @return 1 if library contain a dictionnary
+// @return 0 if library in use is empty
+int isDictionnaryInMemory(dictionnary* library){
+    if(library->tree == NULL){
         return 0;
     }else{
         return 1;
     }
 }
-// Return the time of the day in milliseconds
+// @return the time of the day in milliseconds
 unsigned long getTime(){
     struct timeval tv;
     gettimeofday(&tv,NULL);
@@ -508,6 +550,7 @@ unsigned long getTime(){
     return millisec = (tv.tv_usec / 1000)+(tv.tv_sec * 1000) ;
 }
 // -------------------------- Programm Menu  --------------------------
+// Program's menu
 void menu(dictionnary* library){
     int choice;
     char* input = malloc(sizeof(char)*255);
@@ -618,7 +661,7 @@ void menu(dictionnary* library){
         }
     } while(1);
 }
-// Function executed when programme is launched
+// Function executed when program is launched
 dictionnary* init(){
     dictionnary* library = calloc(sizeof(dictionnary),1);
     return library;
