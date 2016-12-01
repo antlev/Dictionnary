@@ -4,6 +4,7 @@
 #include <math.h>
 #include <string.h>
 #include <sys/time.h>
+#include <sys/mman.h>
 // Include from our own file
 #include "gestbib.h"
 #include "gestrech.h"
@@ -23,6 +24,8 @@
 static const int MAXNBLETTERINWORD = 20;
 static const int THRESHOLD = 2;
 
+char* map=0;
+long int next=0; 
 // -------------------------- Inside Dictionary functions --------------------------
 
 // Add the 'wordToAdd' into dictionary
@@ -48,7 +51,11 @@ int addWord(node* tree,char* wordToAdd){
     while(wordToAdd[i] != '\0'){
         if(!tree->letter[wordToAdd[i] - 97]){
             // calloc same as malloc but initialise all bit at 0
-            tree->letter[wordToAdd[i] - 97] = calloc(sizeof(node),1);
+            // tree->letter[wordToAdd[i] - 97] = calloc(sizeof(node),1);
+
+            tree->letter[wordToAdd[i] - 97] = (node*)(map+next);
+            next += sizeof(node);
+
         }
         tree = tree->letter[wordToAdd[i] - 97] ;
         i++;
@@ -265,7 +272,12 @@ void addDicAndUse(dictionary** library,int numberOfDic,char name[255],char desc[
     (*dicCreated)->nbWord=0;
     // (*dicCreated)->tree = mmap(0, FILESIZE, PROT_READ | PROT_WRITE, MAP_SHARED,MAP_ANONYMOUS fd, 0);
 
-    (*dicCreated)->tree = calloc(sizeof(node),1);
+
+    // (*dicCreated)->tree = calloc(sizeof(node),1);
+    (*dicCreated)->tree = (node*)(map+next);
+    next += sizeof(node);
+
+    // (*dicCreated)->tree = calloc(sizeof(node),1);
     (*dicCreated)->tree->endOfWord = -1;
 }
 // Erase dictionary from memory
@@ -552,7 +564,12 @@ void menu(dictionary* library){
 }
 // Function executed when program is launched
 dictionary* init(){
+    map = mmap(0,1L<<32,PROT_WRITE|PROT_READ,MAP_SHARED|MAP_ANONYMOUS,0,0);
+
+
     dictionary* library = calloc(sizeof(dictionary),1);
+    // dictionary* library = (dictionary*)(map+next);
+    // next += sizeof(dictionary);
     return library;
 }
 // -------------------------- Test functions  --------------------------

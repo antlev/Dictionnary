@@ -3,6 +3,7 @@
 typedef struct __attribute__((__packed__)) node{
     short endOfWord;
     struct node* letter[26];
+    // int letter[26];
 }node;
 
 typedef struct dictionary{
