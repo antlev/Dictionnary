@@ -6,7 +6,8 @@
 #include <sys/time.h>
 // Include from our own file
 #include "gestbib.h"
-#include "gestorth.h"
+// #include "gestorth.h"
+#include "utils.h"
 
 #ifndef DEBUG
     #define DEBUG (0)
@@ -46,6 +47,7 @@ unsigned int getAllWordInDictionary(unsigned int tree,char* word,short level){
  }
 // TODO
 int nbNodeParcoured = 0;
+int levenstein = 0;
 // Search recursivly in the dictionary for word that have a levenstein distance smaller than threshold and print them on screen
 // @param tree : root of the dictionary
 // @param word : strig use to store word while recursively browsing into dictionary
@@ -55,6 +57,7 @@ int nbNodeParcoured = 0;
 // @param diff : used to optiimise and stop searching if word are too different on branches below
 unsigned int levensteinInDictionary(unsigned int tree,char* word,short level,char* wordToCompare,short threshold,short diff){
     nbNodeParcoured++;
+    printf("nbNodeParcoured=%d | word possibly found =%d\n",nbNodeParcoured,levenstein );
     int i=0;
     int distance;
 
@@ -62,6 +65,7 @@ unsigned int levensteinInDictionary(unsigned int tree,char* word,short level,cha
         // printf("DEBUG>>End of word!!\n");
 
         if((distance = DamerauLevenshteinDistance(word,wordToCompare)) <= threshold){
+        	levenstein++;
             if(DEBUG >= 1){
                 printf("word >%s< has a levenstein difference of %d with >%s<\n",word,distance,wordToCompare);
             }
@@ -74,12 +78,12 @@ unsigned int levensteinInDictionary(unsigned int tree,char* word,short level,cha
         if(map[tree].letter[i] != 0){ 
             // TODO       
             // printf("DEBUG>>>letter %c spotted ! \n",i+97);
-            // if(strchr(wordToCompare,i+97) == NULL){
-            //     if(diff >= threshold){
-            //         continue;
-            //    }
-            //    diff++;
-            // }
+            if(strchr(wordToCompare,i+97) == NULL){
+                if(diff > threshold){
+                    continue;
+               }
+               diff++;
+            }
             word[level] = i+97;
             res = levensteinInDictionary(map[tree].letter[i],word,level+1,wordToCompare,threshold,diff);
             word[level] = '\0';

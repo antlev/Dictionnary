@@ -33,9 +33,6 @@ void eraseDic(dictionary* library,int dicToDel);
 void addDicAndUse(dictionary** library,int numberOfDic,char name[255],char desc[255],dictionary** dicCreated);
 // -------------------------- Utils functions's  --------------------------
 int loadDictionaryFromFile(char pathToDicFile[255],dictionary* dicInUse);
-int userInput(char *prmpt, char *buff, size_t sz);
-int numericUserInput(char* prmpt, char* buff, size_t sz,short lowLimit,short highLimit);
-unsigned long getTime();
 void printMenu(dictionary* dicInUse);
 void printLibrary(dictionary* library, int numberOfDic);
 int isDictionaryInUse(dictionary* dictionary);

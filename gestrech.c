@@ -34,24 +34,6 @@ int DamerauLevenshteinDistance(char* str1, char* str2){
     if(DEBUG >= 3){
         printf("---------- INITIALISATION ---------->\n");
     }
-
-    // for(i=0;i<=strlen1;i++){
-    //     for(j=0;j<=strlen2;j++){
-    //         if(j == 0){
-    //             *getTab(d,strlen1+1,i,j) = i ; 
-    //             if(DEBUG >= 3){
-    //                 printf("!!!!!!!!!!!!!!! DEBUG i=%d j=%d !!!!!!!!!!\n",i,j );
-    //             }
-    //         }else if(i == 0){
-    //             *getTab(d,strlen1+1,i,j) = j ; 
-    //             if(DEBUG >= 3){
-    //                 printf("!!!!!!!!!!!!!!! DEBUG i=%d j=%d !!!!!!!!!!\n",i,j );
-    //             }            }else{
-    //             *getTab(d,strlen1+1,i,j) = 0 ; 
-    //         }
-    //     } 
-    // }
-
     for (i = 0; i < strlen1; ++i){
         *getTab(d,strlen1+1,i,0) = i;
     }
