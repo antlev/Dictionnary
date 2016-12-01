@@ -2,14 +2,13 @@
 //----------------------------------------------------------------------------------------
 typedef struct __attribute__((__packed__)) node{
     short endOfWord;
-    // struct node* letter[26];
     unsigned int letter[26];
 }node;
 
 typedef struct dictionary{
     char name[255];
     char description[255];
-    int nbWord;
+    unsigned int nbWord;
     unsigned int tree;
 }dictionary;
 

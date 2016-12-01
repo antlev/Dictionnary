@@ -1,23 +1,11 @@
-typedef struct __attribute__((__packed__)) node{
-    short endOfWord;
-    struct node* letter[26];
-}node;
-typedef struct dictionnary{
-    char name[255];
-    char description[255];
-    int nbWord;
-    node* tree;
-}dictionnary;
-
 #include <stdio.h>
 #include <stdlib.h>
 
-void menu(dictionnary* library);
-dictionnary* init();
-void test(int verbose);
+#include "../headers/gestbib.h"
 
 int main(){
 
+	// Execute test - 1 for verbose output
     // test(1); 
 
     menu(init());
