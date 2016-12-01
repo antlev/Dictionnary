@@ -4,7 +4,7 @@
 #include <sys/time.h>
 #include <math.h>
 
-#include "utils.h"
+#include "../headers/utils.h"
 
 #define OK       0
 #define NO_INPUT 1

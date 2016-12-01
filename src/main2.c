@@ -2,8 +2,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 // Include from our own file
-#include "gestrech.h"
-#include "utils.h"
+#include "../headers/gestrech.h"
+#include "../headers/utils.h"
 
 
 int main(){

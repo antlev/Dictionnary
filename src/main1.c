@@ -18,7 +18,7 @@ void test(int verbose);
 
 int main(){
 
-    // test(0); 
+    // test(1); 
 
     menu(init());
 

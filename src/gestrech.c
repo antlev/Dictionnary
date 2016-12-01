@@ -4,7 +4,7 @@
 #include <math.h>
 #include <string.h>
 // Include from our own file
-#include "gestrech.h"
+#include "../headers/gestrech.h"
 
 #ifndef DEBUG
     #define DEBUG (0)

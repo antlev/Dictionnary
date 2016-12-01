@@ -5,9 +5,9 @@
 #include <string.h>
 #include <sys/time.h>
 // Include from our own file
-#include "gestbib.h"
-// #include "gestorth.h"
-#include "utils.h"
+#include "../headers/gestbib.h"
+// #include "../headers/gestorth.h"
+#include "../headers/utils.h"
 
 #ifndef DEBUG
     #define DEBUG (0)

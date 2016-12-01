@@ -5,10 +5,10 @@
 #include <string.h>
 #include <sys/mman.h>
 // Include from our own file
-#include "gestbib.h"
-#include "gestrech.h"
-#include "gestorth.h"
-#include "utils.h"
+#include "../headers/gestbib.h"
+#include "../headers/gestrech.h"
+#include "../headers/gestorth.h"
+#include "../headers/utils.h"
 
 #ifndef DEBUG
     #define DEBUG (0)
