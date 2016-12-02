@@ -29,27 +29,13 @@ long int next=1;
 // @param wordToAdd : word to add in the dictionary
 // @return 1 if the word has been successfully added 
 // @return O if word is already in tree
-// @return -1 if word contain unaccepted character
+// @return -1 if word is uncompatible with dictionnary
 int addWord(unsigned int tree,char* wordToAdd){
     int i=0;
-    if(strlen(wordToAdd) <= 1){
-        if(DEBUG >= 3){
-            printf("word >< has been ignored because it is empty\n" );
-            return -1;
-        }
+    if(sanitiseWordForDictionnary(wordToAdd) != 0){
+        return -1;
     }
-    // TODO see why thisline doesn't work
-    // if(strspn(line,"abcdefghijklmnopqrstuvwxyz") != 0){  
-    while(wordToAdd[i] != '\0'){
-        if (wordToAdd[i] < 97 || wordToAdd[i] > (97+26)){
-            if(DEBUG >= 3){
-                printf("word >%s< has been ignored because it contains an unaccepted char (%c)\n",wordToAdd,wordToAdd[i] );
-            }
-            return -1;
-        }
-        i++;
-    }
-    i=0;
+
     while(wordToAdd[i] != '\0'){
         if(!map[tree].letter[wordToAdd[i] - 97]){
         // if(!map[tree].letter[wordToAdd[i] - 97]){
@@ -77,9 +63,14 @@ int addWord(unsigned int tree,char* wordToAdd){
 }
 // @param tree : root of the dictionary
 // @param wordToSearch : word to search in the dictionary
-// @Return 1 if wordToSearch exist in dictionary, 0 if not
+// @return 1 if wordToSearch exist in dictionary
+// @return 0 if word doesn't exist in dictionnary
+// @return -1 if wordToSearch is uncompatible with dictionnary
 int searchWord(unsigned int tree,char* wordToSearch){
     int i=0;
+    if(sanitiseWordForDictionnary(wordToSearch) != 0){
+        return -1;
+    }
     while(wordToSearch[i] != '\0'){
         if(!map[tree].letter[wordToSearch[i] - 97]){
             return 0;
@@ -125,6 +116,32 @@ int supWord(unsigned int tree,char* wordToSup){
         return 1;   
     }
 }
+// @return 0 if word is compatible with dictionnary
+// @return 1 if word is empty
+// @return 2 if word is incompatible with dictionnary
+// @param word : String containing word to sanitise
+int sanitiseWordForDictionnary(char* word){
+    int i=0;
+    if(strlen(word) <= 1){
+        if(DEBUG >= 3){
+            printf("word >< has been ignored because it is empty\n" );
+            return 1;
+        }
+    }
+    // TODO see why thisline doesn't work
+    // if(strspn(line,"abcdefghijklmnopqrstuvwxyz") != 0){  
+    while(word[i] != '\0'){
+        if (word[i] < 97 || word[i] > (97+26)){
+            if(DEBUG >= 3){
+                printf("word >%s< has been ignored because it contains an unaccepted char (%c)\n",word,word[i] );
+            }
+            return 2;
+        }
+        i++;
+    }
+    return 0;
+}
+// -------------------------- Programm functions's menu  --------------------------
 // Prompt a word and call addWord() to add it to the dictionary
 // @param dictionary : pointer on dictionary in which we want to add a word
 void addWordMenu(dictionary* dictionary){
@@ -161,8 +178,6 @@ void searchWordMenu(dictionary* dictionary){
     }
     printf("searchWord time = %ld\n",(finishMeasuringTime-startMeasuringTime) );
 }
-// -------------------------- Programm functions's menu  --------------------------
-
 // Prompt user for a name and description and add a new dictionnnary to the library
 // @param library : pointer on library
 // @param numberOfDic : Total number of dictionary in memory
