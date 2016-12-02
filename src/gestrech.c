@@ -16,7 +16,6 @@
 // @param str2 : string of second word to compare
 // @return levenstein distance as int
 int DamerauLevenshteinDistance(char* str1, char* str2){
-    // TODO strlen
     short strlen1 = strlen(str1);
     short strlen2 = strlen(str2);
 
@@ -52,7 +51,7 @@ int DamerauLevenshteinDistance(char* str1, char* str2){
                 cost = 1;
             }
             if(DEBUG >= 3){
-                printf("!!!!!!!!!!!!!!! DEBUG i=%d j=%d !!!!!!!!!!\n",i,j );
+                printf(">>>DEBUG i=%d j=%d\n",i,j );
             }
            
             *getTab(d,strlen1+1,i,j) = minimum3(

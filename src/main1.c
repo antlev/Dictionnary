@@ -6,7 +6,7 @@
 int main(){
 
 	// Execute test - 1 for verbose output
-    // test(1); 
+    test(1); 
 
     menu(init());
 
