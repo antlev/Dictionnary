@@ -3,10 +3,15 @@
 
 #include "../headers/gestbib.h"
 
+
+#ifndef DEBUG
+    #define DEBUG (0)
+#endif
+
 int main(){
 
 	// Execute test - 1 for verbose output
-    test(1); 
+    test(DEBUG); 
 
     menu(init());
 

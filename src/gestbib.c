@@ -227,9 +227,7 @@ void buildDicWithFileMenu(dictionary** library,int* numberOfDic,dictionary** dic
     
     unsigned long int finishMeasuringTime;
     unsigned long int startMeasuringTime = getTime();
-    if(loadDictionaryFromFile(pathToDicFile,*dicInUse) == 1){
-        printf("Le fichier dictionnaire \'%s\' n'éxiste pas\n",pathToDicFile );
-    }else{
+    if(loadDictionaryFromFile(pathToDicFile,*dicInUse) != 1){
         finishMeasuringTime = getTime();
         if(DEBUG >= 1){
             printf("Dictionary import time = %ld milliseconds\n",finishMeasuringTime-startMeasuringTime );
@@ -301,6 +299,7 @@ int loadDictionaryFromFile(char pathToDicFile[255],dictionary* dicInUse){
 
     inputFile = fopen(pathToDicFile, "r");
     if (inputFile == NULL){
+        printf("File '%s' doesn't exist\n",pathToDicFile);
         return EXIT_FAILURE;
     }
     while ((read = getline(&line, &len, inputFile)) != -1) {
@@ -559,7 +558,7 @@ void test(int verbose){
     char* uncompatibleString2 = "./..";
     char* uncompatibleString3 = "&@à";
 
-    printf("TESTING addWord() function\n");
+    if(verbose) {  printf("TESTING addWord() function\n"); }
     if(addWord(tree,testString) != 0 || addWord(tree,testString2) != 0 || addWord(tree,testString3) != 0 || addWord(tree,testString4) != 0 || addWord(tree,testString5) != 0 || addWord(tree,testString6) != 0){
         passed = 0;
         if(verbose){
@@ -600,7 +599,7 @@ void test(int verbose){
         }
     }
 
-    printf("TESTING searchWord() function\n");
+    if(verbose) { printf("TESTING searchWord() function\n"); }
 
     if(searchWord(tree,testString) != 1 || searchWord(tree,testString2) != 1 || searchWord(tree,testString3) != 1 || searchWord(tree,testString4) != 1 || searchWord(tree,testString5) != 1 || searchWord(tree,testString6) != 1){
         passed = 0 ;        
@@ -664,16 +663,16 @@ void test(int verbose){
     }
 
 
+    if(passed){
+        printf("All tests passed.\n");
+    }else{
+        printf("Some tests didn't passed\n");
+    }
 
     if(verbose){
 
         printf("sizeof(node)=%ld\n",sizeof(node) );
 
-        if(passed){
-            printf("All tests passed.\n");
-        }else{
-            printf("Some tests didn't passed\n");
-        }
         finish = getTime();
         printf("Test execution took %ld milliseconds.\n",(finish-start) );
     }
