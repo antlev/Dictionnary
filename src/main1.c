@@ -8,7 +8,7 @@
     #define DEBUG (0)
 #endif
 
-int main(){
+int main(int argc,char *argv[]){
 
 	// Execute test - 1 for verbose output
     test(DEBUG); 
