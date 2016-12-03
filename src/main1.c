@@ -10,8 +10,10 @@
 
 int main(int argc,char *argv[]){
 
-	// Execute test - 1 for verbose output
-    test(DEBUG); 
+	if(argc > 1){
+		// Execute test - 1 for verbose output
+	    test(DEBUG); 
+	}
 
     menu(init());
 

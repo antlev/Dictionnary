@@ -27,38 +27,39 @@ long int next=1;
 // Add the 'wordToAdd' into dictionary
 // @param tree : root of the dictionary
 // @param wordToAdd : word to add in the dictionary
-// @return 1 if the word has been successfully added 
-// @return O if word is already in tree
+// @return 0 if the word has been successfully added 
+// @return 1 if word is already in tree
 // @return -1 if word is uncompatible with dictionnary
 int addWord(unsigned int tree,char* wordToAdd){
     int i=0;
     if(sanitiseWordForDictionnary(wordToAdd) != 0){
         return -1;
-    }
-
-    while(wordToAdd[i] != '\0'){
-        if(!map[tree].letter[wordToAdd[i] - 97]){
-        // if(!map[tree].letter[wordToAdd[i] - 97]){
-            // calloc same as malloc but initialise all bit at 0
-            // map[tree].letter[wordToAdd[i] - 97] = calloc(sizeof(node),1);
-            map[tree].letter[wordToAdd[i] - 97] = next;
-            next ++;
-
-        }
-        tree = map[tree].letter[wordToAdd[i] - 97] ;
-        i++;
-    }
-    if (map[tree].endOfWord == 1){
-        if(DEBUG >= 3){
-            printf("word >%s< already exist in dictionary\n",wordToAdd );
-        }
-        return 1;
     }else{
-        map[tree].endOfWord = 1 ;
-        if(DEBUG >= 3){
-            printf("word >%s< has been successfully added to dictionary\n", wordToAdd);
+        while(wordToAdd[i] != '\0'){
+            if(!map[tree].letter[wordToAdd[i] - 97]){
+            // if(!map[tree].letter[wordToAdd[i] - 97]){
+                // calloc same as malloc but initialise all bit at 0
+                // map[tree].letter[wordToAdd[i] - 97] = calloc(sizeof(node),1);
+                map[tree].letter[wordToAdd[i] - 97] = next;
+                next ++;
+
+            }
+            tree = map[tree].letter[wordToAdd[i] - 97] ;
+            i++;
         }
-        return 0;
+        if (map[tree].endOfWord == 1){
+            if(DEBUG >= 3){
+                printf("word >%s< already exist in dictionary\n",wordToAdd );
+            }
+            return 1;
+        }else{
+            map[tree].endOfWord = 1 ;
+            if(DEBUG >= 3){
+                printf("word >%s< has been successfully added to dictionary\n", wordToAdd);
+            }
+            return 0;
+        }
+       
     }
 }
 // @param tree : root of the dictionary
@@ -322,7 +323,7 @@ int loadDictionaryFromFile(char pathToDicFile[255],dictionary* dicInUse){
         if(DEBUG >= 2){
             printf("Retrieved line %s of length %zu :\n",line, read-1);
         }
-        if(addWord(dicInUse->tree,line) == 1){
+        if(addWord(dicInUse->tree,line) == 0){
             dicInUse->nbWord++;
         }else{
             wordIgnored++;
@@ -673,6 +674,7 @@ void test(int verbose){
             }
             passed = 0;
         }
+        printf("flag\n");
         getAllWordInDictionary(library->tree,word,0);
         levensteinInDictionary(library->tree,word,0,"titi",2,0);
     }
