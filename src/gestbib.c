@@ -466,6 +466,8 @@ void menu(dictionary* library){
 
                     scanFile("test",dicInUse->tree);
 
+                    short* found=0;
+
                     // unsigned long int startMeasuringTime=0;
                     // unsigned long int finishMeasuringTime=0;
 
@@ -482,7 +484,7 @@ void menu(dictionary* library){
                     
                     // printf("Searching for a word looking like 'titi' \n");
                     // startMeasuringTime = getTime();
-                    // levensteinInDictionary(dicInUse->tree,word,0,"titi",2,0);
+                    // levensteinInDictionary(dicInUse->tree,0,"titi",2,0,word,found);
                     // finishMeasuringTime = getTime();
                     // // printf("nbNodeParcoured=%d\n",nbNodeParcoured );
                     // printf("%ld milliseconds to access all dictionary's word and compare the levenstein distance with 'titi'\n",(finishMeasuringTime-startMeasuringTime) );
@@ -680,7 +682,9 @@ void test(int verbose){
         }
         printf("flag\n");
         getAllWordInDictionary(library->tree,word,0);
-        levensteinInDictionary(library->tree,word,0,"titi",2,0);
+        short* found=0;
+        char* word2 = malloc(sizeof(char)*256);
+        levensteinInDictionary(library->tree,0,"titi",2,0,word2,found);
     }
 
 
