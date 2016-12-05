@@ -90,5 +90,41 @@ unsigned int levensteinInDictionary(unsigned int tree,char* word,short level,cha
         }
     }
     return res;
+}
+int scanFile(char* pathTofile,unsigned int dictionary){
+    FILE * fileToScan;
+    char * line = NULL;
+    char* word = malloc(sizeof(char)*256);
+    size_t len = 0;
+    ssize_t read;
+    int i,j;
+
+    fileToScan = fopen(pathTofile, "r");
+    if (fileToScan == NULL){
+        printf("File '%s' doesn't exist\n",pathTofile);
+        return -1;
+    }
+
+
+    while ((read = getline(&line, &len, fileToScan)) != -1) {
+        line[strlen(line)-1] = '\0';
+        i=0;
+        while(line[i] != '\0'){
+            j=0;
+            while(line[i] != ' ' && line[i] != '\0'){        
+                word[j] = line[i];
+                i++;
+                j++;
+            }
+            word[j] = '\0';
+            printf("word >%s< is contained in file\n",word );
+            word[0] = '\0';
+            // TODO search word in dic and levenstein if not
+            i++;
+        }
+    }
+
+     fclose(fileToScan);
+
 
 }

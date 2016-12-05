@@ -462,26 +462,30 @@ void menu(dictionary* library){
             break;
             case 8:
                if(dicInUse != NULL){
-                    unsigned long int startMeasuringTime=0;
-                    unsigned long int finishMeasuringTime=0;
+                    printf("test\n");
 
-                    printf("---------- TEST ----------\n");
-                    char* word = calloc(sizeof(char)*255,1);
+                    scanFile("test",dicInUse->tree);
+
+                    // unsigned long int startMeasuringTime=0;
+                    // unsigned long int finishMeasuringTime=0;
+
+                    // printf("---------- TEST ----------\n");
+                    // char* word = calloc(sizeof(char)*255,1);
 
 
-                    printf("Dictionary %s :\n", dicInUse->name);
+                    // printf("Dictionary %s :\n", dicInUse->name);
 
-                    startMeasuringTime = getTime();
-                    getAllWordInDictionary(dicInUse->tree,word,0);
-                    finishMeasuringTime = getTime();
-                    printf("%ld milliseconds to access all dictionary's word\n",(finishMeasuringTime-startMeasuringTime) );
+                    // startMeasuringTime = getTime();
+                    // getAllWordInDictionary(dicInUse->tree,word,0);
+                    // finishMeasuringTime = getTime();
+                    // printf("%ld milliseconds to access all dictionary's word\n",(finishMeasuringTime-startMeasuringTime) );
                     
-                    printf("Searching for a word looking like 'titi' \n");
-                    startMeasuringTime = getTime();
-                    levensteinInDictionary(dicInUse->tree,word,0,"titi",2,0);
-                    finishMeasuringTime = getTime();
-                    // printf("nbNodeParcoured=%d\n",nbNodeParcoured );
-                    printf("%ld milliseconds to access all dictionary's word and compare the levenstein distance with 'titi'\n",(finishMeasuringTime-startMeasuringTime) );
+                    // printf("Searching for a word looking like 'titi' \n");
+                    // startMeasuringTime = getTime();
+                    // levensteinInDictionary(dicInUse->tree,word,0,"titi",2,0);
+                    // finishMeasuringTime = getTime();
+                    // // printf("nbNodeParcoured=%d\n",nbNodeParcoured );
+                    // printf("%ld milliseconds to access all dictionary's word and compare the levenstein distance with 'titi'\n",(finishMeasuringTime-startMeasuringTime) );
                 }else{
                     printf("Veuillez d'abord charger un dictionnaire\n");
                 }
