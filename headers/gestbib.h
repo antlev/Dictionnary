@@ -18,7 +18,7 @@ typedef struct dictionary{
 int addWord(unsigned int tree,char* wordToAdd);
 int searchWord(unsigned int tree,char* wordToSearch);
 // int supWord(unsigned int tree,char* wordToSup);
-int sanitiseWordForDictionnary(char* word);
+int sanitiseWordForDictionary(char* word);
 // unsigned int getAllWordInDictionary(unsigned int tree,char* word,short level);
 // unsigned int levensteinInDictionary(unsigned int tree,char* word,short level,char* wordToCompare,short threshold,short diff);
 // -------------------------- User Interface --------------------------

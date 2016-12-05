@@ -32,7 +32,7 @@ long int next=1;
 // @return -1 if word is uncompatible with dictionnary
 int addWord(unsigned int tree,char* wordToAdd){
     int i=0;
-    if(sanitiseWordForDictionnary(wordToAdd) != 0){
+    if(sanitiseWordForDictionary(wordToAdd) != 0){
         return -1;
     }else{
         while(wordToAdd[i] != '\0'){
@@ -69,7 +69,7 @@ int addWord(unsigned int tree,char* wordToAdd){
 // @return -1 if wordToSearch is uncompatible with dictionnary
 int searchWord(unsigned int tree,char* wordToSearch){
     int i=0;
-    if(sanitiseWordForDictionnary(wordToSearch) != 0){
+    if(sanitiseWordForDictionary(wordToSearch) != 0){
         return -1;
     }
     while(wordToSearch[i] != '\0'){
@@ -121,24 +121,20 @@ int supWord(unsigned int tree,char* wordToSup){
 // @return 1 if word is empty
 // @return 2 if word is incompatible with dictionnary
 // @param word : String containing word to sanitise
-int sanitiseWordForDictionnary(char* word){
+int sanitiseWordForDictionary(char* word){
     int i=0;
-    if(strlen(word) <= 1){
+    short posOfUnacceptedLetter=0;
+    if(strlen(word) < 1){
         if(DEBUG >= 3){
             printf("word >< has been ignored because it is empty\n" );
             return 1;
         }
     }
-    // TODO see why thisline doesn't work
-    // if(strspn(line,"abcdefghijklmnopqrstuvwxyz") != 0){  
-    while(word[i] != '\0'){
-        if (word[i] < 97 || word[i] > (97+26)){
-            if(DEBUG >= 3){
-                printf("word >%s< has been ignored because it contains an unaccepted char (%c)\n",word,word[i] );
-            }
-            return 2;
+    if( (posOfUnacceptedLetter = (strspn(word,"abcdefghijklmnopqrstuvwxyz"))) < strlen(word)){  
+        if(DEBUG >= 3){
+            printf("word >%s< has been ignored because it contains an unaccepted char (%c)\n",word,word[posOfUnacceptedLetter] );
         }
-        i++;
+        return 2;
     }
     return 0;
 }
@@ -150,11 +146,8 @@ void addWordMenu(dictionary* dictionary){
     char wordToInsert[MAXNBLETTERINWORD];    
     while(userInput("Veuillez entrer le mot à insérer dans le dictionnaire\n>",wordToInsert,MAXNBLETTERINWORD) != 0);
     
-    if(addWord(tree,wordToInsert)){
-        printf("%s has been successfully added to the dictionary\n",wordToInsert );
+    if(addWord(tree,wordToInsert) == 0){
         dictionary->nbWord++;
-    }else{
-        printf("%s already exist in dictionary\n",wordToInsert);
     }
 }
 // Prompt a word and call searchWord() to search it to the dictionary
