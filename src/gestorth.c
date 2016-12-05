@@ -76,14 +76,14 @@ unsigned int levensteinInDictionary(unsigned int tree,char* word,short level,cha
     unsigned int res = 0;
     for (i = 0; i < 26; ++i){
         if(map[tree].letter[i] != 0){ 
-            // TODO       
+            // Pruning (élagage)       
             // printf("DEBUG>>>letter %c spotted ! \n",i+97);
-            if(strchr(wordToCompare,i+97) == NULL){
-                if(diff > threshold){
-                    continue;
-               }
-               diff++;
-            }
+            // if(strchr(wordToCompare,i+97) == NULL){
+            //     if(diff > threshold){
+            //         continue;
+            //    }
+            //    diff++;
+            // }
             word[level] = i+97;
             res = levensteinInDictionary(map[tree].letter[i],word,level+1,wordToCompare,threshold,diff);
             word[level] = '\0';

@@ -329,7 +329,7 @@ int loadDictionaryFromFile(char pathToDicFile[255],dictionary* dicInUse){
             wordIgnored++;
         }
     }
-    if(DEBUG >= 1){
+    if(DEBUG >= 2){
         printf("word added = %d ignored = %d\n",dicInUse->nbWord,wordIgnored );
     }
     fclose(inputFile);
@@ -462,8 +462,8 @@ void menu(dictionary* library){
             break;
             case 8:
                if(dicInUse != NULL){
-                    unsigned long int startMeasuringTime;
-                    unsigned long int finishMeasuringTime;
+                    unsigned long int startMeasuringTime=0;
+                    unsigned long int finishMeasuringTime=0;
 
                     printf("---------- TEST ----------\n");
                     char* word = calloc(sizeof(char)*255,1);
