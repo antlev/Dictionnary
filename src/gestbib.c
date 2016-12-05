@@ -494,12 +494,9 @@ void menu(dictionary* library){
 }
 // Function executed when program is launched
 dictionary* init(){
+    // Using mmap instead of pointer to reduce the space used by one node
     map = mmap(0,1L<<32,PROT_WRITE|PROT_READ,MAP_SHARED|MAP_ANONYMOUS,0,0);
-
-
     dictionary* library = calloc(sizeof(dictionary),1);
-    // dictionary* library = (dictionary*)(map+next);
-    // next += sizeof(dictionary);
     return library;
 }
 // -------------------------- Test functions  --------------------------
@@ -622,14 +619,13 @@ void test(int verbose){
             printf("!!!!!!!!!! Problem detected with searchWord() function !!!!!!!!!!\n");
         }
     }
-    //TODO Sanitise word when add to dic or search into dic 
-    // -> Segmentation fault is uncompatible char are inserted into the word
-    // if(searchWord(tree,unexistantString) != 0 || searchWord(tree,unexistantString2) != 0 || searchWord(tree,unexistantString3) != 0 || searchWord(tree,uncompatibleString) != 0 || searchWord(tree,uncompatibleString3) != 0 || searchWord(tree,uncompatibleString2) != 0 ){
-    //     passed = 0 ;
-    //     if(verbose){
-    //         printf("Problem detected with searchWord() function\n");
-    //     }
-    // }
+
+    if(searchWord(tree,unexistantString) != 0 || searchWord(tree,unexistantString2) != 0 || searchWord(tree,unexistantString3) != 0 || searchWord(tree,uncompatibleString) != -1 || searchWord(tree,uncompatibleString3) != -1 || searchWord(tree,uncompatibleString2) != -1 ){
+        passed = 0 ;
+        if(verbose){
+            printf("!!!!!!!!!! Problem detected with searchWord() function\n");
+        }
+    }
 
     if(verbose){
         printf("searchWord(tree,testString)=%d (expected:1)\n",searchWord(tree,testString) );
@@ -641,9 +637,9 @@ void test(int verbose){
         printf("searchWord(tree,unexistantString)=%d (expected:0)\n",searchWord(tree,unexistantString) );
         printf("searchWord(tree,unexistantString2)=%d (expected:0)\n",searchWord(tree,unexistantString2) );
         printf("searchWord(tree,unexistantString3)=%d (expected:0)\n",searchWord(tree,unexistantString3) );
-        printf("searchWord(tree,uncompatibleString)=%d (expected:0)\n",searchWord(tree,uncompatibleString) );
-        // printf("searchWord(tree,uncompatibleString2)=%d (expected:0)\n",searchWord(tree,uncompatibleString2) );
-        // printf("searchWord(tree,uncompatibleString3)=%d (expected:0)\n",searchWord(tree,uncompatibleString3) );
+        printf("searchWord(tree,uncompatibleString)=%d (expected:-1)\n",searchWord(tree,uncompatibleString) );
+        printf("searchWord(tree,uncompatibleString2)=%d (expected:-1)\n",searchWord(tree,uncompatibleString2) );
+        printf("searchWord(tree,uncompatibleString3)=%d (expected:-1)\n",searchWord(tree,uncompatibleString3) );
     }
 
 
@@ -675,7 +671,7 @@ void test(int verbose){
         }
         printf("flag\n");
         getAllWordInDictionary(library->tree,word,0);
-        short* found=0;
+        short* found;
         char* word2 = malloc(sizeof(char)*256);
         levensteinInDictionary(library->tree,0,"titi",2,0,word2,found);
     }

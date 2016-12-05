@@ -67,7 +67,8 @@ int DamerauLevenshteinDistance(char* str1, char* str2){
         }
     }          
     int returnValue = *getTab(d,strlen1+1,strlen1,strlen2);
-    free(d);             
+    free(d); 
+    printf("flag\n");            
     return returnValue;
 }
 // Return the lowest val between val1,val2 and val3
