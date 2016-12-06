@@ -67,11 +67,11 @@ unsigned int levensteinInDictionary(unsigned int tree,short level,char* wordToCo
         if((distance = DamerauLevenshteinDistance(word,wordToCompare)) <= threshold){
         	levenstein++;
             *found = 1;
-            if(DEBUG >= 1){
-                printf("word >%s< has a levenstein difference of %d with >%s<\n",word,distance,wordToCompare);
-            }
+            printf("word >%s< has a levenstein difference of %d with >%s<\n",word,distance,wordToCompare);
         }else{
-             // printf("word >%s< has a" " levenstein difference of %d with >%s<\n",word,distance,wordToCompare);
+            if(DEBUG >= 1){
+                printf("word >%s< has a" " levenstein difference of %d with >%s<\n",word,distance,wordToCompare);
+            }
         }
     }
     unsigned int res = 0;
@@ -100,14 +100,13 @@ int scanFile(char* pathTofile,unsigned int dictionary){
     size_t len = 0;
     ssize_t read;
     int i,j;
-    short similarWordFound = 0;
+    short* similarWordFound = malloc(sizeof(short));
 
     fileToScan = fopen(pathTofile, "r");
     if (fileToScan == NULL){
         printf("File '%s' doesn't exist\n",pathTofile);
         return -1;
     }
-
 
     while ((read = getline(&line, &len, fileToScan)) != -1) {
         line[strlen(line)-1] = '\0';
@@ -120,13 +119,14 @@ int scanFile(char* pathTofile,unsigned int dictionary){
                 j++;
             }
             wordToCompare[j] = '\0';
-            similarWordFound=0;
             // printf("wordToCompare >%s< is contained in file\n",wordToCompare );
             if(searchWord(dictionary,wordToCompare) == 1){
                 printf("word >%s< is contained in dictionary\n",wordToCompare );
             }else{
-                printf("word >%s< is NOT contained in dictionary\n",wordToCompare );
-                levensteinInDictionary(dictionary,0,wordToCompare,2,0,word,&similarWordFound);
+                printf("word >%s< is NOT contained in dictionary\n",wordToCompare );            
+                *similarWordFound = 0;
+                levensteinInDictionary(dictionary,0,wordToCompare,2,0,word,similarWordFound);
+                printf("similarWordFound=%d\n",*similarWordFound );
                 if (!similarWordFound){
                     printf("No word similar of >%s< is contained in dictionary\n",wordToCompare);
                 }
