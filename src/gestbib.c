@@ -309,7 +309,7 @@ void eraseDic(dictionary* library,int numberOfDicToDel){
 // Read file and call addWord on each line
 // @param pathToDicFile : path to dictionary file to load 
 // @param dicInUse : pointer on dictionary in use
-// @return 1 : failure
+// @return -1 : failure on opening file
 // @return 0 : success
 int loadDictionaryFromFile(char pathToDicFile[255],dictionary* dicInUse){   
     FILE * inputFile;
@@ -317,11 +317,12 @@ int loadDictionaryFromFile(char pathToDicFile[255],dictionary* dicInUse){
     size_t len = 0;
     ssize_t read;
     int wordIgnored = 0;
+    int wordAdded = 0;
 
     inputFile = fopen(pathToDicFile, "r");
     if (inputFile == NULL){
         printf("File '%s' doesn't exist\n",pathToDicFile);
-        return EXIT_FAILURE;
+        return -1;
     }
     while ((read = getline(&line, &len, inputFile)) != -1) {
         line[strlen(line)-1] = '\0';
@@ -330,18 +331,17 @@ int loadDictionaryFromFile(char pathToDicFile[255],dictionary* dicInUse){
         }
         if(addWord(dicInUse->tree,line) == 0){
             dicInUse->nbWord++;
+            wordAdded++;
         }else{
             wordIgnored++;
         }
     }
-    if(DEBUG >= 2){
-        printf("word added = %d ignored = %d\n",dicInUse->nbWord,wordIgnored );
-    }
+    printf("Nombre de mots ajouté = %d Nombre de mots ignoré = %d\n",wordAdded,wordIgnored );
     fclose(inputFile);
-    if (line){
+    if(line){
         free(line);
     }
-    return EXIT_SUCCESS;
+    return 0;
 }
 
 // What does the function is obvious
