@@ -477,7 +477,7 @@ void menu(dictionary* library){
                     unsigned long int finishMeasuringTime=0;
 
                     printf("---------- TEST ----------\n");
-                    char* word = calloc(sizeof(char)*255,1);
+                    char* word = calloc(sizeof(char)*256,1);
 
 
                     printf("Dictionary %s :\n", dicInUse->name);
@@ -501,7 +501,7 @@ void menu(dictionary* library){
                     printf("Veuillez d'abord charger un dictionnaire\n");
                 }
                 printMenu(dicInUse);
-                while((choice = numericUserInput(">",input,255, 1, 8)) == -1);
+                while((choice = numericUserInput(">",input,256, 1, 8)) == -1);
             break;
             default:
             break;
