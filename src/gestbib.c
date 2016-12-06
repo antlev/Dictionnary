@@ -148,12 +148,18 @@ int sanitiseWordForDictionary(char* word){
 // Prompt a word and call addWord() to add it to the dictionary
 // @param dictionary : pointer on dictionary in which we want to add a word
 void addWordMenu(dictionary* dictionary){
+    int addWordReturn;
     unsigned int tree = dictionary->tree;
     char wordToInsert[MAXNBLETTERINWORD];    
     while(userInput("Veuillez entrer le mot à insérer dans le dictionnaire\n>",wordToInsert,MAXNBLETTERINWORD) != 0);
     
-    if(addWord(tree,wordToInsert) == 0){
+    if((addWordReturn = addWord(tree,wordToInsert)) == 0){
         dictionary->nbWord++;
+        printf("Le mot %s a été ajouté au dictionnaire %s\n",wordToInsert,dictionary->name );
+    }else if(addWordReturn == 1){
+        printf("Le mot %s éxiste déjà dans le dictionnaire %s\n",wordToInsert,dictionary->name );
+    }else{
+        printf("Le mot %s contient des caractères non supportés %s\n",wordToInsert,dictionary->name );
     }
 }
 // Prompt a word and call searchWord() to search it to the dictionary
@@ -460,7 +466,7 @@ void menu(dictionary* library){
                 exit(0);
             break;
             case 8:
-               if(dicInUse != NULL){
+                if(dicInUse != NULL){
                     printf("test\n");
 
                     scanFile("src/test",dicInUse->tree);
@@ -695,7 +701,6 @@ void test(int verbose){
     // }
 
     if(verbose){
-        // char word[256];
         char* word = calloc(sizeof(char)*256,1);
         char* inputFile = "test.dic";
         if(loadDictionaryFromFile("test.dic",library) != 0){
