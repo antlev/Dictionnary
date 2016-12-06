@@ -27,22 +27,20 @@ long int next=1;
 // Add the 'wordToAdd' into dictionary
 // @param tree : root of the dictionary
 // @param wordToAdd : word to add in the dictionary
-// @return 0 if the word has been successfully added 
-// @return 1 if word is already in tree
-// @return -1 if word is uncompatible with dictionnary
+// @return 0 if the wordToAdd has been successfully added 
+// @return 1 if wordToAdd is already in tree
+// @return -1 if wordToAdd is empty
+// @return -2 if wordToAdd is uncompatible with dictionnary
 int addWord(unsigned int tree,char* wordToAdd){
     int i=0;
-    if(sanitiseWordForDictionary(wordToAdd) != 0){
-        return -1;
+    int sanReturn;
+    if((sanReturn = sanitiseWordForDictionary(wordToAdd)) != 0){
+        return sanReturn;
     }else{
         while(wordToAdd[i] != '\0'){
             if(!map[tree].letter[wordToAdd[i] - 97]){
-            // if(!map[tree].letter[wordToAdd[i] - 97]){
-                // calloc same as malloc but initialise all bit at 0
-                // map[tree].letter[wordToAdd[i] - 97] = calloc(sizeof(node),1);
                 map[tree].letter[wordToAdd[i] - 97] = next;
                 next ++;
-
             }
             tree = map[tree].letter[wordToAdd[i] - 97] ;
             i++;
@@ -66,23 +64,26 @@ int addWord(unsigned int tree,char* wordToAdd){
 // @param wordToSearch : word to search in the dictionary
 // @return 1 if wordToSearch exist in dictionary
 // @return 0 if word doesn't exist in dictionnary
-// @return -1 if wordToSearch is uncompatible with dictionnary
+// @return -2 if wordToSearch is uncompatible with dictionnary
+// @return -1 if wordToSearch is empty
 int searchWord(unsigned int tree,char* wordToSearch){
     int i=0;
-    if(sanitiseWordForDictionary(wordToSearch) != 0){
-        return -1;
-    }
-    while(wordToSearch[i] != '\0'){
-        if(!map[tree].letter[wordToSearch[i] - 97]){
+    int sanReturn;
+    if((sanReturn = sanitiseWordForDictionary(wordToSearch)) != 0){
+        return sanReturn;
+    }else{
+        while(wordToSearch[i] != '\0'){
+            if(!map[tree].letter[wordToSearch[i] - 97]){
+                return 0;
+            }
+            tree = map[tree].letter[wordToSearch[i] - 97] ;
+            i++;
+        }
+        if(map[tree].endOfWord == 1){
+            return 1;
+        }else{
             return 0;
         }
-        tree = map[tree].letter[wordToSearch[i] - 97] ;
-        i++;
-    }
-    if(map[tree].endOfWord == 1){
-        return 1;
-    }else{
-        return 0;
     }
 }
 // @param tree : root of the dictionary
@@ -91,35 +92,40 @@ int searchWord(unsigned int tree,char* wordToSearch){
 int supWord(unsigned int tree,char* wordToSup){
     int i=0;
     int j;
-    while(wordToSup[i] != '\0'){
-        if(!map[tree].letter[wordToSup[i] - 97]){
-            return 0;
-        }
-        tree = map[tree].letter[wordToSup[i] - 97] ;
-        i++;
-    }
-    if(map[tree].endOfWord == 0){
-        return 0;
+    int sanReturn;
+    if((sanReturn = sanitiseWordForDictionary(wordToSup)) != 0){
+        return sanReturn;
     }else{
-        map[tree].endOfWord = 0 ;
-        i--;
-        while(i >= 0){
-            for (j = 0; j < 26; ++j){
-                if(map[tree].letter[j]){
-                    return 1;
-                }
+        while(wordToSup[i] != '\0'){
+            if(!map[tree].letter[wordToSup[i] - 97]){
+                return 0;
             }
-            // TODO
-            // tree = &tree;
-            // free(map[tree].letter[i]);
-            i--;
+            tree = map[tree].letter[wordToSup[i] - 97] ;
+            i++;
         }
-        return 1;   
+        if(map[tree].endOfWord == 0){
+            return 0;
+        }else{
+            map[tree].endOfWord = 0 ;
+            i--;
+            while(i >= 0){
+                for (j = 0; j < 26; ++j){
+                    if(map[tree].letter[j]){
+                        return 1;
+                    }
+                }
+                // TODO
+                // tree = &tree;
+                // free(map[tree].letter[i]);
+                i--;
+            }
+            return 1;   
+        }
     }
 }
 // @return 0 if word is compatible with dictionnary
-// @return 1 if word is empty
-// @return 2 if word is incompatible with dictionnary
+// @return -1 if word is empty
+// @return -2 if word is incompatible with dictionnary
 // @param word : String containing word to sanitise
 int sanitiseWordForDictionary(char* word){
     int i=0;
@@ -127,14 +133,14 @@ int sanitiseWordForDictionary(char* word){
     if(strlen(word) < 1){
         if(DEBUG >= 3){
             printf("word >< has been ignored because it is empty\n" );
-            return 1;
+            return -1;
         }
     }
     if( (posOfUnacceptedLetter = (strspn(word,"abcdefghijklmnopqrstuvwxyz"))) < strlen(word)){  
         if(DEBUG >= 3){
             printf("word >%s< has been ignored because it contains an unaccepted char (%c)\n",word,word[posOfUnacceptedLetter] );
         }
-        return 2;
+        return -2;
     }
     return 0;
 }
@@ -518,6 +524,8 @@ void test(int verbose){
     dictionary* library = init(); 
     dictionary* dicInUse = NULL;
 
+
+
     if(verbose){
         printf("TESTING isDictionaryInMemory() function\n");
         printf("isDictionaryInMemory(library):%d (expected 0)\n",isDictionaryInMemory(library));      
@@ -570,48 +578,68 @@ void test(int verbose){
     char* unexistantString2 = "helloworld";
     char* unexistantString3 = "abcdefghijklmnopqrstuvwxyz";
 
-    char* uncompatibleString = "";
+    char* emptyString = "";
+    char* uncompatibleString = "MAJUSCULE";
     char* uncompatibleString2 = "./..";
     char* uncompatibleString3 = "&@à";
+    
+
+    
+    if(verbose){
+        printf("TESTING sanitiseWordForDictionary() function\n");
+    }
+    if(sanitiseWordForDictionary(emptyString) != -1){
+        passed = 0 ;        
+        if(verbose){
+            printf("!!!!!!!!!! Problem detected with sanitiseWordForDictionary() function !!!!!!!!!!\n");
+            printf("-> Error do not return -1 on empty string <-\n");
+        }
+    }    
+    if(sanitiseWordForDictionary(uncompatibleString) != -2 || sanitiseWordForDictionary(uncompatibleString2) != -2 || sanitiseWordForDictionary(uncompatibleString3) != -2 ){
+        passed = 0 ;        
+        if(verbose){
+            printf("!!!!!!!!!! Problem detected with sanitiseWordForDictionary() function !!!!!!!!!!\n");
+            printf("-> Error do not return -1 on empty string <-\n");
+        }
+    }
+
+    if(searchWord(tree,testString) != 0 || searchWord(tree,testString2) != 0 || searchWord(tree,testString3) != 0 || searchWord(tree,testString4) != 0 || searchWord(tree,testString5) != 0 || searchWord(tree,testString6) != 0){
+        passed = 0 ;        
+        if(verbose){
+            printf("!!!!!!!!!! Problem detected with searchWord() function !!!!!!!!!!\n");
+            printf("-> Non added word has been found in dictionnary <-\n");
+        }
+    }
 
     if(verbose) {  printf("TESTING addWord() function\n"); }
     if(addWord(tree,testString) != 0 || addWord(tree,testString2) != 0 || addWord(tree,testString3) != 0 || addWord(tree,testString4) != 0 || addWord(tree,testString5) != 0 || addWord(tree,testString6) != 0){
         passed = 0;
         if(verbose){
             printf("!!!!!!!!!! Problem detected with addWord() function !!!!!!!!!!\n");
+            printf("-> Error while adding word in dictionary <-\n");
         }
     }
     if(addWord(tree,testString) != 1 || addWord(tree,testString2) != 1 || addWord(tree,testString3) != 1 || addWord(tree,testString4) != 1 || addWord(tree,testString5) != 1 || addWord(tree,testString6) != 1){
         passed = 0;
         if(verbose){
             printf("!!!!!!!!!! Problem detected with addWord() function !!!!!!!!!!\n");
+            printf("-> Adding a existing word in dictionary do not return 1 <-\n");
         }
     }
 
-    // if(addWord(tree,uncompatibleString) != -1 || addWord(tree,uncompatibleString3) != -1 || addWord(tree,uncompatibleString2) != -1){
-    //     passed = 0;
-    //     if(verbose){
-    //         printf("Problem detected with addWord() function\n");
-    //     }
-    // }
-
-
-    if(addWord(tree,uncompatibleString) != -1){
+    if(addWord(tree,uncompatibleString) != -2 || addWord(tree,uncompatibleString2) != -2 || addWord(tree,uncompatibleString3) != -2){
         passed = 0;
         if(verbose){
             printf("!!!!!!!!!! Problem detected with addWord() function !!!!!!!!!!\n");
+            printf("-> Adding an uncompatible word in dictionary do not return -2 <-\n");
         }
     }
-    if(addWord(tree,uncompatibleString2) != -1){
+
+    if(addWord(tree,"") != -1){
         passed = 0;
         if(verbose){
             printf("!!!!!!!!!! Problem detected with addWord() function !!!!!!!!!!\n");
-        }
-    }
-    if(addWord(tree,uncompatibleString3) != -1){
-        passed = 0;
-        if(verbose){
-            printf("!!!!!!!!!! Problem detected with addWord() function !!!!!!!!!!\n");
+            printf("-> Adding an empty string in dictionary do not return -1 <-\n");
         }
     }
 
@@ -621,17 +649,36 @@ void test(int verbose){
         passed = 0 ;        
         if(verbose){
             printf("!!!!!!!!!! Problem detected with searchWord() function !!!!!!!!!!\n");
+            printf("-> Searching an existant word do not return 1 <-\n");
         }
     }
 
-    if(searchWord(tree,unexistantString) != 0 || searchWord(tree,unexistantString2) != 0 || searchWord(tree,unexistantString3) != 0 || searchWord(tree,uncompatibleString) != -1 || searchWord(tree,uncompatibleString3) != -1 || searchWord(tree,uncompatibleString2) != -1 ){
+    if(searchWord(tree,unexistantString) != 0 || searchWord(tree,unexistantString2) != 0 || searchWord(tree,unexistantString3) != 0 ){
         passed = 0 ;
         if(verbose){
             printf("!!!!!!!!!! Problem detected with searchWord() function\n");
+            printf("-> Searching an non-existant word do not return 0 <-\n");
+        }
+    }
+
+    if(searchWord(tree,emptyString) != -1){
+        passed = 0 ;
+        if(verbose){
+            printf("!!!!!!!!!! Problem detected with searchWord() function\n");
+            printf("-> Searching an empty string do not return -1 <-\n");
+        }
+    }
+
+    if(searchWord(tree,uncompatibleString) != -2 || searchWord(tree,uncompatibleString2) != -2 || searchWord(tree,uncompatibleString3) != -2 ){
+        passed = 0 ;
+        if(verbose){
+            printf("!!!!!!!!!! Problem detected with searchWord() function\n");
+            printf("-> Searching an uncompatible string do not return -2 <-\n");
         }
     }
 
     if(verbose){
+        printf("------------------- Report -------------------\n");
         printf("searchWord(tree,testString)=%d (expected:1)\n",searchWord(tree,testString) );
         printf("searchWord(tree,testString2)=%d (expected:1)\n",searchWord(tree,testString2) );
         printf("searchWord(tree,testString3)=%d (expected:1)\n",searchWord(tree,testString3) );
@@ -641,30 +688,19 @@ void test(int verbose){
         printf("searchWord(tree,unexistantString)=%d (expected:0)\n",searchWord(tree,unexistantString) );
         printf("searchWord(tree,unexistantString2)=%d (expected:0)\n",searchWord(tree,unexistantString2) );
         printf("searchWord(tree,unexistantString3)=%d (expected:0)\n",searchWord(tree,unexistantString3) );
-        printf("searchWord(tree,uncompatibleString)=%d (expected:-1)\n",searchWord(tree,uncompatibleString) );
-        printf("searchWord(tree,uncompatibleString2)=%d (expected:-1)\n",searchWord(tree,uncompatibleString2) );
-        printf("searchWord(tree,uncompatibleString3)=%d (expected:-1)\n",searchWord(tree,uncompatibleString3) );
+        printf("searchWord(tree,emptyString)=%d (expected:-1)\n",searchWord(tree,emptyString) );
+        printf("searchWord(tree,uncompatibleString)=%d (expected:-2)\n",searchWord(tree,uncompatibleString) );
+        printf("searchWord(tree,uncompatibleString2)=%d (expected:-2)\n",searchWord(tree,uncompatibleString2) );
+        printf("searchWord(tree,uncompatibleString3)=%d (expected:-2)\n",searchWord(tree,uncompatibleString3) );
     }
-
-
     // if(supWord(tree,testString) != 1 || supWord(tree,unexistantString) != 0 || supWord(tree,unexistantString2) != 0){
     //     passed = 0;
     //     printf("toto\n");
     // }
 
-    // if(searchWord(tree,testString) != 0){
-    //     passed = 0;
-    //     printf("tutu\n");
-    // }
-
-
-
-
-
-
     if(verbose){
-        char word[25];
-        printf("flag2\n");
+        // char word[256];
+        char* word = calloc(sizeof(char)*256,1);
         char* inputFile = "test.dic";
         if(loadDictionaryFromFile("test.dic",library) != 0){
             if(verbose){
@@ -673,10 +709,10 @@ void test(int verbose){
             }
             passed = 0;
         }
-        printf("flag\n");
         getAllWordInDictionary(library->tree,word,0);
-        short* found;
-        char* word2 = malloc(sizeof(char)*256);
+        short* found = malloc(sizeof(short));
+        *found = 0;
+        char* word2 = calloc(sizeof(char)*256,1);
         levensteinInDictionary(library->tree,0,"titi",2,0,word2,found);
     }
 

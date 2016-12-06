@@ -22,7 +22,10 @@ extern node* map;
 unsigned int getAllWordInDictionary(unsigned int tree,char* word,short level){
     int i=0;
     if(map[tree].endOfWord == 1){
-        // printf("DEBUG>>End of word!!\n");
+        word[level] = '\0';
+        if(DEBUG >= 3){
+            printf("DEBUG>>End of word!!\n");
+        }
         while(word[i] != '\0'){
             if(DEBUG >= 3){
                 printf("%c",word[i] );
@@ -45,7 +48,6 @@ unsigned int getAllWordInDictionary(unsigned int tree,char* word,short level){
     }
     return res;
  }
-// TODO
 int nbNodeParcoured = 0;
 int levenstein = 0;
 // Search recursivly in the dictionary for word that have a levenstein distance smaller than threshold and print them on screen
@@ -63,7 +65,7 @@ unsigned int levensteinInDictionary(unsigned int tree,short level,char* wordToCo
 
     if(map[tree].endOfWord == 1){
         // printf("DEBUG>>End of word!!\n");
-
+        word[level] = '\0';
         if((distance = DamerauLevenshteinDistance(word,wordToCompare)) <= threshold){
         	levenstein++;
             *found = 1;
@@ -119,7 +121,9 @@ int scanFile(char* pathTofile,unsigned int dictionary){
                 j++;
             }
             wordToCompare[j] = '\0';
-            // printf("wordToCompare >%s< is contained in file\n",wordToCompare );
+            if(DEBUG >= 2){
+                printf("wordToCompare >%s< is contained in file\n",wordToCompare );
+            }
             if(searchWord(dictionary,wordToCompare) == 1){
                 printf("word >%s< is contained in dictionary\n",wordToCompare );
             }else{
@@ -131,9 +135,7 @@ int scanFile(char* pathTofile,unsigned int dictionary){
                     printf("No word similar of >%s< is contained in dictionary\n",wordToCompare);
                 }
             }
-
             wordToCompare[0] = '\0';
-            // TODO search word in dic and levenstein if not
             i++;
         }
     }
