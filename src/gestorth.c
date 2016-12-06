@@ -94,6 +94,12 @@ unsigned int levensteinInDictionary(unsigned int tree,short level,char* wordToCo
     }
     return res;
 }
+// Scan a file, and test for all word if it is in dictionary 
+// If the word isn't found in dictionnary, it will print similar words in dictionary,
+// If no word is similar in dictionary, print a message
+// @param pathTofile : path to file to scan
+// @param dictionary : root of the dictionary's tree
+// @return -1 if  file could not have been opened
 int scanFile(char* pathTofile,unsigned int dictionary){
     FILE * fileToScan;
     char * line = NULL;
@@ -139,8 +145,5 @@ int scanFile(char* pathTofile,unsigned int dictionary){
             i++;
         }
     }
-
-     fclose(fileToScan);
-
-
+    fclose(fileToScan);
 }

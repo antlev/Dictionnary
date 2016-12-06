@@ -518,7 +518,7 @@ dictionary* init(){
 // -------------------------- Test functions  --------------------------
 
 // Test function, can be verbose and print debug option 
-// 0 -> no output
+// 0 -> no output except line telling if all tests passed or not
 // 1 -> debug output
 void test(int verbose){
     unsigned long finish;
