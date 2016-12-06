@@ -133,8 +133,8 @@ int sanitiseWordForDictionary(char* word){
     if(strlen(word) < 1){
         if(DEBUG >= 3){
             printf("word >< has been ignored because it is empty\n" );
-            return -1;
         }
+            return -1;
     }
     if( (posOfUnacceptedLetter = (strspn(word,"abcdefghijklmnopqrstuvwxyz"))) < strlen(word)){  
         if(DEBUG >= 3){
@@ -515,7 +515,6 @@ dictionary* init(){
 // 0 -> no output
 // 1 -> debug output
 void test(int verbose){
-    
     unsigned long finish;
     unsigned long start;
     if(verbose){ start = getTime() ; } 
@@ -523,8 +522,6 @@ void test(int verbose){
 
     dictionary* library = init(); 
     dictionary* dicInUse = NULL;
-
-
 
     if(verbose){
         printf("TESTING isDictionaryInMemory() function\n");
@@ -549,23 +546,7 @@ void test(int verbose){
             printf("Problem with isDictionaryInMemory() function\n");
         }
     }
-
-
     unsigned int tree = library->tree;
-    // // library->tree = calloc(sizeof(node),1);
-    // library->map[tree].endOfWord = -1; 
-
-    // // library->map[tree].letter[0] = malloc(sizeof(node));
-    // if(verbose){
-    //     printf("%d (expected 1)\n",isDictionaryInMemory(library));
-    // }
-    // if(!isDictionaryInMemory(library)){
-    //     passed = 0 ;
-    // }
-
-    
-    // unsigned int tree = dictionary->tree;
-    // unsigned int tree = calloc(sizeof(node),1);
 
     char* testString = "toto";
     char* testString2 = "tototutu";
@@ -679,6 +660,20 @@ void test(int verbose){
 
     if(verbose){
         printf("------------------- Report -------------------\n");
+        printf("----------------------------------------------\n");
+        printf("------------- addWord function ---------------\n");
+        printf("addWord(tree,testString)=%d (expected:1)\n",addWord(tree,testString) );
+        printf("addWord(tree,testString2)=%d (expected:1)\n",addWord(tree,testString2) );
+        printf("addWord(tree,testString3)=%d (expected:1)\n",addWord(tree,testString3) );
+        printf("addWord(tree,testString4)=%d (expected:1)\n",addWord(tree,testString4) );
+        printf("addWord(tree,testString5)=%d (expected:1)\n",addWord(tree,testString5) );
+        printf("addWord(tree,testString6)=%d (expected:1)\n",addWord(tree,testString6) );
+        printf("addWord(tree,emptyString)=%d (expected:-1)\n",addWord(tree,emptyString) );
+        printf("addWord(tree,uncompatibleString)=%d (expected:-2)\n",addWord(tree,uncompatibleString) );
+        printf("addWord(tree,uncompatibleString2)=%d (expected:-2)\n",addWord(tree,uncompatibleString2) );
+        printf("addWord(tree,uncompatibleString3)=%d (expected:-2)\n",addWord(tree,uncompatibleString3) );
+        printf("----------------------------------------------\n");
+        printf("------------ searchWord function -------------\n");
         printf("searchWord(tree,testString)=%d (expected:1)\n",searchWord(tree,testString) );
         printf("searchWord(tree,testString2)=%d (expected:1)\n",searchWord(tree,testString2) );
         printf("searchWord(tree,testString3)=%d (expected:1)\n",searchWord(tree,testString3) );
@@ -692,6 +687,7 @@ void test(int verbose){
         printf("searchWord(tree,uncompatibleString)=%d (expected:-2)\n",searchWord(tree,uncompatibleString) );
         printf("searchWord(tree,uncompatibleString2)=%d (expected:-2)\n",searchWord(tree,uncompatibleString2) );
         printf("searchWord(tree,uncompatibleString3)=%d (expected:-2)\n",searchWord(tree,uncompatibleString3) );
+        printf("----------------------------------------------\n");         
     }
     // if(supWord(tree,testString) != 1 || supWord(tree,unexistantString) != 0 || supWord(tree,unexistantString2) != 0){
     //     passed = 0;
@@ -724,9 +720,7 @@ void test(int verbose){
     }
 
     if(verbose){
-
         printf("sizeof(node)=%ld\n",sizeof(node) );
-
         finish = getTime();
         printf("Test execution took %ld milliseconds.\n",(finish-start) );
     }
