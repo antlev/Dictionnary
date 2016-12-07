@@ -6,8 +6,8 @@
 #include <sys/time.h>
 // Include from our own file
 #include "../headers/gestbib.h"
-// #include "../headers/gestorth.h"
-#include "../headers/utils.h"
+#include "../headers/gestorth.h"
+#include "../headers/gestrech.h"
 
 #ifndef DEBUG
     #define DEBUG (0)
