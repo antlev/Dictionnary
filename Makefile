@@ -1,17 +1,16 @@
-CFLAGS = 
+CFLAGS =-O3
 LFLAGS =-lm
-#CFLAGS_DEBUG += -DDEBUG= -g
 POSTFIX=
 ifeq  ($(DEBUG),1)
-	CFLAGS +=-DDEBUG=1 -g
+	CFLAGS =-DDEBUG=1 -g -O0
 	POSTFIX=_debug_1
 else
 ifeq ($(DEBUG),2)
-	CFLAGS +=-DDEBUG=2 -g
+	CFLAGS =-DDEBUG=2 -g -O0
 	POSTFIX=_debug_2
 else 
 ifeq ($(DEBUG),3)
-	CFLAGS +=-DDEBUG=3 -g
+	CFLAGS =-DDEBUG=3 -g -O0
 	POSTFIX=_debug_3
 endif
 endif
