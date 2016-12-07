@@ -9,7 +9,7 @@
 #include "../headers/gestrech.h"
 #include "../headers/gestorth.h"
 #include "../headers/utils.h"
-
+// Allow us to set a $DEBUG at compilation
 #ifndef DEBUG
     #define DEBUG (0)
 #endif
@@ -22,7 +22,7 @@ static const int THRESHOLD = 2;
 
 node* map=0;
 long int next=1; 
-// -------------------------- Inside Dictionary functions --------------------------
+// -------------------------- Tree manipulation functions --------------------------
 
 // Add the 'wordToAdd' into dictionary
 // @param tree : root of the dictionary
@@ -60,6 +60,7 @@ int addWord(unsigned int tree,char* wordToAdd){
        
     }
 }
+// Search wordToSearch into the given tree
 // @param tree : root of the dictionary
 // @param wordToSearch : word to search in the dictionary
 // @return 1 if wordToSearch exist in dictionary
@@ -86,9 +87,10 @@ int searchWord(unsigned int tree,char* wordToSearch){
         }
     }
 }
+// Suppress wordToSup into the given tree
 // @param tree : root of the dictionary
 // @param wordToSup : word to erase from the dictionary
-// @Return 1 if wordToSup has been found and suppresed, 0 if not
+// @return 1 if wordToSup has been found and suppresed, 0 if not
 int supWord(unsigned int tree,char* wordToSup){
     int i=0;
     int j;
@@ -123,6 +125,7 @@ int supWord(unsigned int tree,char* wordToSup){
         }
     }
 }
+// Sanitise word for dictionary
 // @return 0 if word is compatible with dictionnary
 // @return -1 if word is empty
 // @return -2 if word is incompatible with dictionnary
@@ -377,6 +380,7 @@ void printLibrary(dictionary* library, int numberOfDic){
         printf("---------------------------------------\n");
     }
 }
+// Tell if a dictionnary exist in memory
 // @param dicInUse : pointer on dicInUse
 // @return 1 if library contain a dictionary
 // @return 0 if library in use is empty
@@ -516,7 +520,6 @@ dictionary* init(){
     return library;
 }
 // -------------------------- Test functions  --------------------------
-
 // Test function, can be verbose and print debug option 
 // 0 -> no output except line telling if all tests passed or not
 // 1 -> debug output
