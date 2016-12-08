@@ -16,6 +16,19 @@ endif
 endif
 endif
 
+ifeq  ($(LETTERSET),1)
+	CFLAGS +=-DSETOFLETTERSACCEPTED=1
+else
+ifeq ($(LETTERSET),2)
+	CFLAGS +=-DSETOFLETTERSACCEPTED=2
+else 
+ifeq ($(LETTERSET),3)
+	CFLAGS +=-DSETOFLETTERSACCEPTED=3
+endif
+endif
+endif
+
+
 all: bin/main1 bin/main2
 
 main1: bin/main1

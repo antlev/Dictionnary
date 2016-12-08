@@ -17,9 +17,6 @@
 #define EXIT_SUCCESS 0
 #define EXIT_FAILURE 1
 
-static const int MAXNBLETTERINWORD = 20;
-static const int THRESHOLD = 2;
-
 node* map=0;
 long int next=1; 
 // -------------------------- Tree manipulation functions --------------------------
@@ -38,11 +35,11 @@ int addWord(unsigned int tree,char* wordToAdd){
         return sanReturn;
     }else{
         while(wordToAdd[i] != '\0'){
-            if(!map[tree].letter[wordToAdd[i] - 97]){
-                map[tree].letter[wordToAdd[i] - 97] = next;
+            if(!map[tree].letter[wordToAdd[i] - OFFSETASCII]){
+                map[tree].letter[wordToAdd[i] - OFFSETASCII] = next;
                 next ++;
             }
-            tree = map[tree].letter[wordToAdd[i] - 97] ;
+            tree = map[tree].letter[wordToAdd[i] - OFFSETASCII] ;
             i++;
         }
         if (map[tree].endOfWord == 1){
@@ -56,8 +53,7 @@ int addWord(unsigned int tree,char* wordToAdd){
                 printf("word >%s< has been successfully added to dictionary\n", wordToAdd);
             }
             return 0;
-        }
-       
+        }       
     }
 }
 // Search wordToSearch into the given tree
@@ -74,10 +70,10 @@ int searchWord(unsigned int tree,char* wordToSearch){
         return sanReturn;
     }else{
         while(wordToSearch[i] != '\0'){
-            if(!map[tree].letter[wordToSearch[i] - 97]){
+            if(!map[tree].letter[wordToSearch[i] - OFFSETASCII]){
                 return 0;
             }
-            tree = map[tree].letter[wordToSearch[i] - 97] ;
+            tree = map[tree].letter[wordToSearch[i] - OFFSETASCII] ;
             i++;
         }
         if(map[tree].endOfWord == 1){
@@ -99,10 +95,10 @@ int supWord(unsigned int tree,char* wordToSup){
         return sanReturn;
     }else{
         while(wordToSup[i] != '\0'){
-            if(!map[tree].letter[wordToSup[i] - 97]){
+            if(!map[tree].letter[wordToSup[i] - OFFSETASCII]){
                 return 0;
             }
-            tree = map[tree].letter[wordToSup[i] - 97] ;
+            tree = map[tree].letter[wordToSup[i] - OFFSETASCII] ;
             i++;
         }
         if(map[tree].endOfWord == 0){
@@ -139,12 +135,21 @@ int sanitiseWordForDictionary(char* word){
         }
             return -1;
     }
-    if( (posOfUnacceptedLetter = (strspn(word,"abcdefghijklmnopqrstuvwxyz"))) < strlen(word)){  
-        if(DEBUG >= 3){
-            printf("word >%s< has been ignored because it contains an unaccepted char (%c)\n",word,word[posOfUnacceptedLetter] );
+    // TODO letter é è à ... provoque problem ascii = -61 -> ignored
+    for (int i = 0; i < strlen(word); ++i){
+        if(word[i] < OFFSETASCII || word[i] > OFFSETASCII+NBLETTERACCEPTED){
+            if(DEBUG >= 3){
+                printf("i=%d word >%s< has been ignored because it contains an unaccepted char (%c)[%d]\n",i,word,word[i],word[i] );
+            }
+            return -2;
         }
-        return -2;
     }
+    // if( (posOfUnacceptedLetter = (strspn(word,"abcdefghijklmnopqrstuvwxyz"))) < strlen(word)){  
+    //     if(DEBUG >= 3){
+    //         printf("word >%s< has been ignored because it contains an unaccepted char (%c)\n",word,word[posOfUnacceptedLetter] );
+    //     }
+    //     return -2;
+    // }
     return 0;
 }
 // -------------------------- Programm functions's menu  --------------------------

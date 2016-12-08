@@ -1,10 +1,25 @@
+#ifndef SETOFLETTERSACCEPTED
+    #define SETOFLETTERSACCEPTED (0)
+#endif
+
+#if (SETOFLETTERSACCEPTED == 0)
+	#define OFFSETASCII ('a')
+	#define NBLETTERACCEPTED (('z'-'a')+1)
+#elif (SETOFLETTERSACCEPTED == 1)
+	#define OFFSETASCII ('!')
+	#define NBLETTERACCEPTED ((165-'!')+1)
+#endif
+
+static const short MAXNBLETTERINWORD = 30;
+
 // Structs
 //----------------------------------------------------------------------------------------
+// Struct node that compose a tree in which we will store our words
 typedef struct __attribute__((__packed__)) node{
     short endOfWord;
-    unsigned int letter[26];
+    unsigned int letter[NBLETTERACCEPTED];
 }node;
-
+// Struct dictionary that  allow to save a name, description, number of word and the root of the tree that save words in dictionary
 typedef struct dictionary{
     char name[255];
     char description[255];
@@ -14,8 +29,7 @@ typedef struct dictionary{
 
 // Prototypes
 //----------------------------------------------------------------------------------------
-// -------------------------- Inside Dictionary functions --------------------------
-
+// -------------------------- Tree manipulation functions --------------------------
 // Add the 'wordToAdd' into dictionary
 // @param tree : root of the dictionary
 // @param wordToAdd : word to add in the dictionary
@@ -86,12 +100,23 @@ void addDicAndUse(dictionary** library,int numberOfDic,char name[255],char desc[
 int loadDictionaryFromFile(char pathToDicFile[255],dictionary* dicInUse);
 // Print menu on screen
 void printMenu(dictionary* dicInUse);
+// Print all the dictionnaries contained in the library
+// @param library : pointer on library (first dictionary)
+// @param numberOfDic : number of dictionary in memory
 void printLibrary(dictionary* library, int numberOfDic);
-int isDictionaryInUse(dictionary* dictionary);
+// Tell if a dictionnary exist in memory
+// @param dicInUse : pointer on dicInUse
+// @return 1 if library contain a dictionary
+// @return 0 if library in use is empty
 int isDictionaryInMemory(dictionary* dictionary);
+// Program's menu
 void menu(dictionary* library);
+// Function executed when program is launched
 dictionary* init();
 // -------------------------- Test function  --------------------------
+// Test function, can be verbose and print debug option 
+// 0 -> no output except line telling if all tests passed or not
+// 1 -> debug output
 void test(int verbose);
 
 
