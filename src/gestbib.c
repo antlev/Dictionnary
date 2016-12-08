@@ -4,6 +4,7 @@
 #include <math.h>
 #include <string.h>
 #include <sys/mman.h>
+#include <assert.h>
 // Include from our own file
 #include "../headers/gestbib.h"
 #include "../headers/gestrech.h"
@@ -29,6 +30,9 @@ long int next=1;
 // @return -1 if wordToAdd is empty
 // @return -2 if wordToAdd is uncompatible with dictionnary
 int addWord(unsigned int tree,char* wordToAdd){
+    assert(wordToAdd != 0);
+    assert(map != 0);
+    assert(&map[tree] != 0);
     int i=0;
     int sanReturn;
     if((sanReturn = sanitiseWordForDictionary(wordToAdd)) != 0){
@@ -135,11 +139,11 @@ int sanitiseWordForDictionary(char* word){
         }
             return -1;
     }
-    // TODO letter Ã© Ã¨ Ã  ... provoque problem ascii = -61 -> ignored
+    // TODO letter é è à ... provoque problem ascii = -61 -> ignored
     for (int i = 0; i < strlen(word); ++i){
-        if(word[i] < OFFSETASCII || word[i] > OFFSETASCII+NBLETTERACCEPTED){
+        if((unsigned char)word[i] < OFFSETASCII || (unsigned char)word[i] > OFFSETASCII+NBLETTERACCEPTED){
             if(DEBUG >= 3){
-                printf("i=%d word >%s< has been ignored because it contains an unaccepted char (%c)[%d]\n",i,word,word[i],word[i] );
+                printf("i=%d word >%s< has been ignored because it contains an unaccepted char (%c)[%u] <%u>\n",i,word,word[i],(unsigned char)word[i],OFFSETASCII+NBLETTERACCEPTED );
             }
             return -2;
         }
@@ -159,15 +163,15 @@ void addWordMenu(dictionary* dictionary){
     int addWordReturn;
     unsigned int tree = dictionary->tree;
     char wordToInsert[MAXNBLETTERINWORD];    
-    while(userInput("Veuillez entrer le mot Ã  insÃ©rer dans le dictionnaire\n>",wordToInsert,MAXNBLETTERINWORD) != 0);
+    while(userInput("Veuillez entrer le mot à insérer dans le dictionnaire\n>",wordToInsert,MAXNBLETTERINWORD) != 0);
     
     if((addWordReturn = addWord(tree,wordToInsert)) == 0){
         dictionary->nbWord++;
-        printf("Le mot %s a Ã©tÃ© ajoutÃ© au dictionnaire %s\n",wordToInsert,dictionary->name );
+        printf("Le mot %s a été ajouté au dictionnaire %s\n",wordToInsert,dictionary->name );
     }else if(addWordReturn == 1){
-        printf("Le mot %s Ã©xiste dÃ©jÃ  dans le dictionnaire %s\n",wordToInsert,dictionary->name );
+        printf("Le mot %s éxiste déjà dans le dictionnaire %s\n",wordToInsert,dictionary->name );
     }else{
-        printf("Le mot %s contient des caractÃ¨res non supportÃ©s %s\n",wordToInsert,dictionary->name );
+        printf("Le mot %s contient des caractères non supportés %s\n",wordToInsert,dictionary->name );
     }
 }
 // Prompt a word and call searchWord() to search it to the dictionary
@@ -180,7 +184,7 @@ void searchWordMenu(dictionary* dictionary){
     unsigned long int startMeasuringTime;
     unsigned long int finishMeasuringTime;
 
-    while(userInput("Veuillez entrer le mot Ã  chercher dans le dictionnaire\n>",wordToSearch,MAXNBLETTERINWORD) != 0);
+    while(userInput("Veuillez entrer le mot à chercher dans le dictionnaire\n>",wordToSearch,MAXNBLETTERINWORD) != 0);
    
     startMeasuringTime = getTime();
     if(searchWord(tree,wordToSearch)){
@@ -231,7 +235,7 @@ void buildDicWithFileMenu(dictionary** library,int* numberOfDic,dictionary** dic
     char input[2];
 
     if(*numberOfDic == 0){
-        while(userInput("Vous n'avez pas de dictionnaire en mÃ©moire voulez vous en crÃ©er un ? (O/N)\n>",input,4) != 0);
+        while(userInput("Vous n'avez pas de dictionnaire en mémoire voulez vous en créer un ? (O/N)\n>",input,4) != 0);
         if(input[0] == 'O' || input[0] == 'o'){
             addDicMenu(library,*numberOfDic,dicInUse);
             (*numberOfDic)++;
@@ -240,7 +244,7 @@ void buildDicWithFileMenu(dictionary** library,int* numberOfDic,dictionary** dic
         }
     } else {
         do{
-            while(userInput("Voulez vous (C)rÃ©er un nouveau dictionnaire ou (A)jouter le fichier Ã  un dictionnaire existant ?\n>",input,4) != 0);
+            while(userInput("Voulez vous (C)réer un nouveau dictionnaire ou (A)jouter le fichier à un dictionnaire existant ?\n>",input,4) != 0);
         }
         while(input[0] != 'a' && input[0] != 'A' && input[0] != 'c' && input[0] != 'C');
 
@@ -275,9 +279,9 @@ void chooseDicMenu(dictionary* library,int numberOfDic,dictionary** dicInUse){
     char* input = malloc(sizeof(int));
 
     printLibrary(library,numberOfDic);
-    while((numOfDicToUse = numericUserInput("Veuillez entrer le numÃ©ro du dictionnaire que vous voulez utiliser ?\n>",input,4,1,(short)numberOfDic)) == -1);
+    while((numOfDicToUse = numericUserInput("Veuillez entrer le numéro du dictionnaire que vous voulez utiliser ?\n>",input,4,1,(short)numberOfDic)) == -1);
     
-    *dicInUse += numOfDicToUse-1; // using the dictionary nÂ° numOfDicToUse of library
+    *dicInUse += numOfDicToUse-1; // using the dictionary n° numOfDicToUse of library
 }
 // -------------------------- Dictionary manipulation functions --------------------------
 // Add a new dictionary with the name and description passed as parameters
@@ -344,7 +348,7 @@ int loadDictionaryFromFile(char pathToDicFile[255],dictionary* dicInUse){
             wordIgnored++;
         }
     }
-    printf("Nombre de mots ajoutÃ© = %d Nombre de mots ignorÃ© = %d\n",wordAdded,wordIgnored );
+    printf("Nombre de mots ajouté = %d Nombre de mots ignoré = %d\n",wordAdded,wordIgnored );
     fclose(inputFile);
     if(line){
         free(line);
@@ -357,11 +361,11 @@ void printMenu(dictionary* dicInUse){
     if(dicInUse->name){
         printf("---------- Vous utilisez maintenant le dictionnaire %s ----------\n",dicInUse->name);
     }
-    printf("1) CrÃ©er un fichier dictionnaire\n");
+    printf("1) Créer un fichier dictionnaire\n");
     printf("2) Utiliser un dictionnaire existant\n");
-    printf("3) Fabriquer un dictionnaire Ã  partir d'un fichier texte\n");
-    printf("4) DÃ©truire un fichier dictionnaire\n");
-    printf("5) InsÃ©rer un mot dans un dictionnaire\n");
+    printf("3) Fabriquer un dictionnaire à partir d'un fichier texte\n");
+    printf("4) Détruire un fichier dictionnaire\n");
+    printf("5) Insérer un mot dans un dictionnaire\n");
     printf("6) Rechercher un mot dans un dictionnaire\n");
     printf("7) Quitter l'application\n");    
 }
@@ -370,12 +374,12 @@ void printMenu(dictionary* dicInUse){
 // @param numberOfDic : number of dictionary in memory
 void printLibrary(dictionary* library, int numberOfDic){
     dictionary* dictionary = library;
-    printf("BibliothÃ¨que :\n");
+    printf("Bibliothèque :\n");
    	printf("---------------------------------------\n");
     int count=0;
     int i;
 	for (i = 0; i < numberOfDic; ++i){
-        printf("Dictionnaire nÂ°%d : %s\n",count+1,dictionary->name);
+        printf("Dictionnaire n°%d : %s\n",count+1,dictionary->name);
         if(dictionary->description[0] != '\n'){
             printf("desc : >%s<\n",dictionary->description );
         }
@@ -425,7 +429,7 @@ void menu(dictionary* library){
                 if(isDicInMem){
                  	chooseDicMenu(library,numberOfDic,&dicInUse);
                 }else{
-                    printf("Veuillez d'abord crÃ©er ou charger un dictionnaire\n");                
+                    printf("Veuillez d'abord créer ou charger un dictionnaire\n");                
                 }                
                 printMenu(dicInUse);
                 while((choice = numericUserInput(">",input,255, 1, 8)) == -1);
@@ -441,7 +445,7 @@ void menu(dictionary* library){
                 if(isDicInMem){
                     eraseDicMenu(library,numberOfDic,&dicInUse);
                 }else{
-                    printf("Veuillez d'abord crÃ©er un dictionnaire\n");                
+                    printf("Veuillez d'abord créer un dictionnaire\n");                
                 }
                 printMenu(dicInUse);
                 while((choice = numericUserInput(">",input,255, 1, 8)) == -1);
@@ -576,7 +580,7 @@ void test(int verbose){
     char* emptyString = "";
     char* uncompatibleString = "MAJUSCULE";
     char* uncompatibleString2 = "./..";
-    char* uncompatibleString3 = "&@Ã ";
+    char* uncompatibleString3 = "&@à";
     
 
     
