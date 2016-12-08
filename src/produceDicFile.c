@@ -13,6 +13,9 @@ int main(){
 	int i,j;
 	char fileName[255];
 	int noWordToInsert;
+	
+	int OFFSET='a';
+	int NBLETTERINSCOPE=((165-'!')+1);
     
 	printf("choose file name\n>");
     // fgets(fileName,254,stdin); // en attendant le flush() 
@@ -29,7 +32,7 @@ int main(){
 		randomNbLetterInWord = (rand()%MAXNBLETTERINWORD)+1;    //returns a pseudo-random integer between 0 and RAND_MAX
 		for (j = 0; j < randomNbLetterInWord; ++j)
 		{	    
-			fputc( (rand()%26)+97, file );
+			fputc( (rand()%NBLETTERINSCOPE)+OFFSET, file );
 		}
 		fputc('\n',file);
     }
