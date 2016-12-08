@@ -33,8 +33,9 @@ int userInput (char *prmpt, char *buff, size_t sz) {
         fflush (stdout);
     }
 
-    fgets(buff, sz, stdin);
-
+    if(fgets(buff, sz, stdin) == NULL){
+        return NO_INPUT;
+    }
     if(*buff == '\n'){
         return NO_INPUT;
     }
