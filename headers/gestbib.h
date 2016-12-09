@@ -5,16 +5,32 @@
 // 0 : a (97) -> z (122)
 // 1 : ! (33) -> ~ (126)
 // 2 : ! (33) -> ÿ (255)
+// #if (SETOFLETTERSACCEPTED == 0)
+// 	#define OFFSETASCII (97)
+// 	#define NBLETTERACCEPTED (25)
+// #elif (SETOFLETTERSACCEPTED == 1)
+// 	#define OFFSETASCII (33)
+// 	#define NBLETTERACCEPTED (25)
+// #elif (SETOFLTETERSACCEPTED == 2)
+// 	#define OFFSETASCII (33)
+// 	#define NBLETTERACCEPTED (47)
+// #elif (SETOFLTETERSACCEPTED == 3)
+// 	#define OFFSETASCII (33)
+// 	#define NBLETTERACCEPTED (222)
+// #endif
+
+
 #if (SETOFLETTERSACCEPTED == 0)
-	#define OFFSETASCII ('a')
-	#define NBLETTERACCEPTED (('z'-'a')+1)
+       #define OFFSETASCII ('a')
+       #define NBLETTERACCEPTED (('z'-'a')+1)
 #elif (SETOFLETTERSACCEPTED == 1)
-	#define OFFSETASCII (33)
-	#define NBLETTERACCEPTED ((126-33)+1)
+       #define OFFSETASCII (33)
+       #define NBLETTERACCEPTED ((126-33)+1)
 #elif (SETOFLETTERSACCEPTED == 2)
-	#define OFFSETASCII (33)
-	#define NBLETTERACCEPTED ((255-33)+1)
+       #define OFFSETASCII (33)
+       #define NBLETTERACCEPTED ((255-33)+1)
 #endif
+
 
 static const short MAXNBLETTERINWORD = 30;
 
