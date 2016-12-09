@@ -1,35 +1,45 @@
 #ifndef SETOFLETTERSACCEPTED
     #define SETOFLETTERSACCEPTED (0)
 #endif
+// The following variable allow change the  used set of letters for dictionary
+// O -> "abcdefghijklmnopqrstuvwxyz" ISO8859-1 : 97 -> 122
+// 1 -> "ABCDEFGHIJKLMNOPQRSTUVWXYZ" ISO8859-1 : 65 -> 90
+// 2 -> "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ" ISO8859-1 : 65 -> 122
+// 3 -> "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ" ISO8859-1 : 48 -> 90
+// 4 -> ALL ISO8859-1 : 33 -> 255
+
 // Set of letters ; IS0-8859-1
 // 0 : a (97) -> z (122)
 // 1 : ! (33) -> ~ (126)
 // 2 : ! (33) -> ÿ (255)
-// #if (SETOFLETTERSACCEPTED == 0)
-// 	#define OFFSETASCII (97)
-// 	#define NBLETTERACCEPTED (25)
-// #elif (SETOFLETTERSACCEPTED == 1)
-// 	#define OFFSETASCII (33)
-// 	#define NBLETTERACCEPTED (25)
-// #elif (SETOFLTETERSACCEPTED == 2)
-// 	#define OFFSETASCII (33)
-// 	#define NBLETTERACCEPTED (47)
-// #elif (SETOFLTETERSACCEPTED == 3)
-// 	#define OFFSETASCII (33)
-// 	#define NBLETTERACCEPTED (222)
-// #endif
-
-
 #if (SETOFLETTERSACCEPTED == 0)
-       #define OFFSETASCII ('a')
-       #define NBLETTERACCEPTED (('z'-'a')+1)
+	#define OFFSET_ISO8859 (97)
+	#define LAST_LETTER_ACCEPTED (122)
 #elif (SETOFLETTERSACCEPTED == 1)
-       #define OFFSETASCII (33)
-       #define NBLETTERACCEPTED ((126-33)+1)
-#elif (SETOFLETTERSACCEPTED == 2)
-       #define OFFSETASCII (33)
-       #define NBLETTERACCEPTED ((255-33)+1)
+	#define OFFSET_ISO8859 (65)
+	#define LAST_LETTER_ACCEPTED (90)
+#elif (SETOFLTETERSACCEPTED == 2)
+	#define OFFSET_ISO8859 (65)
+	#define LAST_LETTER_ACCEPTED (122)
+#elif (SETOFLTETERSACCEPTED == 3)
+	#define OFFSET_ISO8859 (48)
+	#define LAST_LETTER_ACCEPTED (90)
+#elif (SETOFLTETERSACCEPTED == 3)
+	#define OFFSET_ISO8859 (33)
+	#define LAST_LETTER_ACCEPTED (255)
 #endif
+
+
+// #if (SETOFLETTERSACCEPTED == 0)
+//        #define OFFSET_ISO8859 ('a')
+//        #define LAST_LETTER_ACCEPTED (('z'-'a')+1)
+// #elif (SETOFLETTERSACCEPTED == 1)
+//        #define OFFSET_ISO8859 (33)
+//        #define LAST_LETTER_ACCEPTED ((126-33)+1)
+// #elif (SETOFLETTERSACCEPTED == 2)
+//        #define OFFSET_ISO8859 (33)
+//        #define LAST_LETTER_ACCEPTED ((255-33)+1)
+// #endif
 
 
 static const short MAXNBLETTERINWORD = 30;
@@ -39,7 +49,7 @@ static const short MAXNBLETTERINWORD = 30;
 // Struct node that compose a tree in which we will store our words
 typedef struct __attribute__((__packed__)) node{
     short endOfWord;
-    unsigned int letter[NBLETTERACCEPTED];
+    unsigned int letter[LAST_LETTER_ACCEPTED-OFFSET_ISO8859];
 }node;
 // Struct dictionary that  allow to save a name, description, number of word and the root of the tree that save words in dictionary
 typedef struct dictionary{

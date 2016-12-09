@@ -39,11 +39,11 @@ int addWord(unsigned int tree,char* wordToAdd){
         return sanReturn;
     }else{
         while(wordToAdd[i] != '\0'){
-            if(!map[tree].letter[wordToAdd[i] - OFFSETASCII]){
-                map[tree].letter[wordToAdd[i] - OFFSETASCII] = next;
+            if(!map[tree].letter[wordToAdd[i] - OFFSET_ISO8859]){
+                map[tree].letter[wordToAdd[i] - OFFSET_ISO8859] = next;
                 next ++;
             }
-            tree = map[tree].letter[wordToAdd[i] - OFFSETASCII] ;
+            tree = map[tree].letter[wordToAdd[i] - OFFSET_ISO8859] ;
             i++;
         }
         if (map[tree].endOfWord == 1){
@@ -74,10 +74,10 @@ int searchWord(unsigned int tree,char* wordToSearch){
         return sanReturn;
     }else{
         while(wordToSearch[i] != '\0'){
-            if(!map[tree].letter[wordToSearch[i] - OFFSETASCII]){
+            if(!map[tree].letter[wordToSearch[i] - OFFSET_ISO8859]){
                 return 0;
             }
-            tree = map[tree].letter[wordToSearch[i] - OFFSETASCII] ;
+            tree = map[tree].letter[wordToSearch[i] - OFFSET_ISO8859] ;
             i++;
         }
         if(map[tree].endOfWord == 1){
@@ -99,10 +99,10 @@ int supWord(unsigned int tree,char* wordToSup){
         return sanReturn;
     }else{
         while(wordToSup[i] != '\0'){
-            if(!map[tree].letter[wordToSup[i] - OFFSETASCII]){
+            if(!map[tree].letter[wordToSup[i] - OFFSET_ISO8859]){
                 return 0;
             }
-            tree = map[tree].letter[wordToSup[i] - OFFSETASCII] ;
+            tree = map[tree].letter[wordToSup[i] - OFFSET_ISO8859] ;
             i++;
         }
         if(map[tree].endOfWord == 0){
@@ -141,9 +141,9 @@ int sanitiseWordForDictionary(char* word){
     }
     // TODO letter é è à ... provoque problem ascii = -61 -> ignored
     for (int i = 0; i < strlen(word); ++i){
-        if((unsigned char)word[i] < OFFSETASCII || (unsigned char)word[i] > OFFSETASCII+NBLETTERACCEPTED){
+        if((unsigned char)word[i] < OFFSET_ISO8859 || (unsigned char)word[i] > LAST_LETTER_ACCEPTED){
             if(DEBUG >= 3){
-                printf("i=%d word >%s< has been ignored because it contains an unaccepted char (%c)[%u] <%u>\n",i,word,word[i],(unsigned char)word[i],OFFSETASCII+NBLETTERACCEPTED );
+                printf("i=%d word >%s< has been ignored because it contains an unaccepted char (%c)[%u] <%u>\n",i,word,word[i],(unsigned char)word[i],LAST_LETTER_ACCEPTED );
             }
             return -2;
         }
