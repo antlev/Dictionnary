@@ -422,7 +422,7 @@ dictionary* init(){
         }
     } while(map == (void*)-1);
     if(DEBUG >= 1){
-        printf("DEBU>>>Mmap a alloué un espace de %ld bits\n",mmapVirtualMem );
+        printf("DEBUG>>>Mmap a alloué un espace de %ld bits\n",mmapVirtualMem );
     }
     dictionary* library = calloc(sizeof(dictionary),1);
     return library;
