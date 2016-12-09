@@ -1,5 +1,5 @@
-#ifndef SETOFLETTERSACCEPTED
-    #define SETOFLETTERSACCEPTED (2)
+#ifndef SET_OF_LETTERS_ACCEPTED
+    #define SET_OF_LETTERS_ACCEPTED (2)
 #endif
 // The following variable allow change the  used set of letters for dictionary
 // O -> "abcdefghijklmnopqrstuvwxyz" ISO8859-1 : 97 -> 122
@@ -7,19 +7,19 @@
 // 2 -> "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ" ISO8859-1 : 65 -> 122
 // 3 -> "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ" ISO8859-1 : 48 -> 90
 // 4 -> ALL ISO8859-1 : 33 -> 255
-#if (SETOFLETTERSACCEPTED == 0)
+#if (SET_OF_LETTERS_ACCEPTED == 0)
 	#define OFFSET_ISO8859 (97)
 	#define LAST_LETTER_ACCEPTED (122)
-#elif (SETOFLETTERSACCEPTED == 1)
+#elif (SET_OF_LETTERS_ACCEPTED == 1)
 	#define OFFSET_ISO8859 (65)
 	#define LAST_LETTER_ACCEPTED (90)
-#elif (SETOFLETTERSACCEPTED == 2)
+#elif (SET_OF_LETTERS_ACCEPTED == 2)
 	#define OFFSET_ISO8859 (65)
 	#define LAST_LETTER_ACCEPTED (122)
-#elif (SETOFLETTERSACCEPTED == 3)
+#elif (SET_OF_LETTERS_ACCEPTED == 3)
 	#define OFFSET_ISO8859 (48)
 	#define LAST_LETTER_ACCEPTED (90)
-#elif (SETOFLETTERSACCEPTED == 4)
+#elif (SET_OF_LETTERS_ACCEPTED == 4)
 	#define OFFSET_ISO8859 (33)
 	#define LAST_LETTER_ACCEPTED (255)
 #endif
