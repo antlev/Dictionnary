@@ -16,16 +16,16 @@ endif
 endif
 endif
 
-ifeq  ($(LETTERSET),1)
+ifeq  ($(LETTER_SET),1)
 	CFLAGS +=-DSET_OF_LETTERS_ACCEPTED=1
 else
-ifeq ($(LETTERSET),2)
+ifeq ($(LETTER_SET),2)
 	CFLAGS +=-DSET_OF_LETTERS_ACCEPTED=2
 else 
-ifeq ($(LETTERSET),3)
+ifeq ($(LETTER_SET),3)
 	CFLAGS +=-DSET_OF_LETTERS_ACCEPTED=3
 else
-ifeq ($(LETTERSET),4)
+ifeq ($(LETTER_SET),4)
 	CFLAGS +=-DSET_OF_LETTERS_ACCEPTED=4
 endif
 endif

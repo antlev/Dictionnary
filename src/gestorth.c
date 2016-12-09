@@ -12,14 +12,18 @@
 #ifndef DEBUG
     #define DEBUG (0)
 #endif
-
 extern node* map;
+long nbNodeParcoured = 0;
 
 // Search recursivly in the dictionary
 // @param tree : root of the dictionary
 // @param word : strig use to store word while recursively browsing into dictionary
 // @param level  used to store the current level in tree
 unsigned int getAllWordInDictionary(unsigned int tree,char* word,short level){
+    nbNodeParcoured++;
+    if(DEBUG >= 3){
+        printf("getAllWordInDictionary is called\n");
+    }
     int i=0;
     if(map[tree].endOfWord == 1){
         word[level] = '\0';
@@ -38,18 +42,16 @@ unsigned int getAllWordInDictionary(unsigned int tree,char* word,short level){
         // printf(" has been found in dictionary\n");
     }
     unsigned int res = 0;
-    for (i = 0; i < 26; ++i){
+    for (i = 0; i < LAST_LETTER_ACCEPTED-OFFSET_ISO8859; ++i){
         if(map[tree].letter[i] != 0){        
             // printf("DEBUG>>>letter %c spotted ! \n",i+97);
-            word[level] = i+97;
+            word[level] = i+OFFSET_ISO8859;
             res = getAllWordInDictionary(map[tree].letter[i],word,level+1);
             word[level] = '\0';
         }
     }
     return res;
  }
-int nbNodeParcoured = 0;
-int levenstein = 0;
 // Search recursivly in the dictionary for word that have a levenstein distance smaller than threshold and print them on screen
 // @param tree : root of the dictionary
 // @param word : strig use to store word while recursively browsing into dictionary
@@ -67,7 +69,6 @@ unsigned int levensteinInDictionary(unsigned int tree,short level,char* wordToCo
         // printf("DEBUG>>End of word!!\n");
         word[level] = '\0';
         if((distance = DamerauLevenshteinDistance(word,wordToCompare)) <= threshold){
-        	levenstein++;
             *found = 1;
             printf("word >%s< has a levenstein difference of %d with >%s<\n",word,distance,wordToCompare);
         }else{
@@ -77,9 +78,9 @@ unsigned int levensteinInDictionary(unsigned int tree,short level,char* wordToCo
         }
     }
     unsigned int res = 0;
-    for (i = 0; i < 26; ++i){
+    for (i = 0; i < LAST_LETTER_ACCEPTED-OFFSET_ISO8859; ++i){
         if(map[tree].letter[i] != 0){ 
-            // Pruning (Ã©lagage)       
+            // Pruning (élagage)       
             // printf("DEBUG>>>letter %c spotted ! \n",i+97);
             if(strchr(wordToCompare,i+97) == NULL){
                 if(diff > threshold){
@@ -87,7 +88,7 @@ unsigned int levensteinInDictionary(unsigned int tree,short level,char* wordToCo
                }
                diff++;
             }
-            word[level] = i+97;
+            word[level] = i+OFFSET_ISO8859;
             res = levensteinInDictionary(map[tree].letter[i],level+1,wordToCompare,threshold,diff,word,found);
             word[level] = '\0';
         }

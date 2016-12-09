@@ -22,6 +22,8 @@
 #define EXIT_SUCCESS 0
 #define EXIT_FAILURE 1
 
+extern long nbNodeParcoured;
+
 node* map=0;
 long int mmapVirtualMem=-1;
 long int next=1; 
@@ -168,15 +170,15 @@ void addWordMenu(dictionary* dictionary){
     int addWordReturn;
     unsigned int tree = dictionary->tree;
     char wordToInsert[MAXNBLETTERINWORD];    
-    while(userInput("Veuillez entrer le mot ?ins?er dans le dictionnaire\n>",wordToInsert,MAXNBLETTERINWORD) != 0);
+    while(userInput("Veuillez entrer le mot à insérer dans le dictionnaire\n>",wordToInsert,MAXNBLETTERINWORD) != 0);
     
     if((addWordReturn = addWord(tree,wordToInsert)) == 0){
         dictionary->nbWord++;
-        printf("Le mot %s a ??ajout?au dictionnaire %s\n",wordToInsert,dictionary->name );
+        printf("Le mot %s a été ajouté au dictionnaire %s\n",wordToInsert,dictionary->name );
     }else if(addWordReturn == 1){
-        printf("Le mot %s ?iste d??dans le dictionnaire %s\n",wordToInsert,dictionary->name );
+        printf("Le mot %s éxiste déjà dans le dictionnaire %s\n",wordToInsert,dictionary->name );
     }else{
-        printf("Le mot %s contient des caract?es non support? %s\n",wordToInsert,dictionary->name );
+        printf("Le mot %s contient des caractères non supportés %s\n",wordToInsert,dictionary->name );
     }
 }
 // Prompt a word and call searchWord() to search it to the dictionary
@@ -189,7 +191,7 @@ void searchWordMenu(dictionary* dictionary){
     unsigned long int startMeasuringTime;
     unsigned long int finishMeasuringTime;
 
-    while(userInput("Veuillez entrer le mot ?chercher dans le dictionnaire\n>",wordToSearch,MAXNBLETTERINWORD) != 0);
+    while(userInput("Veuillez entrer le mot à rechercher dans le dictionnaire\n>",wordToSearch,MAXNBLETTERINWORD) != 0);
    
     startMeasuringTime = getTime();
     if(searchWord(tree,wordToSearch)){
@@ -240,7 +242,7 @@ void buildDicWithFileMenu(dictionary** library,int* numberOfDic,dictionary** dic
     char input[2];
 
     if(*numberOfDic == 0){
-        while(userInput("Vous n'avez pas de dictionnaire en m?oire voulez vous en cr?r un ? (O/N)\n>",input,4) != 0);
+        while(userInput("Vous n'avez pas de dictionnaire en mémoire voulez vous en créer un ? (O/N)\n>",input,4) != 0);
         if(input[0] == 'O' || input[0] == 'o'){
             addDicMenu(library,*numberOfDic,dicInUse);
             (*numberOfDic)++;
@@ -249,7 +251,7 @@ void buildDicWithFileMenu(dictionary** library,int* numberOfDic,dictionary** dic
         }
     } else {
         do{
-            while(userInput("Voulez vous (C)r?r un nouveau dictionnaire ou (A)jouter le fichier ?un dictionnaire existant ?\n>",input,4) != 0);
+            while(userInput("Voulez vous (C)réer un nouveau dictionnaire ou (A)jouter le fichier à un dictionnaire existant ?\n>",input,4) != 0);
         }
         while(input[0] != 'a' && input[0] != 'A' && input[0] != 'c' && input[0] != 'C');
 
@@ -284,9 +286,9 @@ void chooseDicMenu(dictionary* library,int numberOfDic,dictionary** dicInUse){
     char* input = malloc(sizeof(int));
 
     printLibrary(library,numberOfDic);
-    while((numOfDicToUse = numericUserInput("Veuillez entrer le num?o du dictionnaire que vous voulez utiliser ?\n>",input,4,1,(short)numberOfDic)) == -1);
+    while((numOfDicToUse = numericUserInput("Veuillez entrer le numéro du dictionnaire que vous voulez utiliser\n>",input,4,1,(short)numberOfDic)) == -1);
     
-    *dicInUse += numOfDicToUse-1; // using the dictionary n? numOfDicToUse of library
+    *dicInUse += numOfDicToUse-1; // using the dictionary n° numOfDicToUse of library
 }
 // -------------------------- Dictionary manipulation functions --------------------------
 // Add a new dictionary with the name and description passed as parameters
@@ -353,7 +355,7 @@ int loadDictionaryFromFile(char pathToDicFile[255],dictionary* dicInUse){
             wordIgnored++;
         }
     }
-    printf("Nombre de mots ajout?= %d Nombre de mots ignor?= %d\n",wordAdded,wordIgnored );
+    printf("Nombre de mots ajouté= %d Nombre de mots ignoré= %d\n",wordAdded,wordIgnored );
     fclose(inputFile);
     if(line){
         free(line);
@@ -366,11 +368,11 @@ void printMenu(dictionary* dicInUse){
     if(dicInUse->name){
         printf("---------- Vous utilisez maintenant le dictionnaire %s ----------\n",dicInUse->name);
     }
-    printf("1) Cr?r un fichier dictionnaire\n");
+    printf("1) Créer un fichier dictionnaire\n");
     printf("2) Utiliser un dictionnaire existant\n");
-    printf("3) Fabriquer un dictionnaire ?partir d'un fichier texte\n");
-    printf("4) D?ruire un fichier dictionnaire\n");
-    printf("5) Ins?er un mot dans un dictionnaire\n");
+    printf("3) Fabriquer un dictionnaire à partir d'un fichier texte\n");
+    printf("4) Déruire un fichier dictionnaire\n");
+    printf("5) Insérer un mot dans un dictionnaire\n");
     printf("6) Rechercher un mot dans un dictionnaire\n");
     printf("7) Quitter l'application\n");    
 }
@@ -379,12 +381,12 @@ void printMenu(dictionary* dicInUse){
 // @param numberOfDic : number of dictionary in memory
 void printLibrary(dictionary* library, int numberOfDic){
     dictionary* dictionary = library;
-    printf("Biblioth?ue :\n");
+    printf("Bibliothèque :\n");
    	printf("---------------------------------------\n");
     int count=0;
     int i;
 	for (i = 0; i < numberOfDic; ++i){
-        printf("Dictionnaire n?%d : %s\n",count+1,dictionary->name);
+        printf("Dictionnaire n°%d : %s\n",count+1,dictionary->name);
         if(dictionary->description[0] != '\n'){
             printf("desc : >%s<\n",dictionary->description );
         }
@@ -434,7 +436,7 @@ void menu(dictionary* library){
                 if(isDicInMem){
                  	chooseDicMenu(library,numberOfDic,&dicInUse);
                 }else{
-                    printf("Veuillez d'abord cr?r ou charger un dictionnaire\n");                
+                    printf("Veuillez d'abord créer ou charger un dictionnaire\n");                
                 }                
                 printMenu(dicInUse);
                 while((choice = numericUserInput(">",input,255, 1, 8)) == -1);
@@ -450,7 +452,7 @@ void menu(dictionary* library){
                 if(isDicInMem){
                     eraseDicMenu(library,numberOfDic,&dicInUse);
                 }else{
-                    printf("Veuillez d'abord cr?r un dictionnaire\n");                
+                    printf("Veuillez d'abord créer un dictionnaire\n");                
                 }
                 printMenu(dicInUse);
                 while((choice = numericUserInput(">",input,255, 1, 8)) == -1);
@@ -496,25 +498,30 @@ void menu(dictionary* library){
 
                     printf("---------- TEST ----------\n");
                     char* word = calloc(sizeof(char)*256,1);
-
-
                     printf("Dictionary %s :\n", dicInUse->name);
 
+                    nbNodeParcoured=0;
                     startMeasuringTime = getTime();
                     getAllWordInDictionary(dicInUse->tree,word,0);
                     finishMeasuringTime = getTime();
-                    printf("%ld milliseconds to access all dictionary's word\n",(finishMeasuringTime-startMeasuringTime) );
+                    if(DEBUG){
+                        printf("%ld milliseconds to access all dictionary's word\n",(finishMeasuringTime-startMeasuringTime) );
+                        printf("Nombre  de noeuds parcouru = %ld\n",nbNodeParcoured );
+                    }
                     
+                    nbNodeParcoured=0;
                     printf("Searching for a word looking like 'titi' \n");
                     startMeasuringTime = getTime();
                     levensteinInDictionary(dicInUse->tree,0,"titi",2,0,word,found);
                     finishMeasuringTime = getTime();
-                    printf("found=%d\n",*found );
+
                     if(!*found){
                         printf("no word seems to look like titi \n");
                     }
-                    // printf("nbNodeParcoured=%d\n",nbNodeParcoured );
-                    printf("%ld milliseconds to access all dictionary's word and compare the levenstein distance with 'titi'\n",(finishMeasuringTime-startMeasuringTime) );
+                    if(DEBUG){
+                        printf("nbNodeParcoured=%ld\n",nbNodeParcoured );
+                        printf("%ld milliseconds to access all dictionary's word and compare the levenstein distance with 'titi'\n",(finishMeasuringTime-startMeasuringTime) );
+                    }
                 }else{
                     printf("Veuillez d'abord charger un dictionnaire\n");
                 }
