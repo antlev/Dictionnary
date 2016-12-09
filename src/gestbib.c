@@ -15,10 +15,15 @@
     #define DEBUG (0)
 #endif
 
+#ifndef VIRTUAL_MEM_SIZE_MAX
+    #define VIRTUAL_MEM_SIZE_MAX (1L<<35)
+#endif
+
 #define EXIT_SUCCESS 0
 #define EXIT_FAILURE 1
 
 node* map=0;
+long int mmapVirtualMem=-1;
 long int next=1; 
 // -------------------------- Tree manipulation functions --------------------------
 
@@ -44,7 +49,7 @@ int addWord(unsigned int tree,char* wordToAdd){
                 next ++;
             }
             tree = map[tree].letter[wordToAdd[i] - OFFSET_ISO8859] ;
-            i++;
+            ++i;
         }
         if (map[tree].endOfWord == 1){
             if(DEBUG >= 3){
@@ -78,7 +83,7 @@ int searchWord(unsigned int tree,char* wordToSearch){
                 return 0;
             }
             tree = map[tree].letter[wordToSearch[i] - OFFSET_ISO8859] ;
-            i++;
+            ++i;
         }
         if(map[tree].endOfWord == 1){
             return 1;
@@ -103,13 +108,13 @@ int supWord(unsigned int tree,char* wordToSup){
                 return 0;
             }
             tree = map[tree].letter[wordToSup[i] - OFFSET_ISO8859] ;
-            i++;
+            ++i;
         }
         if(map[tree].endOfWord == 0){
             return 0;
         }else{
             map[tree].endOfWord = 0 ;
-            i--;
+            --i;
             while(i >= 0){
                 for (j = 0; j < 26; ++j){
                     if(map[tree].letter[j]){
@@ -119,7 +124,7 @@ int supWord(unsigned int tree,char* wordToSup){
                 // TODO
                 // tree = &tree;
                 // free(map[tree].letter[i]);
-                i--;
+                --i;
             }
             return 1;   
         }
@@ -139,7 +144,7 @@ int sanitiseWordForDictionary(char* word){
         }
             return -1;
     }
-    // TODO letter é è à ... provoque problem ascii = -61 -> ignored
+    // TODO letter ???... provoque problem ascii = -61 -> ignored
     for (int i = 0; i < strlen(word); ++i){
         if((unsigned char)word[i] < OFFSET_ISO8859 || (unsigned char)word[i] > LAST_LETTER_ACCEPTED){
             if(DEBUG >= 3){
@@ -163,15 +168,15 @@ void addWordMenu(dictionary* dictionary){
     int addWordReturn;
     unsigned int tree = dictionary->tree;
     char wordToInsert[MAXNBLETTERINWORD];    
-    while(userInput("Veuillez entrer le mot à insérer dans le dictionnaire\n>",wordToInsert,MAXNBLETTERINWORD) != 0);
+    while(userInput("Veuillez entrer le mot ?ins?er dans le dictionnaire\n>",wordToInsert,MAXNBLETTERINWORD) != 0);
     
     if((addWordReturn = addWord(tree,wordToInsert)) == 0){
         dictionary->nbWord++;
-        printf("Le mot %s a été ajouté au dictionnaire %s\n",wordToInsert,dictionary->name );
+        printf("Le mot %s a ??ajout?au dictionnaire %s\n",wordToInsert,dictionary->name );
     }else if(addWordReturn == 1){
-        printf("Le mot %s éxiste déjà dans le dictionnaire %s\n",wordToInsert,dictionary->name );
+        printf("Le mot %s ?iste d??dans le dictionnaire %s\n",wordToInsert,dictionary->name );
     }else{
-        printf("Le mot %s contient des caractères non supportés %s\n",wordToInsert,dictionary->name );
+        printf("Le mot %s contient des caract?es non support? %s\n",wordToInsert,dictionary->name );
     }
 }
 // Prompt a word and call searchWord() to search it to the dictionary
@@ -184,7 +189,7 @@ void searchWordMenu(dictionary* dictionary){
     unsigned long int startMeasuringTime;
     unsigned long int finishMeasuringTime;
 
-    while(userInput("Veuillez entrer le mot à chercher dans le dictionnaire\n>",wordToSearch,MAXNBLETTERINWORD) != 0);
+    while(userInput("Veuillez entrer le mot ?chercher dans le dictionnaire\n>",wordToSearch,MAXNBLETTERINWORD) != 0);
    
     startMeasuringTime = getTime();
     if(searchWord(tree,wordToSearch)){
@@ -235,7 +240,7 @@ void buildDicWithFileMenu(dictionary** library,int* numberOfDic,dictionary** dic
     char input[2];
 
     if(*numberOfDic == 0){
-        while(userInput("Vous n'avez pas de dictionnaire en mémoire voulez vous en créer un ? (O/N)\n>",input,4) != 0);
+        while(userInput("Vous n'avez pas de dictionnaire en m?oire voulez vous en cr?r un ? (O/N)\n>",input,4) != 0);
         if(input[0] == 'O' || input[0] == 'o'){
             addDicMenu(library,*numberOfDic,dicInUse);
             (*numberOfDic)++;
@@ -244,7 +249,7 @@ void buildDicWithFileMenu(dictionary** library,int* numberOfDic,dictionary** dic
         }
     } else {
         do{
-            while(userInput("Voulez vous (C)réer un nouveau dictionnaire ou (A)jouter le fichier à un dictionnaire existant ?\n>",input,4) != 0);
+            while(userInput("Voulez vous (C)r?r un nouveau dictionnaire ou (A)jouter le fichier ?un dictionnaire existant ?\n>",input,4) != 0);
         }
         while(input[0] != 'a' && input[0] != 'A' && input[0] != 'c' && input[0] != 'C');
 
@@ -279,9 +284,9 @@ void chooseDicMenu(dictionary* library,int numberOfDic,dictionary** dicInUse){
     char* input = malloc(sizeof(int));
 
     printLibrary(library,numberOfDic);
-    while((numOfDicToUse = numericUserInput("Veuillez entrer le numéro du dictionnaire que vous voulez utiliser ?\n>",input,4,1,(short)numberOfDic)) == -1);
+    while((numOfDicToUse = numericUserInput("Veuillez entrer le num?o du dictionnaire que vous voulez utiliser ?\n>",input,4,1,(short)numberOfDic)) == -1);
     
-    *dicInUse += numOfDicToUse-1; // using the dictionary n° numOfDicToUse of library
+    *dicInUse += numOfDicToUse-1; // using the dictionary n? numOfDicToUse of library
 }
 // -------------------------- Dictionary manipulation functions --------------------------
 // Add a new dictionary with the name and description passed as parameters
@@ -348,7 +353,7 @@ int loadDictionaryFromFile(char pathToDicFile[255],dictionary* dicInUse){
             wordIgnored++;
         }
     }
-    printf("Nombre de mots ajouté = %d Nombre de mots ignoré = %d\n",wordAdded,wordIgnored );
+    printf("Nombre de mots ajout?= %d Nombre de mots ignor?= %d\n",wordAdded,wordIgnored );
     fclose(inputFile);
     if(line){
         free(line);
@@ -361,11 +366,11 @@ void printMenu(dictionary* dicInUse){
     if(dicInUse->name){
         printf("---------- Vous utilisez maintenant le dictionnaire %s ----------\n",dicInUse->name);
     }
-    printf("1) Créer un fichier dictionnaire\n");
+    printf("1) Cr?r un fichier dictionnaire\n");
     printf("2) Utiliser un dictionnaire existant\n");
-    printf("3) Fabriquer un dictionnaire à partir d'un fichier texte\n");
-    printf("4) Détruire un fichier dictionnaire\n");
-    printf("5) Insérer un mot dans un dictionnaire\n");
+    printf("3) Fabriquer un dictionnaire ?partir d'un fichier texte\n");
+    printf("4) D?ruire un fichier dictionnaire\n");
+    printf("5) Ins?er un mot dans un dictionnaire\n");
     printf("6) Rechercher un mot dans un dictionnaire\n");
     printf("7) Quitter l'application\n");    
 }
@@ -374,12 +379,12 @@ void printMenu(dictionary* dicInUse){
 // @param numberOfDic : number of dictionary in memory
 void printLibrary(dictionary* library, int numberOfDic){
     dictionary* dictionary = library;
-    printf("Bibliothèque :\n");
+    printf("Biblioth?ue :\n");
    	printf("---------------------------------------\n");
     int count=0;
     int i;
 	for (i = 0; i < numberOfDic; ++i){
-        printf("Dictionnaire n°%d : %s\n",count+1,dictionary->name);
+        printf("Dictionnaire n?%d : %s\n",count+1,dictionary->name);
         if(dictionary->description[0] != '\n'){
             printf("desc : >%s<\n",dictionary->description );
         }
@@ -429,7 +434,7 @@ void menu(dictionary* library){
                 if(isDicInMem){
                  	chooseDicMenu(library,numberOfDic,&dicInUse);
                 }else{
-                    printf("Veuillez d'abord créer ou charger un dictionnaire\n");                
+                    printf("Veuillez d'abord cr?r ou charger un dictionnaire\n");                
                 }                
                 printMenu(dicInUse);
                 while((choice = numericUserInput(">",input,255, 1, 8)) == -1);
@@ -445,7 +450,7 @@ void menu(dictionary* library){
                 if(isDicInMem){
                     eraseDicMenu(library,numberOfDic,&dicInUse);
                 }else{
-                    printf("Veuillez d'abord créer un dictionnaire\n");                
+                    printf("Veuillez d'abord cr?r un dictionnaire\n");                
                 }
                 printMenu(dicInUse);
                 while((choice = numericUserInput(">",input,255, 1, 8)) == -1);
@@ -475,7 +480,7 @@ void menu(dictionary* library){
             case 7:
                 printf("Au-revoir\n");
                 free(library);
-                munmap(map,1L<<32);
+                munmap(map,mmapVirtualMem);
                 exit(0);
             break;
             case 8:
@@ -523,8 +528,19 @@ void menu(dictionary* library){
 }
 // Function executed when program is launched
 dictionary* init(){
+    mmapVirtualMem = VIRTUAL_MEM_SIZE_MAX;
     // Using mmap instead of pointer to reduce the space used by one node
-    map = mmap(0,1L<<32,PROT_WRITE|PROT_READ,MAP_SHARED|MAP_ANONYMOUS,0,0);
+    do{
+        mmapVirtualMem /= 2;
+        assert(mmapVirtualMem > 0);
+        map = mmap(0,mmapVirtualMem,PROT_WRITE|PROT_READ,MAP_SHARED|MAP_ANONYMOUS,0,0);
+        printf("Trying to set virtual mem to %ld\n",mmapVirtualMem );
+
+
+    } while(map == (void*)-1);
+
+    printf("mmap set a virtual mem of %ld\n",mmapVirtualMem );
+
     dictionary* library = calloc(sizeof(dictionary),1);
     return library;
 }
@@ -580,7 +596,7 @@ void test(int verbose){
     char* emptyString = "";
     char* uncompatibleString = "MAJUSCULE";
     char* uncompatibleString2 = "./..";
-    char* uncompatibleString3 = "&@à";
+    char* uncompatibleString3 = "&@?";
     
 
     
