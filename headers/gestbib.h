@@ -80,6 +80,11 @@ void addWordMenu(dictionary* dictionary);
 // Prompt a word and call searchWord() to search it to the dictionary
 // @param dictionary : pointer on dictionary in which we want to search a word
 void searchWordMenu(dictionary* dictionary);
+// Prompt a file path and call loadDictionaryFromFile passing it the dicInUse
+// @param library : pointer on library
+// @param numberOfDic : pointer on total number of dictionary in memory
+// @param dicInUse : pointer on dictionary in use
+void buildDicWithFileMenu(dictionary** library,int* numberOfDic,dictionary** dicInUse);
 // Print the library and ask user to choose a dictionary
 // The choosen dictionary will be pointed by dicInUse
 // @param library : pointer on library
