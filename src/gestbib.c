@@ -55,13 +55,13 @@ int addWord(unsigned int tree,char* wordToAdd){
         }
         if (map[tree].endOfWord == 1){
             if(DEBUG >= 3){
-                printf("word >%s< already exist in dictionary\n",wordToAdd );
+                printf("DEBUG>>> Le mot >%s< éxiste déjà dans le dictionnaire\n",wordToAdd );
             }
             return 1;
         }else{
             map[tree].endOfWord = 1 ;
             if(DEBUG >= 3){
-                printf("word >%s< has been successfully added to dictionary\n", wordToAdd);
+                printf("DEBUG>>> Le mot >%s< a été ajouté avec succès dans le dictionnaire\n",wordToAdd );
             }
             return 0;
         }       
@@ -82,14 +82,23 @@ int searchWord(unsigned int tree,char* wordToSearch){
     }else{
         while(wordToSearch[i] != '\0'){
             if(!map[tree].letter[wordToSearch[i] - OFFSET_ISO8859]){
+                if(DEBUG >= 3){
+                    printf("DEBUG>>>Le mot %s n'a pas été trouvé dans le dictionnaire\n",wordToSearch );
+                }
                 return 0;
             }
             tree = map[tree].letter[wordToSearch[i] - OFFSET_ISO8859] ;
             ++i;
         }
         if(map[tree].endOfWord == 1){
+            if(DEBUG >= 3){
+                printf("DEBUG>>>Le mot %s a été trouvé dans le dictionnaire\n",wordToSearch );
+            }
             return 1;
         }else{
+            if(DEBUG >= 3){
+                printf("DEBUG>>>Le mot %s n'a pas été trouvé dans le dictionnaire\n",wordToSearch );
+            }
             return 0;
         }
     }
@@ -142,25 +151,18 @@ int sanitiseWordForDictionary(char* word){
     short posOfUnacceptedLetter=0;
     if(strlen(word) < 1){
         if(DEBUG >= 3){
-            printf("word >< has been ignored because it is empty\n" );
+            printf("DEBUG>>>Le mot a été ignoré car il est vide\n" );
         }
-            return -1;
+        return -1;
     }
-    // TODO letter ???... provoque problem ascii = -61 -> ignored
     for (int i = 0; i < strlen(word); ++i){
         if((unsigned char)word[i] < OFFSET_ISO8859 || (unsigned char)word[i] > LAST_LETTER_ACCEPTED){
             if(DEBUG >= 3){
-                printf("i=%d word >%s< has been ignored because it contains an unaccepted char (%c)[%u] <%u>\n",i,word,word[i],(unsigned char)word[i],LAST_LETTER_ACCEPTED );
+                printf("DEBUG>>>Le mot %s a été ignoré car il contient un caractère non supporté (%c)[%u]\n",word,word[i],(unsigned char)word[i] );
             }
             return -2;
         }
     }
-    // if( (posOfUnacceptedLetter = (strspn(word,"abcdefghijklmnopqrstuvwxyz"))) < strlen(word)){  
-    //     if(DEBUG >= 3){
-    //         printf("word >%s< has been ignored because it contains an unaccepted char (%c)\n",word,word[posOfUnacceptedLetter] );
-    //     }
-    //     return -2;
-    // }
     return 0;
 }
 // -------------------------- Programm functions's menu  --------------------------
@@ -201,7 +203,9 @@ void searchWordMenu(dictionary* dictionary){
         finishMeasuringTime = getTime();
         printf("Le mot \'%s\' N'EST PAS CONTENU dans le dictionnaire %s\n",wordToSearch,dictionary->name );
     }
-    printf("searchWord time = %ld\n",(finishMeasuringTime-startMeasuringTime) );
+    if(DEBUG >= 1){
+        printf("DEBUG>>>Temps de recherche : %ldms\n",(finishMeasuringTime-startMeasuringTime));
+    }
 }
 // Prompt user for a name and description and add a new dictionnnary to the library
 // @param library : pointer on library
@@ -265,13 +269,9 @@ void buildDicWithFileMenu(dictionary** library,int* numberOfDic,dictionary** dic
     
     while(userInput("Veuillez entrer le chemin du fichier dictionnaire\n>",pathToDicFile,255) != 0);
     
-    unsigned long int finishMeasuringTime;
-    unsigned long int startMeasuringTime = getTime();
+
     if(loadDictionaryFromFile(pathToDicFile,*dicInUse) != 1){
-        finishMeasuringTime = getTime();
-        if(DEBUG >= 1){
-            printf("Dictionary import time = %ld milliseconds\n",finishMeasuringTime-startMeasuringTime );
-        }
+        printf("Le fichier '%s' n'éxiste pas\n",pathToDicFile);
     }
  }
 // Print the library and ask user to choose a dictionary
@@ -298,30 +298,25 @@ void chooseDicMenu(dictionary* library,int numberOfDic,dictionary** dicInUse){
 // @param desc : description of dictionary to create
 // @param dicCreated : pointer on dictionary created
 void addDicAndUse(dictionary** library,int numberOfDic,char name[255],char desc[255],dictionary** dicCreated){
-
     if(numberOfDic){ // if numberOfDic=0, the first dictionary is already allocated by init()
         *library = realloc(*library,(numberOfDic+1)*sizeof(dictionary));
         memset(*library+numberOfDic,0,sizeof(dictionary)); // Setting new space to 0
     }
     *dicCreated = *library;
-
     (*dicCreated)+=numberOfDic;    
 
     strcpy((*dicCreated)->name,name);
     strcpy((*dicCreated)->description,desc);
     (*dicCreated)->nbWord=0;
-    // (*dicCreated)->tree = mmap(0, FILESIZE, PROT_READ | PROT_WRITE, MAP_SHARED,MAP_ANONYMOUS fd, 0);
 
-
-    // (*dicCreated)->tree = calloc(sizeof(node),1);
     (*dicCreated)->tree = next;
     next ++;
 
-    // (*dicCreated)->tree = calloc(sizeof(node),1);
     map[(*dicCreated)->tree].endOfWord = -1;
 }
 // Erase dictionary from memory
 void eraseDic(dictionary* library,int numberOfDicToDel){
+    //TODO
     // dictionnnary* dicToDel = library;
     // dicToDel+=numberOfDicToDel;
 }
@@ -340,12 +335,14 @@ int loadDictionaryFromFile(char pathToDicFile[255],dictionary* dicInUse){
 
     inputFile = fopen(pathToDicFile, "r");
     if (inputFile == NULL){
-        printf("File '%s' doesn't exist\n",pathToDicFile);
         return -1;
     }
+
+    unsigned long int finishMeasuringTime;
+    unsigned long int startMeasuringTime = getTime();
     while ((read = getline(&line, &len, inputFile)) != -1) {
         line[strlen(line)-1] = '\0';
-        if(DEBUG >= 2){
+        if(DEBUG >= 3){
             printf("Retrieved line %s of length %zu :\n",line, read-1);
         }
         if(addWord(dicInUse->tree,line) == 0){
@@ -354,6 +351,10 @@ int loadDictionaryFromFile(char pathToDicFile[255],dictionary* dicInUse){
         }else{
             wordIgnored++;
         }
+    }
+    finishMeasuringTime = getTime();
+    if(DEBUG >= 1){
+        printf("DEBUG>>>Temps d'importation du dictionnaire = %ldms\n",finishMeasuringTime-startMeasuringTime );
     }
     printf("Nombre de mots ajouté= %d Nombre de mots ignoré= %d\n",wordAdded,wordIgnored );
     fclose(inputFile);
@@ -388,7 +389,7 @@ void printLibrary(dictionary* library, int numberOfDic){
 	for (i = 0; i < numberOfDic; ++i){
         printf("Dictionnaire n°%d : %s\n",count+1,dictionary->name);
         if(dictionary->description[0] != '\n'){
-            printf("desc : >%s<\n",dictionary->description );
+            printf("description : >%s<\n",dictionary->description );
         }
         printf("Nombre de mots contenu dans le dictionnaire : %d\n",dictionary->nbWord );
         dictionary++;
