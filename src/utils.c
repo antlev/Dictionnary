@@ -5,6 +5,10 @@
 #include <math.h>
 
 #include "../headers/utils.h"
+// Allow us to set a $DEBUG at compilation
+#ifndef DEBUG
+    #define DEBUG (0)
+#endif
 
 #define OK       0
 #define NO_INPUT 1
@@ -16,6 +20,13 @@ unsigned long getTime(){
     gettimeofday(&tv,NULL);
     unsigned long millisec;
     return millisec = (tv.tv_usec / 1000)+(tv.tv_sec * 1000) ;
+}
+// @return the time of the day in milliseconds
+unsigned long getTimeMicro(){
+    struct timeval tv;
+    gettimeofday(&tv,NULL);
+    unsigned long microsec;
+    return microsec = tv.tv_sec * 1000000 + tv.tv_usec ;
 }
 // Function used to prompt something to user
 // @param prmpt : store the message to print on screen
@@ -83,5 +94,34 @@ int numericUserInput(char* prmpt, char* buff, size_t sz,short lowLimit,short hig
         }
     }else{
         return -1;
+    }
+}
+// What does the function is obvious
+void printMenu(dictionary* dicInUse,short main){
+    if(dicInUse->name){
+        printf("---------- Vous utilisez maintenant le dictionnaire %s ----------\n",dicInUse->name);
+    }
+    if(main == 1){
+        printf("1) Créer un fichier dictionnaire\n");
+        printf("2) Utiliser un dictionnaire existant\n");
+        printf("3) Fabriquer un dictionnaire à partir d'un fichier texte\n");
+        printf("4) Déruire un fichier dictionnaire\n");
+        printf("5) Insérer un mot dans un dictionnaire\n");
+        printf("6) Rechercher un mot dans un dictionnaire\n");
+        printf("7) Quitter l'application\n");    
+    }else if(main == 2){
+        printf("1) Tester la différence de deux mots\n");
+        printf("2) Quitter l'application\n");    
+    }else{
+        printf("1) Créer un fichier dictionnaire\n");
+        printf("2) Utiliser un dictionnaire existant\n");
+        printf("3) Fabriquer un dictionnaire à partir d'un fichier texte\n");
+        printf("4) Déruire un fichier dictionnaire\n");
+        printf("5) Insérer un mot dans un dictionnaire\n");
+        printf("6) Rechercher un mot dans un dictionnaire\n");
+        printf("7) Recherche avancée\n");
+        printf("8) Proposition de correction d'un fichier\n");
+        printf("9) Corriger un fichier\n");
+        printf("10) Quitter l'application\n");   
     }
 }

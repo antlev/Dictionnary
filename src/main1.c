@@ -1,14 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
-
 #include "../headers/gestbib.h"
 #include "../headers/utils.h"
 #include <sys/mman.h>
-
-
-#ifndef DEBUG
-    #define DEBUG (0)
-#endif
 
 extern node* map;
 extern long int mmapVirtualMem;
@@ -25,19 +19,19 @@ int main(int argc,char *argv[]){
     int numberOfDic = 0;
     dictionary* dicInUse = NULL;
 
-    printMenu(dicInUse);
-    
-    while((choice = numericUserInput(">",input,255, 1, 7)) == -1);
-
     do{
         isDicInMem = isDictionaryInMemory(library);
+        do{
+    	    printMenu(dicInUse,1);
+        } while((choice = numericUserInput(">",input,255, 1, 7)) == -1);
 
         switch(choice){
             case 1:
                 addDicMenu(&library,numberOfDic,&dicInUse);
                 numberOfDic++;
-                printMenu(dicInUse);
-                while((choice = numericUserInput(">",input,255, 1, 7)) == -1);
+                do{
+                	printMenu(dicInUse,1);
+                } while((choice = numericUserInput(">",input,255, 1, 7)) == -1);
 
             break;
             case 2:
@@ -46,14 +40,16 @@ int main(int argc,char *argv[]){
                 }else{
                     printf("Veuillez d'abord créer ou charger un dictionnaire\n");                
                 }                
-                printMenu(dicInUse);
-                while((choice = numericUserInput(">",input,255, 1, 7)) == -1);
+                do{
+                	printMenu(dicInUse,1);
+                } while((choice = numericUserInput(">",input,255, 1, 7)) == -1);
            
             break;
             case 3:
                 buildDicWithFileMenu(&library,&numberOfDic,&dicInUse);
-                printMenu(dicInUse);
-                while((choice = numericUserInput(">",input,255, 1, 7)) == -1);
+                do{
+                	printMenu(dicInUse,1);
+                } while((choice = numericUserInput(">",input,255, 1, 7)) == -1);
           
             break;
             case 4:
@@ -62,8 +58,9 @@ int main(int argc,char *argv[]){
                 }else{
                     printf("Veuillez d'abord créer un dictionnaire\n");                
                 }
-                printMenu(dicInUse);
-                while((choice = numericUserInput(">",input,255, 1, 7)) == -1);
+                do{
+                	printMenu(dicInUse,1);
+                } while((choice = numericUserInput(">",input,255, 1, 7)) == -1);
          
             break;
             case 5:
@@ -72,8 +69,9 @@ int main(int argc,char *argv[]){
                 }else{
                     printf("Veuillez d'abord charger un dictionnaire\n");
                 }
-                printMenu(dicInUse);
-                while((choice = numericUserInput(">",input,255, 1, 7)) == -1);
+                do{
+                	printMenu(dicInUse,1);
+                } while((choice = numericUserInput(">",input,255, 1, 7)) == -1);
 
                 choice = input[0]-48;            
             break;
@@ -83,8 +81,9 @@ int main(int argc,char *argv[]){
                 }else{
                     printf("Veuillez d'abord charger un dictionnaire\n");
                 }
-                printMenu(dicInUse);
-                while((choice = numericUserInput(">",input,255, 1, 7)) == -1);
+                do{
+                	printMenu(dicInUse,1);
+                } while((choice = numericUserInput(">",input,255, 1, 7)) == -1);
                
             break;
             case 7:

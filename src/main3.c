@@ -2,16 +2,15 @@
 #include <stdlib.h>
 
 #include "../headers/gestbib.h"
+#include "../headers/gestrech.h"
+#include "../headers/gestorth.h"
 #include "../headers/utils.h"
 #include <sys/mman.h>
 
 
-#ifndef DEBUG
-    #define DEBUG (0)
-#endif
-
 extern node* map;
 extern long int mmapVirtualMem;
+long nbNodeParcoured;
 // Threshold is the maximum distance between 2 words to accept as a similar word
 static const short THRESHOLD = 2;
 
@@ -25,9 +24,9 @@ int main(int argc,char *argv[]){
     int numberOfDic = 0;
     dictionary* dicInUse = NULL;
 
-    printMenu(dicInUse);
-    
-    while((choice = numericUserInput(">",input,255, 1, 8)) == -1);
+    do{
+    	printMenu(dicInUse,3);
+    } while((choice = numericUserInput(">",input,255, 1, 8)) == -1);
 
     do{
         isDicInMem = isDictionaryInMemory(library);
@@ -36,8 +35,9 @@ int main(int argc,char *argv[]){
             case 1:
                 addDicMenu(&library,numberOfDic,&dicInUse);
                 numberOfDic++;
-                printMenu(dicInUse);
-                while((choice = numericUserInput(">",input,255, 1, 8)) == -1);
+                do{
+                	printMenu(dicInUse,3);
+                } while((choice = numericUserInput(">",input,255, 1, 8)) == -1);
 
             break;
             case 2:
@@ -46,14 +46,16 @@ int main(int argc,char *argv[]){
                 }else{
                     printf("Veuillez d'abord créer ou charger un dictionnaire\n");                
                 }                
-                printMenu(dicInUse);
-                while((choice = numericUserInput(">",input,255, 1, 8)) == -1);
+                do{
+                	printMenu(dicInUse,3);
+                } while((choice = numericUserInput(">",input,255, 1, 8)) == -1);
            
             break;
             case 3:
                 buildDicWithFileMenu(&library,&numberOfDic,&dicInUse);
-                printMenu(dicInUse);
-                while((choice = numericUserInput(">",input,255, 1, 8)) == -1);
+                do{
+                	printMenu(dicInUse,3);
+                } while((choice = numericUserInput(">",input,255, 1, 8)) == -1);
           
             break;
             case 4:
@@ -62,8 +64,9 @@ int main(int argc,char *argv[]){
                 }else{
                     printf("Veuillez d'abord créer un dictionnaire\n");                
                 }
-                printMenu(dicInUse);
-                while((choice = numericUserInput(">",input,255, 1, 8)) == -1);
+                do{
+                	printMenu(dicInUse,3);
+                } while((choice = numericUserInput(">",input,255, 1, 8)) == -1);
          
             break;
             case 5:
@@ -72,8 +75,9 @@ int main(int argc,char *argv[]){
                 }else{
                     printf("Veuillez d'abord charger un dictionnaire\n");
                 }
-                printMenu(dicInUse);
-                while((choice = numericUserInput(">",input,255, 1, 8)) == -1);
+                do{
+                	printMenu(dicInUse,3);
+                } while((choice = numericUserInput(">",input,255, 1, 8)) == -1);
 
                 choice = input[0]-48;            
             break;
@@ -83,15 +87,15 @@ int main(int argc,char *argv[]){
                 }else{
                     printf("Veuillez d'abord charger un dictionnaire\n");
                 }
-                printMenu(dicInUse);
-                while((choice = numericUserInput(">",input,255, 1, 8)) == -1);
+                do{
+                	printMenu(dicInUse,3);
+                } while((choice = numericUserInput(">",input,255, 1, 8)) == -1);
                
             break;
             case 7:
-                printf("Au-revoir\n");
-                free(library);
-                munmap(map,mmapVirtualMem);
-                exit(0);
+                do{
+                	printMenu(dicInUse,3);
+                } while((choice = numericUserInput(">",input,255, 1, 8)) == -1);
             break;
             case 8:
                 if(dicInUse != NULL){
@@ -133,10 +137,21 @@ int main(int argc,char *argv[]){
                 }else{
                     printf("Veuillez d'abord charger un dictionnaire\n");
                 }
-                printMenu(dicInUse);
-                while((choice = numericUserInput(">",input,256, 1, 8)) == -1);
+                printMenu(dicInUse,3);
+                do{
+                	printMenu(dicInUse,3);
+                } while((choice = numericUserInput(">",input,255, 1, 8)) == -1);            break;
+            case 9:
+                do{
+                	printMenu(dicInUse,3);
+                } while((choice = numericUserInput(">",input,255, 1, 8)) == -1);
             break;
-
+            case 10:
+                printf("Au-revoir\n");
+                free(library);
+                munmap(map,mmapVirtualMem);
+                exit(0);
+            break;
             default:
             break;
         }

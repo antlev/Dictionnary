@@ -9,9 +9,6 @@
 #include "../headers/gestorth.h"
 #include "../headers/gestrech.h"
 
-#ifndef DEBUG
-    #define DEBUG (0)
-#endif
 extern node* map;
 long nbNodeParcoured = 0;
 

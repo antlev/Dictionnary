@@ -6,9 +6,6 @@
 // Include from our own file
 #include "../headers/gestrech.h"
 
-#ifndef DEBUG
-    #define DEBUG (0)
-#endif
 
 // Return the Damerau Levenshtein Distance between 2 strings.
 // Distance correspond to number of deletion,insertion,substitution or transposition.

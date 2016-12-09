@@ -1,5 +1,8 @@
+#ifndef GESTBIB_H
+#define GESTBIB_H
+
 #ifndef SET_OF_LETTERS_ACCEPTED
-    #define SET_OF_LETTERS_ACCEPTED (2)
+    #define SET_OF_LETTERS_ACCEPTED (0)
 #endif
 // The following variable allow change the  used set of letters for dictionary
 // O -> "abcdefghijklmnopqrstuvwxyz" ISO8859-1 : 97 -> 122
@@ -24,8 +27,6 @@
 	#define LAST_LETTER_ACCEPTED (255)
 #endif
 
-static const short MAXNBLETTERINWORD = 30;
-
 // Structs
 //----------------------------------------------------------------------------------------
 // Struct node that compose a tree in which we will store our words
@@ -40,6 +41,7 @@ typedef struct dictionary{
     unsigned int nbWord;
     unsigned int tree;
 }dictionary;
+#endif
 
 // Prototypes
 //----------------------------------------------------------------------------------------
@@ -117,8 +119,6 @@ void addDicAndUse(dictionary** library,int numberOfDic,char name[255],char desc[
 // @return -1 : failure on opening file
 // @return 0 : success
 int loadDictionaryFromFile(char pathToDicFile[255],dictionary* dicInUse);
-// Print menu on screen
-void printMenu(dictionary* dicInUse);
 // Print all the dictionnaries contained in the library
 // @param library : pointer on library (first dictionary)
 // @param numberOfDic : number of dictionary in memory
@@ -128,8 +128,6 @@ void printLibrary(dictionary* library, int numberOfDic);
 // @return 1 if library contain a dictionary
 // @return 0 if library in use is empty
 int isDictionaryInMemory(dictionary* dictionary);
-// Program's menu
-void menu(dictionary* library);
 // Function executed when program is launched
 dictionary* init();
 // -------------------------- Test function  --------------------------

@@ -23,10 +23,31 @@
 #define EXIT_FAILURE 1
 
 extern long nbNodeParcoured;
+const short MAXNBLETTERINWORD = 30;
 
 node* map=0;
 long int mmapVirtualMem=-1;
 long int next=1; 
+// TODO COMMENT
+// Function executed when program is launched
+dictionary* init(){
+    mmapVirtualMem = VIRTUAL_MEM_SIZE_MAX;
+    // Using mmap instead of pointer to reduce the space used by one node
+    do{
+        mmapVirtualMem /= 2;
+        assert(mmapVirtualMem > 0);
+        map = mmap(0,mmapVirtualMem,PROT_WRITE|PROT_READ,MAP_SHARED|MAP_ANONYMOUS,0,0);
+        if(DEBUG >= 1){
+            printf("DEBUG>>>Tentative d'allocation d'un espace mémoire virtuel de %ld bits\n",mmapVirtualMem );
+        }
+    } while(map == (void*)-1);
+    if(DEBUG >= 1){
+        printf("DEBUG>>>Mmap a alloué un espace de %ld bits\n",mmapVirtualMem );
+        printf("DEBUG>>>Taille d'un noeud (node) = %ld octets soit %ld lettres considérées\n",sizeof(node),sizeof(node)/sizeof(unsigned int));
+    }
+    dictionary* library = calloc(sizeof(dictionary),1);
+    return library;
+}
 // -------------------------- Tree manipulation functions --------------------------
 
 // Add the 'wordToAdd' into dictionary
@@ -195,16 +216,16 @@ void searchWordMenu(dictionary* dictionary){
 
     while(userInput("Veuillez entrer le mot à rechercher dans le dictionnaire\n>",wordToSearch,MAXNBLETTERINWORD) != 0);
    
-    startMeasuringTime = getTime();
+    startMeasuringTime = getTimeMicro();
     if(searchWord(tree,wordToSearch)){
-        finishMeasuringTime = getTime();
+        finishMeasuringTime = getTimeMicro();
         printf("Le mot \'%s\' EST BIEN CONTENU dans le dictionnaire %s\n",wordToSearch,dictionary->name );
     }else{
-        finishMeasuringTime = getTime();
+        finishMeasuringTime = getTimeMicro();
         printf("Le mot \'%s\' N'EST PAS CONTENU dans le dictionnaire %s\n",wordToSearch,dictionary->name );
     }
     if(DEBUG >= 1){
-        printf("DEBUG>>>Temps de recherche : %ldms\n",(finishMeasuringTime-startMeasuringTime));
+        printf("DEBUG>>>Temps de recherche : %ldmicrosec\n",(finishMeasuringTime-startMeasuringTime));
     }
 }
 // Prompt user for a name and description and add a new dictionnnary to the library
@@ -270,7 +291,7 @@ void buildDicWithFileMenu(dictionary** library,int* numberOfDic,dictionary** dic
     while(userInput("Veuillez entrer le chemin du fichier dictionnaire\n>",pathToDicFile,255) != 0);
     
 
-    if(loadDictionaryFromFile(pathToDicFile,*dicInUse) != 1){
+    if(loadDictionaryFromFile(pathToDicFile,*dicInUse) != 0){
         printf("Le fichier '%s' n'éxiste pas\n",pathToDicFile);
     }
  }
@@ -363,20 +384,6 @@ int loadDictionaryFromFile(char pathToDicFile[255],dictionary* dicInUse){
     }
     return 0;
 }
-
-// What does the function is obvious
-void printMenu(dictionary* dicInUse){
-    if(dicInUse->name){
-        printf("---------- Vous utilisez maintenant le dictionnaire %s ----------\n",dicInUse->name);
-    }
-    printf("1) Créer un fichier dictionnaire\n");
-    printf("2) Utiliser un dictionnaire existant\n");
-    printf("3) Fabriquer un dictionnaire à partir d'un fichier texte\n");
-    printf("4) Déruire un fichier dictionnaire\n");
-    printf("5) Insérer un mot dans un dictionnaire\n");
-    printf("6) Rechercher un mot dans un dictionnaire\n");
-    printf("7) Quitter l'application\n");    
-}
 // Print all the dictionnaries contained in the library
 // @param library : pointer on library (first dictionary)
 // @param numberOfDic : number of dictionary in memory
@@ -407,23 +414,4 @@ int isDictionaryInMemory(dictionary* library){
     }else{
         return 1;
     }
-}
-// TODO COMMENT
-// Function executed when program is launched
-dictionary* init(){
-    mmapVirtualMem = VIRTUAL_MEM_SIZE_MAX;
-    // Using mmap instead of pointer to reduce the space used by one node
-    do{
-        mmapVirtualMem /= 2;
-        assert(mmapVirtualMem > 0);
-        map = mmap(0,mmapVirtualMem,PROT_WRITE|PROT_READ,MAP_SHARED|MAP_ANONYMOUS,0,0);
-        if(DEBUG >= 1){
-            printf("DEBUG>>>Tentative d'allocation d'un mémoire virtuel de %ld bits\n",mmapVirtualMem );
-        }
-    } while(map == (void*)-1);
-    if(DEBUG >= 1){
-        printf("DEBUG>>>Mmap a alloué un espace de %ld bits\n",mmapVirtualMem );
-    }
-    dictionary* library = calloc(sizeof(dictionary),1);
-    return library;
 }
