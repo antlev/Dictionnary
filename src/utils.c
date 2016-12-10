@@ -5,10 +5,6 @@
 #include <math.h>
 
 #include "../headers/utils.h"
-// Allow us to set a $DEBUG at compilation
-#ifndef DEBUG
-    #define DEBUG (0)
-#endif
 
 #define OK       0
 #define NO_INPUT 1
@@ -124,4 +120,11 @@ void printMenu(dictionary* dicInUse,short main){
         printf("9) Corriger un fichier\n");
         printf("10) Quitter l'application\n");   
     }
+}
+// Concatenate 2 strings
+char* concat(const char *s1, const char *s2){
+    char *result = malloc(strlen(s1)+strlen(s2)+1);
+    strcpy(result, s1);
+    strcat(result, s2);
+    return result;
 }
