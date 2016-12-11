@@ -116,9 +116,10 @@ void printMenu(dictionary* dicInUse,short main){
         printf("5) Insérer un mot dans un dictionnaire\n");
         printf("6) Rechercher un mot dans un dictionnaire\n");
         printf("7) Recherche avancée\n");
-        printf("8) Proposition de correction d'un fichier\n");
-        printf("9) Corriger un fichier\n");
-        printf("10) Quitter l'application\n");   
+        printf("8) Affiche les mots non contenu dans le dictionnaire\n");
+        printf("9) Proposition de correction d'un fichier\n");
+        printf("10) Corriger un fichier\n");
+        printf("11) Quitter l'application\n");   
     }
 }
 // Concatenate 2 strings

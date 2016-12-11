@@ -28,10 +28,11 @@ int main(int argc,char *argv[]){
     *found=0;
     unsigned long int startMeasuringTime=0;
     unsigned long int finishMeasuringTime=0;
+    short nbMenu = 11;
 
     do{
     	printMenu(dicInUse,3);
-    } while((choice = numericUserInput(">",input,255, 1, 10)) == -1);
+    } while((choice = numericUserInput(">",input,255, 1, nbMenu)) == -1);
 
     do{
         isDicInMem = isDictionaryInMemory(library);
@@ -42,7 +43,7 @@ int main(int argc,char *argv[]){
                 numberOfDic++;
                 do{
                 	printMenu(dicInUse,3);
-                } while((choice = numericUserInput(">",input,255, 1, 10)) == -1);
+                } while((choice = numericUserInput(">",input,255, 1, nbMenu)) == -1);
 
             break;
             case 2:
@@ -53,14 +54,14 @@ int main(int argc,char *argv[]){
                 }                
                 do{
                 	printMenu(dicInUse,3);
-                } while((choice = numericUserInput(">",input,255, 1, 10)) == -1);
+                } while((choice = numericUserInput(">",input,255, 1, nbMenu)) == -1);
            
             break;
             case 3:
                 buildDicWithFileMenu(&library,&numberOfDic,&dicInUse);
                 do{
                 	printMenu(dicInUse,3);
-                } while((choice = numericUserInput(">",input,255, 1, 10)) == -1);
+                } while((choice = numericUserInput(">",input,255, 1, nbMenu)) == -1);
           
             break;
             case 4:
@@ -71,7 +72,7 @@ int main(int argc,char *argv[]){
                 }
                 do{
                 	printMenu(dicInUse,3);
-                } while((choice = numericUserInput(">",input,255, 1, 10)) == -1);
+                } while((choice = numericUserInput(">",input,255, 1, nbMenu)) == -1);
          
             break;
             case 5:
@@ -82,7 +83,7 @@ int main(int argc,char *argv[]){
                 }
                 do{
                 	printMenu(dicInUse,3);
-                } while((choice = numericUserInput(">",input,255, 1, 10)) == -1);
+                } while((choice = numericUserInput(">",input,255, 1, nbMenu)) == -1);
 
                 choice = input[0]-48;            
             break;
@@ -94,26 +95,55 @@ int main(int argc,char *argv[]){
                 }
                 do{
                 	printMenu(dicInUse,3);
-                } while((choice = numericUserInput(">",input,255, 1, 10)) == -1);
+                } while((choice = numericUserInput(">",input,255, 1, nbMenu)) == -1);
                
             break;
             case 7:
-                if(dicInUse != NULL){
-					char* word = calloc(sizeof(char)*256,1);
-                    char* wordToFind = calloc(sizeof(char)*256,1);
-
-                    while(userInput("Veuillez entrer le mot à rechercher dans le dictionnaire\n>",wordToFind,256) != 0);
+	            if(dicInUse != NULL){
+	                char* word = calloc(sizeof(char)*256,1);
+	                char* wordToFind = calloc(sizeof(char)*256,1);
+	 
+	                while(userInput("Veuillez entrer le mot à rechercher dans le dictionnaire\n>",wordToFind,256) != 0);
 
                     printCloseWordInDic(dicInUse->tree,0,wordToFind,2,0,word,found);
+	 
+				}else{
+					printf("Veuillez d'abord charger un dictionnaire\n");
+				}
+	            do{
+					printMenu(dicInUse,3);
+	            } while((choice = numericUserInput(">",input,255, 1, 10)) == -1);
+            break;
+            case 8:
+                if(dicInUse != NULL){
+					char* pathTofile = calloc(sizeof(char)*256,1);
+
+                    do{
+                    	while(userInput("Veuillez entrer le fichier à corriger\n>",pathTofile,256) != 0);
+					} while(printWordNotInDic(pathTofile,dicInUse->tree,0));
 
                 }else{
                     printf("Veuillez d'abord charger un dictionnaire\n");
                 }
                 do{
                 	printMenu(dicInUse,3);
-                } while((choice = numericUserInput(">",input,255, 1, 10)) == -1);
-                break;
-            case 8:
+                } while((choice = numericUserInput(">",input,255, 1, nbMenu)) == -1);
+        	break;
+            case 9:
+                if(dicInUse != NULL){
+					char* pathTofile = calloc(sizeof(char)*256,1);
+					
+                    do{
+                    	while(userInput("Veuillez entrer le fichier à corriger\n>",pathTofile,256) != 0);
+					} while(printWordNotInDic(pathTofile,dicInUse->tree,1));
+
+                }else{
+                    printf("Veuillez d'abord charger un dictionnaire\n");
+                }
+                do{
+                	printMenu(dicInUse,3);
+                } while((choice = numericUserInput(">",input,255, 1, nbMenu)) == -1);            break;
+            case 10:
                 if(dicInUse != NULL){
 
                     char* pathToFile = calloc(sizeof(char)*256,1);
@@ -129,32 +159,16 @@ int main(int argc,char *argv[]){
                         printf("%ld milliseconds to access all dictionary's word\n",(finishMeasuringTime-startMeasuringTime) );
                         printf("Nombre  de noeuds parcouru = %ld\n",nbNodeParcoured );
                     }
-                    
-                    nbNodeParcoured=0;
-                    printf("Searching for a word looking like 'titi' \n");
-                    startMeasuringTime = getTime();
-                    finishMeasuringTime = getTime();
 
-                    if(!*found){
-                        printf("no word seems to look like titi \n");
-                    }
-                    if(DEBUG){
-                        printf("nbNodeParcoured=%ld\n",nbNodeParcoured );
-                        printf("%ld milliseconds to access all dictionary's word and compare the levenstein distance with 'titi'\n",(finishMeasuringTime-startMeasuringTime) );
-                    }
                 }else{
                     printf("Veuillez d'abord charger un dictionnaire\n");
                 }
                 printMenu(dicInUse,3);
                 do{
                 	printMenu(dicInUse,3);
-                } while((choice = numericUserInput(">",input,255, 1, 10)) == -1);            break;
-            case 9:
-                do{
-                	printMenu(dicInUse,3);
-                } while((choice = numericUserInput(">",input,255, 1, 10)) == -1);
+                } while((choice = numericUserInput(">",input,255, 1, nbMenu)) == -1);
             break;
-            case 10:
+            case 11:
                 printf("Au-revoir\n");
                 free(library);
                 munmap(map,mmapVirtualMem);

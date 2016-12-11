@@ -138,7 +138,37 @@ unsigned int printCloseWordInDic(unsigned int tree,short level,char* wordToCompa
 }
 // Search in dictionnary for closest word to wordToCompare and put it in closestWord
 unsigned int returnClosestWordinDic(unsigned int tree,short level,char* wordToCompare,short diff,char* word,short* found,char* closestWord){
+    // TODO
+    nbNodeParcoured++;
+    int i=0;
+    int distance;
 
+    if(map[tree].endOfWord == 1){
+        // printf("DEBUG>>End of word!!\n");
+        word[level] = '\0';
+        if((distance = DamerauLevenshteinDistance(word,wordToCompare)) <= 1){
+            closestWord = word;
+        }else if(DEBUG >= 3){
+            printf("word >%s< has a" " levenstein difference of %d with >%s<\n",word,distance,wordToCompare);
+        }
+    }
+    unsigned int res = 0;
+    for (i = 0; i < LAST_LETTER_ACCEPTED-OFFSET_ISO8859; ++i){
+        if(map[tree].letter[i] != 0){ 
+            // Pruning (élagage)       
+            // printf("DEBUG>>>letter %c spotted ! \n",i+97);
+            if(strchr(wordToCompare,i+97) == NULL){
+                if(diff > 1){
+                    continue;
+               }
+               diff++;
+            }
+            word[level] = i+OFFSET_ISO8859;
+            res = returnClosestWordinDic(map[tree].letter[i],level+1,wordToCompare,diff,word,found,closestWord);
+            word[level] = '\0';
+        }
+    }
+    return res;
 }
 // Scan a file, and test for all word if it is in dictionary 
 // If the word isn't found in dictionnary, it will print similar words in dictionary,
@@ -202,7 +232,7 @@ int printWordNotInDic(char* pathTofile,unsigned int dictionary,short proposeCorr
     short* similarWordFound = malloc(sizeof(short));
     size_t len = 0;
     ssize_t read;
-    int i,j;
+    int i,j,lineInFile=0;
 
     fileToCorrect = fopen(pathTofile, "r");
     if (fileToCorrect == NULL){
@@ -211,6 +241,7 @@ int printWordNotInDic(char* pathTofile,unsigned int dictionary,short proposeCorr
     }
 
     while ((read = getline(&line, &len, fileToCorrect)) != -1) {
+        ++lineInFile;
         line[strlen(line)-1] = '\0';
         i=0;
         while(line[i] != '\0'){
@@ -221,17 +252,19 @@ int printWordNotInDic(char* pathTofile,unsigned int dictionary,short proposeCorr
                 j++;
             }
             wordToCompare[j] = '\0';
-            if(searchWord(dictionary,wordToCompare) != 1){
-                printf("Le mot '%s' à la ligne %ld n'est pas contenu dans le dictionnaire :\n",wordToCompare,read );            
-                *similarWordFound = 0;
-                printCloseWordInDic(dictionary,0,wordToCompare,2,0,word,similarWordFound);
-                printf("\n");
-                if (!similarWordFound){
-                    printf("Aucun mot proche n'a été trouvé\n");
+            if(wordToCompare[0] != '\0' && searchWord(dictionary,wordToCompare) != 1){
+                printf("Le mot '%s' à la ligne %d n'est pas contenu dans le dictionnaire :\n",wordToCompare,lineInFile );            
+                if(proposeCorrection){
+                    *similarWordFound = 0;
+                    printCloseWordInDic(dictionary,0,wordToCompare,2,0,word,similarWordFound);
+                    printf("\n");
+                    if (!similarWordFound){
+                        printf("Aucun mot proche n'a été trouvé\n");
+                    }
                 }
-                wordToCompare[0] = '\0';
-                i++;
-            }
+            }   
+            wordToCompare[0] = '\0';
+            i++;
         }
     }
     fclose(fileToCorrect);
@@ -252,7 +285,7 @@ int proposeCorrection(char* pathTofile,unsigned int dictionary){
 
     char* pathToFileCorrected = concat(pathTofile,"_corrected");
 
-    fileToCorrect = fopen(pathTofile, "w");
+    fileToCorrect = fopen(pathTofile, "r");
     fileCorrected = fopen(pathToFileCorrected, "w");
     
     if (fileToCorrect == NULL){
