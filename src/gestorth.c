@@ -271,8 +271,8 @@ int printWordNotInDic(char* pathTofile,unsigned int dictionary,short proposeCorr
 }
 // Read file pathToFile and write a correction into a new file suffixed by _corrected
 int proposeCorrection(char* pathTofile,unsigned int dictionary){
-    FILE * fileToCorrect;
-    FILE * fileCorrected;
+    FILE* fileToCorrect;
+    FILE* fileCorrected;
 
     size_t len = 0;
     ssize_t read;
@@ -291,6 +291,9 @@ int proposeCorrection(char* pathTofile,unsigned int dictionary){
     if (fileToCorrect == NULL){
         printf("File '%s' doesn't exist\n",pathTofile);
         return -1;
+    }else if(fileCorrected == NULL){
+        printf("File '%s' doesn't exist\n",pathToFileCorrected);
+        return -1;        
     }
 
     while ((read = getline(&line, &len, fileToCorrect)) != -1) {
@@ -308,7 +311,9 @@ int proposeCorrection(char* pathTofile,unsigned int dictionary){
                 printf("wordToCompare >%s< is contained in file\n",wordToCompare );
             }
             if(searchWord(dictionary,wordToCompare) == 1){
-                fprintf(fileCorrected, "%s ", wordToCompare);
+                // fprintf(fileCorrected, "%s ", wordToCompare);
+                fwrite(wordToCompare,sizeof(char),strlen(wordToCompare),fileCorrected);
+                fwrite(" ",sizeof(char),1,fileCorrected);
             }else{
                 printf("word >%s< is NOT contained in dictionary\n",wordToCompare );            
                 *similarWordFound = 0;
@@ -317,9 +322,12 @@ int proposeCorrection(char* pathTofile,unsigned int dictionary){
 
                 returnClosestWordinDic(dictionary,0,wordToCompare,2,word,similarWordFound,closestWord);
                 if (!similarWordFound){
-                    fprintf(fileCorrected, "%s (Aucune suggestion) ", wordToCompare);
+                    // fprintf(fileCorrected, "'%s' (Aucune suggestion) ", wordToCompare);
+                    fwrite(wordToCompare,sizeof(char),strlen(wordToCompare),fileCorrected);
                 }else{                    
-                    fprintf(fileCorrected, "%s ", closestWord);
+                    // fprintf(fileCorrected, "%s ", closestWord);
+                    fwrite(wordToCompare,sizeof(char),strlen(wordToCompare),fileCorrected);
+                    fwrite(" ",sizeof(char),1,fileCorrected);
                 }
             }
             wordToCompare[0] = '\0';
@@ -327,4 +335,5 @@ int proposeCorrection(char* pathTofile,unsigned int dictionary){
         }
     }
     fclose(fileToCorrect);
+    fclose(fileCorrected);
 }
