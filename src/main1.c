@@ -29,10 +29,7 @@ int main(int argc,char *argv[]){
             case 1:
                 addDicMenu(&library,numberOfDic,&dicInUse);
                 numberOfDic++;
-                do{
-                	printMenu(dicInUse,1);
-                } while((choice = numericUserInput(">",input,255, 1, 7)) == -1);
-
+                
             break;
             case 2:
                 if(isDicInMem){
@@ -40,17 +37,11 @@ int main(int argc,char *argv[]){
                 }else{
                     printf("Veuillez d'abord créer ou charger un dictionnaire\n");                
                 }                
-                do{
-                	printMenu(dicInUse,1);
-                } while((choice = numericUserInput(">",input,255, 1, 7)) == -1);
-           
+                           
             break;
             case 3:
                 buildDicWithFileMenu(&library,&numberOfDic,&dicInUse);
-                do{
-                	printMenu(dicInUse,1);
-                } while((choice = numericUserInput(">",input,255, 1, 7)) == -1);
-          
+                          
             break;
             case 4:
                 if(isDicInMem){
@@ -58,10 +49,7 @@ int main(int argc,char *argv[]){
                 }else{
                     printf("Veuillez d'abord créer un dictionnaire\n");                
                 }
-                do{
-                	printMenu(dicInUse,1);
-                } while((choice = numericUserInput(">",input,255, 1, 7)) == -1);
-         
+                         
             break;
             case 5:
                 if(dicInUse != NULL){
@@ -69,11 +57,7 @@ int main(int argc,char *argv[]){
                 }else{
                     printf("Veuillez d'abord charger un dictionnaire\n");
                 }
-                do{
-                	printMenu(dicInUse,1);
-                } while((choice = numericUserInput(">",input,255, 1, 7)) == -1);
-
-                choice = input[0]-48;            
+                
             break;
             case 6:
                 if(dicInUse != NULL){
@@ -81,10 +65,7 @@ int main(int argc,char *argv[]){
                 }else{
                     printf("Veuillez d'abord charger un dictionnaire\n");
                 }
-                do{
-                	printMenu(dicInUse,1);
-                } while((choice = numericUserInput(">",input,255, 1, 7)) == -1);
-               
+                               
             break;
             case 7:
                 printf("Au-revoir\n");

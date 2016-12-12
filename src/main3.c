@@ -31,20 +31,15 @@ int main(int argc,char *argv[]){
     short nbMenu = 11;
 
     do{
-    	printMenu(dicInUse,3);
-    } while((choice = numericUserInput(">",input,255, 1, nbMenu)) == -1);
-
-    do{
         isDicInMem = isDictionaryInMemory(library);
+	    do{
+	    	printMenu(dicInUse,3);
+	    } while((choice = numericUserInput(">",input,255, 1, nbMenu)) == -1);
 
         switch(choice){
             case 1:
                 addDicMenu(&library,numberOfDic,&dicInUse);
                 numberOfDic++;
-                do{
-                	printMenu(dicInUse,3);
-                } while((choice = numericUserInput(">",input,255, 1, nbMenu)) == -1);
-
             break;
             case 2:
                 if(isDicInMem){
@@ -52,17 +47,9 @@ int main(int argc,char *argv[]){
                 }else{
                     printf("Veuillez d'abord créer ou charger un dictionnaire\n");                
                 }                
-                do{
-                	printMenu(dicInUse,3);
-                } while((choice = numericUserInput(">",input,255, 1, nbMenu)) == -1);
-           
             break;
             case 3:
                 buildDicWithFileMenu(&library,&numberOfDic,&dicInUse);
-                do{
-                	printMenu(dicInUse,3);
-                } while((choice = numericUserInput(">",input,255, 1, nbMenu)) == -1);
-          
             break;
             case 4:
                 if(isDicInMem){
@@ -70,10 +57,6 @@ int main(int argc,char *argv[]){
                 }else{
                     printf("Veuillez d'abord créer un dictionnaire\n");                
                 }
-                do{
-                	printMenu(dicInUse,3);
-                } while((choice = numericUserInput(">",input,255, 1, nbMenu)) == -1);
-         
             break;
             case 5:
                 if(dicInUse != NULL){
@@ -81,11 +64,6 @@ int main(int argc,char *argv[]){
                 }else{
                     printf("Veuillez d'abord charger un dictionnaire\n");
                 }
-                do{
-                	printMenu(dicInUse,3);
-                } while((choice = numericUserInput(">",input,255, 1, nbMenu)) == -1);
-
-                choice = input[0]-48;            
             break;
             case 6:
                 if(dicInUse != NULL){
@@ -93,10 +71,7 @@ int main(int argc,char *argv[]){
                 }else{
                     printf("Veuillez d'abord charger un dictionnaire\n");
                 }
-                do{
-                	printMenu(dicInUse,3);
-                } while((choice = numericUserInput(">",input,255, 1, nbMenu)) == -1);
-               
+                  
             break;
             case 7:
 	            if(dicInUse != NULL){
@@ -110,9 +85,6 @@ int main(int argc,char *argv[]){
 				}else{
 					printf("Veuillez d'abord charger un dictionnaire\n");
 				}
-	            do{
-					printMenu(dicInUse,3);
-	            } while((choice = numericUserInput(">",input,255, 1, 10)) == -1);
             break;
             case 8:
                 if(dicInUse != NULL){
@@ -125,10 +97,7 @@ int main(int argc,char *argv[]){
                 }else{
                     printf("Veuillez d'abord charger un dictionnaire\n");
                 }
-                do{
-                	printMenu(dicInUse,3);
-                } while((choice = numericUserInput(">",input,255, 1, nbMenu)) == -1);
-        	break;
+           	break;
             case 9:
                 if(dicInUse != NULL){
 					char* pathTofile = calloc(sizeof(char)*256,1);
@@ -164,10 +133,7 @@ int main(int argc,char *argv[]){
                     printf("Veuillez d'abord charger un dictionnaire\n");
                 }
                 printMenu(dicInUse,3);
-                do{
-                	printMenu(dicInUse,3);
-                } while((choice = numericUserInput(">",input,255, 1, nbMenu)) == -1);
-            break;
+               break;
             case 11:
                 printf("Au-revoir\n");
                 free(library);

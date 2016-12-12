@@ -11,11 +11,11 @@ int main(int argc,char *argv[]){
 	char* input2 = malloc(sizeof(char)*255);
 	short choice;
 	dictionary* toto;
-	do{
-		printMenu(toto,2);
-	}while((choice = numericUserInput(">",input,255, 1, 2)) == -1);
 
     do{
+		do{
+			printMenu(toto,2);
+		}while((choice = numericUserInput(">",input,255, 1, 2)) == -1);
         switch(choice){
         	case 1:
 
@@ -24,9 +24,6 @@ int main(int argc,char *argv[]){
 				while(userInput("Entrer le deuxième mot\n>",input2,255) != 0);
 
 				printf("Les deux mots ont une distance de %d : ('%s' et '%s')\n",DamerauLevenshteinDistance(input,input2), input, input2 );
-				do{
-					printMenu(toto,2);
-				}while((choice = numericUserInput(">",input,255, 1, 2)) == -1);
         	break;
         	case 2:
         		exit(0);
