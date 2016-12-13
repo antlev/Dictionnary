@@ -10,10 +10,7 @@
 #include "../headers/gestrech.h"
 #include "../headers/gestorth.h"
 #include "../headers/utils.h"
-// Allow us to set a $DEBUG at compilation
-#ifndef DEBUG
-    #define DEBUG (0)
-#endif
+
 
 #ifndef VIRTUAL_MEM_SIZE_MAX
     #define VIRTUAL_MEM_SIZE_MAX (1L<<35)
@@ -38,12 +35,12 @@ dictionary* init(){
         assert(mmapVirtualMem > 0);
         map = mmap(0,mmapVirtualMem,PROT_WRITE|PROT_READ,MAP_SHARED|MAP_ANONYMOUS,0,0);
         if(DEBUG >= 1){
-            printf("DEBUG>>>Tentative d'allocation d'un espace mÈmoire virtuel de %ld bits\n",mmapVirtualMem );
+            printf("DEBUG>>>Tentative d'allocation d'un espace m√©moire virtuel de %ld bits\n",mmapVirtualMem );
         }
     } while(map == (void*)-1);
     if(DEBUG >= 1){
-        printf("DEBUG>>>Mmap a allouÈ un espace de %ld bits\n",mmapVirtualMem );
-        printf("DEBUG>>>Taille d'un noeud (node) = %ld octets soit %ld lettres considÈrÈes\n",sizeof(node),sizeof(node)/sizeof(unsigned int));
+        printf("DEBUG>>>Mmap a allou√© un espace de %ld bits\n",mmapVirtualMem );
+        printf("DEBUG>>>Taille d'un noeud (node) = %ld octets soit %ld lettres consid√©r√©es\n",sizeof(node),sizeof(node)/sizeof(unsigned int));
     }
     dictionary* library = calloc(sizeof(dictionary),1);
     return library;
@@ -76,13 +73,13 @@ int addWord(unsigned int tree,char* wordToAdd){
         }
         if (map[tree].endOfWord == 1){
             if(DEBUG >= 3){
-                printf("DEBUG>>> Le mot >%s< Èxiste dÈj‡ dans le dictionnaire\n",wordToAdd );
+                printf("DEBUG>>> Le mot >%s< √©xiste d√©j√† dans le dictionnaire\n",wordToAdd );
             }
             return 1;
         }else{
             map[tree].endOfWord = 1 ;
             if(DEBUG >= 3){
-                printf("DEBUG>>> Le mot >%s< a ÈtÈ ajoutÈ avec succËs dans le dictionnaire\n",wordToAdd );
+                printf("DEBUG>>> Le mot >%s< a √©t√© ajout√© avec succ√®s dans le dictionnaire\n",wordToAdd );
             }
             return 0;
         }       
@@ -104,7 +101,7 @@ int searchWord(unsigned int tree,char* wordToSearch){
         while(wordToSearch[i] != '\0'){
             if(!map[tree].letter[wordToSearch[i] - OFFSET_ISO8859]){
                 if(DEBUG >= 3){
-                    printf("DEBUG>>>Le mot %s n'a pas ÈtÈ trouvÈ dans le dictionnaire\n",wordToSearch );
+                    printf("DEBUG>>>Le mot %s n'a pas √©t√© trouv√© dans le dictionnaire\n",wordToSearch );
                 }
                 return 0;
             }
@@ -113,12 +110,12 @@ int searchWord(unsigned int tree,char* wordToSearch){
         }
         if(map[tree].endOfWord == 1){
             if(DEBUG >= 3){
-                printf("DEBUG>>>Le mot %s a ÈtÈ trouvÈ dans le dictionnaire\n",wordToSearch );
+                printf("DEBUG>>>Le mot %s a √©t√© trouv√© dans le dictionnaire\n",wordToSearch );
             }
             return 1;
         }else{
             if(DEBUG >= 3){
-                printf("DEBUG>>>Le mot %s n'a pas ÈtÈ trouvÈ dans le dictionnaire\n",wordToSearch );
+                printf("DEBUG>>>Le mot %s n'a pas √©t√© trouv√© dans le dictionnaire\n",wordToSearch );
             }
             return 0;
         }
@@ -128,40 +125,40 @@ int searchWord(unsigned int tree,char* wordToSearch){
 // @param tree : root of the dictionary
 // @param wordToSup : word to erase from the dictionary
 // @return 1 if wordToSup has been found and suppresed, 0 if not
-int supWord(unsigned int tree,char* wordToSup){
-    int i=0;
-    int j;
-    int sanReturn;
-    if((sanReturn = sanitiseWordForDictionary(wordToSup)) != 0){
-        return sanReturn;
-    }else{
-        while(wordToSup[i] != '\0'){
-            if(!map[tree].letter[wordToSup[i] - OFFSET_ISO8859]){
-                return 0;
-            }
-            tree = map[tree].letter[wordToSup[i] - OFFSET_ISO8859] ;
-            ++i;
-        }
-        if(map[tree].endOfWord == 0){
-            return 0;
-        }else{
-            map[tree].endOfWord = 0 ;
-            --i;
-            while(i >= 0){
-                for (j = 0; j < 26; ++j){
-                    if(map[tree].letter[j]){
-                        return 1;
-                    }
-                }
-                // TODO
-                // tree = &tree;
-                // free(map[tree].letter[i]);
-                --i;
-            }
-            return 1;   
-        }
-    }
-}
+// int supWord(unsigned int tree,char* wordToSup){
+//     int i=0;
+//     int j;
+//     int sanReturn;
+//     if((sanReturn = sanitiseWordForDictionary(wordToSup)) != 0){
+//         return sanReturn;
+//     }else{
+//         while(wordToSup[i] != '\0'){
+//             if(!map[tree].letter[wordToSup[i] - OFFSET_ISO8859]){
+//                 return 0;
+//             }
+//             tree = map[tree].letter[wordToSup[i] - OFFSET_ISO8859] ;
+//             ++i;
+//         }
+//         if(map[tree].endOfWord == 0){
+//             return 0;
+//         }else{
+//             map[tree].endOfWord = 0 ;
+//             --i;
+//             while(i >= 0){
+//                 for (j = 0; j < 26; ++j){
+//                     if(map[tree].letter[j]){
+//                         return 1;
+//                     }
+//                 }
+//                 // TODO
+//                 tree = &tree;
+//                 free(map[tree].letter[i]);
+//                 --i;
+//             }
+//             return 1;   
+//         }
+//     }
+// }
 // Sanitise word for dictionary
 // @return 0 if word is compatible with dictionnary
 // @return -1 if word is empty
@@ -172,14 +169,14 @@ int sanitiseWordForDictionary(char* word){
     short posOfUnacceptedLetter=0;
     if(strlen(word) < 1){
         if(DEBUG >= 3){
-            printf("DEBUG>>>Le mot a ÈtÈ ignorÈ car il est vide\n" );
+            printf("DEBUG>>>Le mot a √©t√© ignor√© car il est vide\n" );
         }
         return -1;
     }
     for (int i = 0; i < strlen(word); ++i){
         if((unsigned char)word[i] < OFFSET_ISO8859 || (unsigned char)word[i] > LAST_LETTER_ACCEPTED){
             if(DEBUG >= 3){
-                printf("DEBUG>>>Le mot %s a ÈtÈ ignorÈ car il contient un caractËre non supportÈ (%c)[%u]\n",word,word[i],(unsigned char)word[i] );
+                printf("DEBUG>>>Le mot %s a √©t√© ignor√© car il contient un caract√®re non support√© (%c)[%u]\n",word,word[i],(unsigned char)word[i] );
             }
             return -2;
         }
@@ -193,15 +190,15 @@ void addWordMenu(dictionary* dictionary){
     int addWordReturn;
     unsigned int tree = dictionary->tree;
     char wordToInsert[MAXNBLETTERINWORD];    
-    while(userInput("Veuillez entrer le mot ‡ insÈrer dans le dictionnaire\n>",wordToInsert,MAXNBLETTERINWORD) != 0);
+    while(userInput("Veuillez entrer le mot √† ins√©rer dans le dictionnaire\n>",wordToInsert,MAXNBLETTERINWORD) != 0);
     
     if((addWordReturn = addWord(tree,wordToInsert)) == 0){
         dictionary->nbWord++;
-        printf("Le mot %s a ÈtÈ ajoutÈ au dictionnaire %s\n",wordToInsert,dictionary->name );
+        printf("Le mot %s a √©t√© ajout√© au dictionnaire %s\n",wordToInsert,dictionary->name );
     }else if(addWordReturn == 1){
-        printf("Le mot %s Èxiste dÈj‡ dans le dictionnaire %s\n",wordToInsert,dictionary->name );
+        printf("Le mot %s √©xiste d√©j√† dans le dictionnaire %s\n",wordToInsert,dictionary->name );
     }else{
-        printf("Le mot %s contient des caractËres non supportÈs %s\n",wordToInsert,dictionary->name );
+        printf("Le mot %s contient des caract√®res non support√©s %s\n",wordToInsert,dictionary->name );
     }
 }
 // Prompt a word and call searchWord() to search it to the dictionary
@@ -214,7 +211,7 @@ void searchWordMenu(dictionary* dictionary){
     unsigned long int startMeasuringTime;
     unsigned long int finishMeasuringTime;
 
-    while(userInput("Veuillez entrer le mot ‡ rechercher dans le dictionnaire\n>",wordToSearch,MAXNBLETTERINWORD) != 0);
+    while(userInput("Veuillez entrer le mot √† rechercher dans le dictionnaire\n>",wordToSearch,MAXNBLETTERINWORD) != 0);
    
     startMeasuringTime = getTimeMicro();
     if(searchWord(tree,wordToSearch)){
@@ -267,7 +264,7 @@ void buildDicWithFileMenu(dictionary** library,int* numberOfDic,dictionary** dic
     char input[2];
 
     if(*numberOfDic == 0){
-        while(userInput("Vous n'avez pas de dictionnaire en mÈmoire voulez vous en crÈer un ? (O/N)\n>",input,4) != 0);
+        while(userInput("Vous n'avez pas de dictionnaire en m√©moire voulez vous en cr√©er un ? (O/N)\n>",input,4) != 0);
         if(input[0] == 'O' || input[0] == 'o'){
             addDicMenu(library,*numberOfDic,dicInUse);
             (*numberOfDic)++;
@@ -276,7 +273,7 @@ void buildDicWithFileMenu(dictionary** library,int* numberOfDic,dictionary** dic
         }
     } else {
         do{
-            while(userInput("Voulez vous (C)rÈer un nouveau dictionnaire ou (A)jouter le fichier ‡ un dictionnaire existant ?\n>",input,4) != 0);
+            while(userInput("Voulez vous (C)r√©er un nouveau dictionnaire ou (A)jouter le fichier √† un dictionnaire existant ?\n>",input,4) != 0);
         }
         while(input[0] != 'a' && input[0] != 'A' && input[0] != 'c' && input[0] != 'C');
 
@@ -292,7 +289,7 @@ void buildDicWithFileMenu(dictionary** library,int* numberOfDic,dictionary** dic
     
 
     if(loadDictionaryFromFile(pathToDicFile,*dicInUse) != 0){
-        printf("Le fichier '%s' n'Èxiste pas\n",pathToDicFile);
+        printf("Le fichier '%s' n'√©xiste pas\n",pathToDicFile);
     }
  }
 // Print the library and ask user to choose a dictionary
@@ -307,9 +304,9 @@ void chooseDicMenu(dictionary* library,int numberOfDic,dictionary** dicInUse){
     char* input = malloc(sizeof(int));
 
     printLibrary(library,numberOfDic);
-    while((numOfDicToUse = numericUserInput("Veuillez entrer le numÈro du dictionnaire que vous voulez utiliser\n>",input,4,1,(short)numberOfDic)) == -1);
+    while((numOfDicToUse = numericUserInput("Veuillez entrer le num√©ro du dictionnaire que vous voulez utiliser\n>",input,4,1,(short)numberOfDic)) == -1);
     
-    *dicInUse += numOfDicToUse-1; // using the dictionary n∞ numOfDicToUse of library
+    *dicInUse += numOfDicToUse-1; // using the dictionary n¬∞ numOfDicToUse of library
 }
 // -------------------------- Dictionary manipulation functions --------------------------
 // Add a new dictionary with the name and description passed as parameters
@@ -340,6 +337,21 @@ void eraseDic(dictionary* library,int numberOfDicToDel){
     //TODO
     // dictionnnary* dicToDel = library;
     // dicToDel+=numberOfDicToDel;
+
+    // *library = realloc(*library,(numberOfDic-1)*sizeof(dictionary));
+    // memset(*library+numberOfDic,0,sizeof(dictionary)); // Setting new space to 0
+
+    // *dicCreated = *library;
+    // (*dicCreated)+=numberOfDic;    
+
+    // strcpy((*dicCreated)->name,name);
+    // strcpy((*dicCreated)->description,desc);
+    // (*dicCreated)->nbWord=0;
+
+    // (*dicCreated)->tree = next;
+    // next ++;
+
+    // map[(*dicCreated)->tree].endOfWord = -1;
 }
 // Read file and call addWord on each line
 // @param pathToDicFile : path to dictionary file to load 
@@ -377,7 +389,7 @@ int loadDictionaryFromFile(char pathToDicFile[255],dictionary* dicInUse){
     if(DEBUG >= 1){
         printf("DEBUG>>>Temps d'importation du dictionnaire = %ldms\n",finishMeasuringTime-startMeasuringTime );
     }
-    printf("Nombre de mots ajoutÈ= %d Nombre de mots ignorÈ= %d\n",wordAdded,wordIgnored );
+    printf("Nombre de mots ajout√©= %d Nombre de mots ignor√©= %d\n",wordAdded,wordIgnored );
     fclose(inputFile);
     if(line){
         free(line);
@@ -389,12 +401,12 @@ int loadDictionaryFromFile(char pathToDicFile[255],dictionary* dicInUse){
 // @param numberOfDic : number of dictionary in memory
 void printLibrary(dictionary* library, int numberOfDic){
     dictionary* dictionary = library;
-    printf("BibliothËque :\n");
+    printf("Biblioth√®que :\n");
    	printf("---------------------------------------\n");
     int count=0;
     int i;
 	for (i = 0; i < numberOfDic; ++i){
-        printf("Dictionnaire n∞%d : %s\n",count+1,dictionary->name);
+        printf("Dictionnaire n¬∞%d : %s\n",count+1,dictionary->name);
         if(dictionary->description[0] != '\n'){
             printf("description : >%s<\n",dictionary->description );
         }

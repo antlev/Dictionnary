@@ -30,6 +30,11 @@ int main(int argc,char *argv[]){
     unsigned long int finishMeasuringTime=0;
     short nbMenu = 11;
 
+
+    char* word = calloc(sizeof(char)*256,1);
+
+
+
     do{
         isDicInMem = isDictionaryInMemory(library);
 	    do{
@@ -52,11 +57,13 @@ int main(int argc,char *argv[]){
                 buildDicWithFileMenu(&library,&numberOfDic,&dicInUse);
             break;
             case 4:
-                if(isDicInMem){
-                    eraseDicMenu(library,numberOfDic,&dicInUse);
-                }else{
-                    printf("Veuillez d'abord créer un dictionnaire\n");                
-                }
+                getAllWordInDictionary(dicInUse->tree,word,0);
+                printf("nbNodeParcoured=%ld\n",nbNodeParcoured );
+                // if(isDicInMem){
+                //     eraseDicMenu(library,numberOfDic,&dicInUse);
+                // }else{
+                //     printf("Veuillez d'abord créer un dictionnaire\n");                
+                // }
             break;
             case 5:
                 if(dicInUse != NULL){
@@ -92,7 +99,7 @@ int main(int argc,char *argv[]){
 
                     do{
                     	while(userInput("Veuillez entrer le fichier à corriger\n>",pathTofile,256) != 0);
-					} while(printWordNotInDic(pathTofile,dicInUse->tree,0));
+					} while(printWordNotInDic(pathTofile,dicInUse,0));
 
                 }else{
                     printf("Veuillez d'abord charger un dictionnaire\n");
@@ -104,7 +111,7 @@ int main(int argc,char *argv[]){
 					
                     do{
                     	while(userInput("Veuillez entrer le fichier à corriger\n>",pathTofile,256) != 0);
-					} while(printWordNotInDic(pathTofile,dicInUse->tree,1));
+					} while(printWordNotInDic(pathTofile,dicInUse,1));
 
                 }else{
                     printf("Veuillez d'abord charger un dictionnaire\n");
@@ -132,15 +139,16 @@ int main(int argc,char *argv[]){
                 }else{
                     printf("Veuillez d'abord charger un dictionnaire\n");
                 }
-                printMenu(dicInUse,3);
                break;
             case 11:
+
                 printf("Au-revoir\n");
                 free(library);
                 munmap(map,mmapVirtualMem);
                 exit(0);
             break;
             default:
+
             break;
         }
     } while(1);

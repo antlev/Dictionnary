@@ -109,15 +109,17 @@ void printMenu(dictionary* dicInUse,short main){
         printf("1) Tester la différence de deux mots\n");
         printf("2) Quitter l'application\n");    
     }else{
-        printf("1) Créer un fichier dictionnaire\n");
+        printf("********** Traitement dictionnaire **********\n");
+        printf("1) Créer un dictionnaire\n");
         printf("2) Utiliser un dictionnaire existant\n");
         printf("3) Fabriquer un dictionnaire à partir d'un fichier texte\n");
         printf("4) Déruire un fichier dictionnaire\n");
         printf("5) Insérer un mot dans un dictionnaire\n");
         printf("6) Rechercher un mot dans un dictionnaire\n");
-        printf("7) Recherche avancée\n");
-        printf("8) Affiche les mots non contenu dans le dictionnaire\n");
-        printf("9) Proposition de correction d'un fichier\n");
+        printf("7) Effectuer une Recherche avancée\n");
+        printf("********** Traitement de fichier **********\n");
+        printf("8) Affiche les mots du fichier non contenu dans le dictionnaire\n");
+        printf("9) Proposition une correction des mots non contnu dans le dictiionnaire d'un fichier\n");
         printf("10) Corriger un fichier\n");
         printf("11) Quitter l'application\n");   
     }

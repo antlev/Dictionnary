@@ -6,7 +6,7 @@ unsigned int levensteinInDictionary(unsigned int tree,short level,char* wordToCo
 
 int scanFile(char* pathTofile,unsigned int dictionary);
 
-int printWordNotInDic(char* pathTofile,unsigned int dictionary,short proposeCorrection);
+int printWordNotInDic(char* pathTofile,dictionary* dictionary,short proposeCorrection);
 
 int proposeCorrection(char* pathTofile,unsigned int dictionary);
 
