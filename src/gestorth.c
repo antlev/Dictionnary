@@ -71,10 +71,7 @@ unsigned int printCloseWordInDic(unsigned int tree,short level,char* wordToCompa
         // printf("DEBUG>>End of word!!\n");
         word[level] = '\0';
         if((distance = DamerauLevenshteinDistance(word,wordToCompare)) <= maxThreshold){
-            if (!*found)
-            {
-                *found = 1;
-            }
+            *found = 1;
             printf(" '%s'(%d) ",word,distance);
         }else if(DEBUG >= 3){
             printf("word >%s< has a" " levenstein difference of %d with >%s<\n",word,distance,wordToCompare);
@@ -85,12 +82,12 @@ unsigned int printCloseWordInDic(unsigned int tree,short level,char* wordToCompa
         if(map[tree].letter[i] != 0){ 
             // Pruning (élagage)       
             // printf("DEBUG>>>letter %c spotted ! \n",i+97);
-            if(strchr(wordToCompare,i+97) == NULL){
-                if(diff > maxThreshold){
-                    continue;
-               }
-               diff++;
-            }
+            // if(strchr(wordToCompare,i+97) == NULL){
+            //     if(diff > maxThreshold){
+            //         continue;
+            //    }
+            //    diff++;
+            // }
             word[level] = i+OFFSET_ISO8859;
             res = printCloseWordInDic(map[tree].letter[i],level+1,wordToCompare,maxThreshold,diff,word,found);
             word[level] = '\0';
@@ -112,12 +109,13 @@ unsigned int returnClosestWordinDic(unsigned int tree,short level,char* wordToCo
     int distance;
 
     if(map[tree].endOfWord == 1){
-        if(DEBUG = 3){
+        if(DEBUG == 3){
             printf("DEBUG>>End of word!!\n");
         }
         word[level] = '\0';
         if((distance = DamerauLevenshteinDistance(word,wordToCompare)) <= 1){
-            strcpy(closestWord, word); 
+            strcpy(closestWord, word);
+            *found = 1 ;
         }else if(DEBUG >= 3){
             printf("word >%s< has a" " levenstein difference of %d with >%s<\n",word,distance,wordToCompare);
         }
@@ -126,12 +124,12 @@ unsigned int returnClosestWordinDic(unsigned int tree,short level,char* wordToCo
     for (i = 0; i < LAST_LETTER_ACCEPTED-OFFSET_ISO8859; ++i){
         if(map[tree].letter[i] != 0){ 
             // Pruning (élagage)       
-            if(strchr(wordToCompare,i+97) == NULL){
-                if(diff > 1){
-                    continue;
-               }
-               diff++;
-            }
+            // if(strchr(wordToCompare,i+97) == NULL){
+            //     if(diff > 1){
+            //         continue;
+            //    }
+            //    diff++;
+            // }
             word[level] = i+OFFSET_ISO8859;
             res = returnClosestWordinDic(map[tree].letter[i],level+1,wordToCompare,diff,word,found,closestWord);
             word[level] = '\0';
@@ -155,7 +153,7 @@ int printWordNotInDic(char* pathTofile,dictionary* dictionary,short proposeCorre
 
     fileToCorrect = fopen(pathTofile, "r");
     if (fileToCorrect == NULL){
-        printf("File '%s' doesn't exist\n",pathTofile);
+        printf("Le fichier '%s' n'éxiste pas\n",pathTofile);
         return -1;
     }
 
@@ -254,6 +252,7 @@ int proposeCorrection(char* pathTofile,unsigned int dictionary){
                     // fprintf(fileCorrected, "%s ", closestWord);
                     fwrite(closestWord,sizeof(char),strlen(closestWord),fileCorrected);
                     fwrite(" ",sizeof(char),1,fileCorrected);
+                    *closestWord = '\0' ;
                 }
             }
             wordToCompare[0] = '\0';

@@ -116,7 +116,7 @@ void printMenu(dictionary* dicInUse,short main){
         printf("4) Déruire un fichier dictionnaire\n");
         printf("5) Insérer un mot dans un dictionnaire\n");
         printf("6) Rechercher un mot dans un dictionnaire\n");
-        printf("7) Effectuer une Recherche avancée\n");
+        printf("7) Effectuer une recherche avancée dans le dictionnaire\n");
         printf("********** Traitement de fichier **********\n");
         printf("8) Affiche les mots du fichier non contenu dans le dictionnaire\n");
         printf("9) Proposition une correction des mots non contnu dans le dictiionnaire d'un fichier\n");

@@ -6,54 +6,56 @@
 
 extern node* map;
 extern long int mmapVirtualMem;
-// Threshold is the maximum distance between 2 words to accept as a similar word
-static const short THRESHOLD = 2;
 
 int main(int argc,char *argv[]){
 
 	dictionary* library = init();
-
-    int choice;
-    char* input = malloc(sizeof(char)*255);
-    int isDicInMem=0;
-    int numberOfDic = 0;
+    short choice;
+    char* input = malloc(sizeof(char)*2);
+    char* again = malloc(sizeof(char)*2);
+    short numberOfDic = 0;
     dictionary* dicInUse = NULL;
-
     do{
-        isDicInMem = isDictionaryInMemory(library);
         do{
-    	    printMenu(dicInUse,1);
-        } while((choice = numericUserInput(">",input,255, 1, 7)) == -1);
-
+            printMenu(dicInUse,1);
+        }while((choice = numericUserInput(">",input,2, 1, 7)) == -1);
         switch(choice){
             case 1:
-                addDicMenu(&library,numberOfDic,&dicInUse);
-                numberOfDic++;
-                
+                do{
+                    addDicMenu(&library,numberOfDic,&dicInUse);
+                    numberOfDic++;
+                    while(userInput("Voulez vous ajouter un nouveau dictionnaire ? (O/N)\n>",again,2) != 0);
+                }while(*again == 'o' || *again == 'O');
             break;
             case 2:
-                if(isDicInMem){
+                if(dicInUse != NULL){
                  	chooseDicMenu(library,numberOfDic,&dicInUse);
                 }else{
-                    printf("Veuillez d'abord crÃ©er ou charger un dictionnaire\n");                
+                    printf("Veuillez d'abord créer ou charger un dictionnaire\n");                
                 }                
-                           
             break;
             case 3:
-                buildDicWithFileMenu(&library,&numberOfDic,&dicInUse);
-                          
+                do{
+                    buildDicWithFileMenu(&library,&numberOfDic,&dicInUse);
+                    while(userInput("Voulez vous charger un autre fichier ? (O/N)\n>",again,2) != 0);
+                }while(*again == 'o' || *again == 'O');
             break;
             case 4:
-                if(isDicInMem){
-                    eraseDicMenu(library,numberOfDic,&dicInUse);
+                if(dicInUse != NULL){
+                    do{
+                        eraseDicMenu(library,numberOfDic,&dicInUse);
+                        while(userInput("Voulez vous supprimer un autre dictionnaire ? (O/N)\n>",again,2) != 0);
+                    }while(*again == 'o' || *again == 'O');
                 }else{
-                    printf("Veuillez d'abord crÃ©er un dictionnaire\n");                
+                    printf("Veuillez d'abord créer un dictionnaire\n");                
                 }
-                         
             break;
             case 5:
                 if(dicInUse != NULL){
-                    addWordMenu(dicInUse);
+                    do{
+                        addWordMenu(dicInUse);
+                        while(userInput("Voulez vous ajouter un autre mot ? (O/N)\n>",again,2) != 0);
+                    }while(*again == 'o' || *again == 'O');
                 }else{
                     printf("Veuillez d'abord charger un dictionnaire\n");
                 }
@@ -61,14 +63,18 @@ int main(int argc,char *argv[]){
             break;
             case 6:
                 if(dicInUse != NULL){
-                    searchWordMenu(dicInUse);
+                    do{
+                        searchWordMenu(dicInUse);
+                        while(userInput("Voulez vous rechercher un autre mot ? (O/N)\n>",again,2) != 0);
+                    }while(*again == 'o' || *again == 'O');
                 }else{
                     printf("Veuillez d'abord charger un dictionnaire\n");
                 }
-                               
             break;
             case 7:
                 printf("Au-revoir\n");
+                free(again);
+                free(input);
                 free(library);
                 munmap(map,mmapVirtualMem);
                 exit(0);

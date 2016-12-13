@@ -86,7 +86,7 @@ void searchWordMenu(dictionary* dictionary);
 // @param library : pointer on library
 // @param numberOfDic : pointer on total number of dictionary in memory
 // @param dicInUse : pointer on dictionary in use
-void buildDicWithFileMenu(dictionary** library,int* numberOfDic,dictionary** dicInUse);
+void buildDicWithFileMenu(dictionary** library,short* numberOfDic,dictionary** dicInUse);
 // Print the library and ask user to choose a dictionary
 // The choosen dictionary will be pointed by dicInUse
 // @param library : pointer on library
