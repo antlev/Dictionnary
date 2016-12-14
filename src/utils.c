@@ -104,7 +104,8 @@ void printMenu(dictionary* dicInUse,short main){
         printf("4) Déruire un fichier dictionnaire\n");
         printf("5) Insérer un mot dans un dictionnaire\n");
         printf("6) Rechercher un mot dans un dictionnaire\n");
-        printf("7) Quitter l'application\n");    
+        printf("7) Faire une recherche regex\n");
+        printf("8) Quitter l'application\n");    
     }else if(main == 2){
         printf("1) Tester la différence de deux mots\n");
         printf("2) Quitter l'application\n");    
