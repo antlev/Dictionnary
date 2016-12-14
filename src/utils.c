@@ -41,10 +41,10 @@ int userInput (char *prmpt, char *buff, size_t sz) {
     }
 
     if(fgets(buff, sz, stdin) == NULL){
-        return NO_INPUT;
+        return 1;
     }
     if(*buff == '\n'){
-        return NO_INPUT;
+        return 1;
     }
     // If it was too long, there'll be no newline. In that case, we flush
     // to end of line so that excess doesn't affect the next call.
@@ -52,11 +52,11 @@ int userInput (char *prmpt, char *buff, size_t sz) {
         extra = 0;
         while (((ch = getchar()) != '\n') && (ch != EOF))
             extra = 1;
-        return (extra == 1) ? TOO_LONG : OK;
+        return (extra == 1) ? 2 : 0;
     }
     // Otherwise remove newline and give string back to caller.
     buff[strlen(buff)-1] = '\0';
-    return OK;
+    return 0;
 }
 // Function used to prompt numeric value to user (call userInput)
 // @param prmpt : store the message to print on screen
@@ -109,7 +109,7 @@ void printMenu(dictionary* dicInUse,short main){
         printf("1) Tester la différence de deux mots\n");
         printf("2) Quitter l'application\n");    
     }else{
-        printf("********** Traitement dictionnaire **********\n");
+        printf("******************** Traitement dictionnaire ********************\n");
         printf("1) Créer un dictionnaire\n");
         printf("2) Utiliser un dictionnaire existant\n");
         printf("3) Fabriquer un dictionnaire à partir d'un fichier texte\n");
@@ -117,14 +117,16 @@ void printMenu(dictionary* dicInUse,short main){
         printf("5) Insérer un mot dans un dictionnaire\n");
         printf("6) Rechercher un mot dans un dictionnaire\n");
         printf("7) Effectuer une recherche avancée dans le dictionnaire\n");
-        printf("********** Traitement de fichier **********\n");
+        printf("******************** Traitement de fichier ********************\n");
         printf("8) Affiche les mots du fichier non contenu dans le dictionnaire\n");
-        printf("9) Proposition une correction des mots non contnu dans le dictiionnaire d'un fichier\n");
+        printf("9) Proposer une correction des mots non contenu dans le dictiionnaire d'un fichier\n");
         printf("10) Corriger un fichier\n");
         printf("11) Quitter l'application\n");   
     }
 }
 // Concatenate 2 strings
+// param s1 : string 1
+// param s2 : string 2
 char* concat(const char *s1, const char *s2){
     char *result = malloc(strlen(s1)+strlen(s2)+1);
     strcpy(result, s1);

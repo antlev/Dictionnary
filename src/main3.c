@@ -34,7 +34,7 @@ int main(int argc,char *argv[]){
     do{ 
         do{
 	       printMenu(dicInUse,3);
-        } while((choice = numericUserInput(">",input,2, 1, nbMenu)) == -1);
+        } while((choice = numericUserInput(">",input,3, 1, nbMenu+1)) == -1);
         switch(choice){
             case 1:
                 do{
@@ -101,7 +101,9 @@ int main(int argc,char *argv[]){
     	                while(userInput("Veuillez entrer le mot à rechercher dans le dictionnaire\n>",wordToFind,256) != 0);
 
                         printCloseWordInDic(dicInUse->tree,0,wordToFind,threshold,0,word,found);
-
+                        if(DEBUG){
+                            printf("nbNodeParcoured=%ld\n",nbNodeParcoured );
+                        }
                         if(!*found){
                             printf("Aucun mot dans le dictionnaire n'a une distance plus petite que %d\n",threshold );
                         }else{
@@ -140,6 +142,7 @@ int main(int argc,char *argv[]){
                 }else{
                     printf("Veuillez d'abord charger un dictionnaire\n");
                 }
+            break;
             case 10:
                 if(dicInUse != NULL){   
                     short* found= malloc(sizeof(short));
@@ -157,7 +160,7 @@ int main(int argc,char *argv[]){
                 }else{
                     printf("Veuillez d'abord charger un dictionnaire\n");
                 }
-               break;
+            break;
             case 11:
                 printf("Au-revoir\n");
                 free(pathToFile);

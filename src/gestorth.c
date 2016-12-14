@@ -13,15 +13,12 @@
 extern node* map;
 long nbNodeParcoured = 0;
 
-// Search recursivly in the dictionary
+// @brief Search recursivly in the dictionary
 // @param tree : root of the dictionary
 // @param word : strig use to store word while recursively browsing into dictionary
 // @param level  used to store the current level in tree
 unsigned int getAllWordInDictionary(unsigned int tree,char* word,short level){
     nbNodeParcoured++;
-    if(DEBUG >= 3){
-        printf("getAllWordInDictionary is called\n");
-    }
     int i=0;
     if(map[tree].endOfWord == 1){
         word[level] = '\0';
@@ -37,12 +34,10 @@ unsigned int getAllWordInDictionary(unsigned int tree,char* word,short level){
         if(DEBUG >= 3){
             printf("\n");
         }
-        // printf(" has been found in dictionary\n");
     }
     unsigned int res = 0;
     for (i = 0; i < LAST_LETTER_ACCEPTED-OFFSET_ISO8859; ++i){
         if(map[tree].letter[i] != 0){        
-            // printf("DEBUG>>>letter %c spotted ! \n",i+97);
             word[level] = i+OFFSET_ISO8859;
             res = getAllWordInDictionary(map[tree].letter[i],word,level+1);
             word[level] = '\0';
@@ -55,7 +50,7 @@ unsigned int getAllWordInDictionary(unsigned int tree,char* word,short level){
 //**********************************************************************
 // 
 
-// Search recursivly in the dictionary for word that have a levenstein distance smaller than maxThreshold and print them on screen
+// @brief Search recursivly in the dictionary for word that have a levenstein distance smaller than maxThreshold and print them on screen
 // @param tree : root of the dictionary
 // @param word : strig use to store word while recursively browsing into dictionary
 // @param level : used to store the current level in tree
@@ -95,7 +90,7 @@ unsigned int printCloseWordInDic(unsigned int tree,short level,char* wordToCompa
     }
     return res;
 }
-// Search in dictionnary for closest word to wordToCompare and put it in closestWord
+// @brief Search in dictionnary for closest word to wordToCompare and put it in closestWord
 // @param tree : node 
 // @param level : level of node (root is 0)
 // @param wordToCompare : string containing the word to compare with all dictionary words
@@ -140,7 +135,11 @@ unsigned int returnClosestWordinDic(unsigned int tree,short level,char* wordToCo
 //**********************************************************************
 //********* Functions that scan files to check with dictionary *********
 //**********************************************************************
-int printWordNotInDic(char* pathTofile,dictionary* dictionary,short proposeCorrection){
+// @brief Scan a file and print word that are in file but not in dictionary
+// @param pathToFile : string containing the path of the file to scan 
+// @param dictionary : pointer on dictionary
+// @param proposeCorrection set To 0 to only print words that are not in dictionary, set to 1 if you want to propose correction
+int printWordNotInDic(char* pathToFile,dictionary* dictionary,short proposeCorrection){
     FILE * fileToCorrect;
     char * line = NULL;
     
@@ -151,14 +150,14 @@ int printWordNotInDic(char* pathTofile,dictionary* dictionary,short proposeCorre
     ssize_t read;
     int i,j,lineInFile=0;
 
-    fileToCorrect = fopen(pathTofile, "r");
+    fileToCorrect = fopen(pathToFile, "r");
     if (fileToCorrect == NULL){
-        printf("Le fichier '%s' n'éxiste pas\n",pathTofile);
+        printf("Le fichier '%s' n'éxiste pas\n",pathToFile);
         return -1;
     }
 
     if (!proposeCorrection){
-        printf("Mots du fichier '%s' non contenu dans le dictionnaire %s\n",pathTofile,dictionary->name );
+        printf("Mots du fichier '%s' non contenu dans le dictionnaire %s\n",pathToFile,dictionary->name );
     }
     while ((read = getline(&line, &len, fileToCorrect)) != -1) {
         ++lineInFile;
@@ -189,8 +188,10 @@ int printWordNotInDic(char* pathTofile,dictionary* dictionary,short proposeCorre
     }
     fclose(fileToCorrect);
 }
-// Read file pathToFile and write a correction into a new file suffixed by _corrected
-int proposeCorrection(char* pathTofile,unsigned int dictionary){
+// @brief Scan file pathToFile and write a correction into a new file suffixed by _corrected
+// @param pathToFile : string containing the path of the file to scan 
+// @param dictionary : pointer on dictionary
+int proposeCorrection(char* pathToFile,unsigned int dictionary){
     FILE* fileToCorrect;
     FILE* fileCorrected;
 
@@ -204,13 +205,13 @@ int proposeCorrection(char* pathTofile,unsigned int dictionary){
     char* word = malloc(sizeof(char)*256);
     char* closestWord = calloc(sizeof(char)*256,1);
 
-    char* pathToFileCorrected = concat(pathTofile,"_corrected");
+    char* pathToFileCorrected = concat(pathToFile,"_corrected");
 
-    fileToCorrect = fopen(pathTofile, "r");
+    fileToCorrect = fopen(pathToFile, "r");
     fileCorrected = fopen(pathToFileCorrected, "w");
     
     if (fileToCorrect == NULL){
-        printf("File '%s' doesn't exist\n",pathTofile);
+        printf("File '%s' doesn't exist\n",pathToFile);
         return -1;
     }else if(fileCorrected == NULL){
         printf("Problem happened with file %s\n",pathToFileCorrected);

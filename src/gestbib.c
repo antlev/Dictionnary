@@ -25,9 +25,9 @@ const short MAXNBLETTERINWORD = 30;
 node* map=0;
 long int mmapVirtualMem=-1;
 long int next=1; 
-// TODO COMMENT
-// Function executed when program is launched
+// @brief Function executed when program is launched
 dictionary* init(){
+    printf("************************ Dictionnaire ************************\n");
     mmapVirtualMem = VIRTUAL_MEM_SIZE_MAX;
     // Using mmap instead of pointer to reduce the space used by one node
     do{
@@ -47,7 +47,7 @@ dictionary* init(){
 }
 // -------------------------- Tree manipulation functions --------------------------
 
-// Add the 'wordToAdd' into dictionary
+// @brief Add the 'wordToAdd' into dictionary
 // @param tree : root of the dictionary
 // @param wordToAdd : word to add in the dictionary
 // @return 0 if the wordToAdd has been successfully added 
@@ -85,13 +85,15 @@ int addWord(unsigned int tree,char* wordToAdd){
         }       
     }
 }
-// Search wordToSearch into the given tree
-// @param tree : root of the dictionary
-// @param wordToSearch : word to search in the dictionary
-// @return 1 if wordToSearch exist in dictionary
-// @return 0 if word doesn't exist in dictionnary
-// @return -2 if wordToSearch is uncompatible with dictionnary
-// @return -1 if wordToSearch is empty
+/*
+* @brief Search wordToSearch into the given tree
+* @param tree : root of the dictionary
+* @param wordToSearch : word to search in the dictionary
+* @return 1 if wordToSearch exist in dictionary
+* @return 0 if word doesn't exist in dictionnary
+* @return -2 if wordToSearch is uncompatible with dictionnary
+* @return -1 if wordToSearch is empty
+*/
 int searchWord(unsigned int tree,char* wordToSearch){
     int i=0;
     int sanReturn;
@@ -121,45 +123,44 @@ int searchWord(unsigned int tree,char* wordToSearch){
         }
     }
 }
-// Suppress wordToSup into the given tree
+// @brief Suppress wordToSup into the given tree
 // @param tree : root of the dictionary
 // @param wordToSup : word to erase from the dictionary
 // @return 1 if wordToSup has been found and suppresed, 0 if not
-// int supWord(unsigned int tree,char* wordToSup){
-//     int i=0;
-//     int j;
-//     int sanReturn;
-//     if((sanReturn = sanitiseWordForDictionary(wordToSup)) != 0){
-//         return sanReturn;
-//     }else{
-//         while(wordToSup[i] != '\0'){
-//             if(!map[tree].letter[wordToSup[i] - OFFSET_ISO8859]){
-//                 return 0;
-//             }
-//             tree = map[tree].letter[wordToSup[i] - OFFSET_ISO8859] ;
-//             ++i;
-//         }
-//         if(map[tree].endOfWord == 0){
-//             return 0;
-//         }else{
-//             map[tree].endOfWord = 0 ;
-//             --i;
-//             while(i >= 0){
-//                 for (j = 0; j < 26; ++j){
-//                     if(map[tree].letter[j]){
-//                         return 1;
-//                     }
-//                 }
-//                 // TODO
-//                 tree = &tree;
-//                 free(map[tree].letter[i]);
-//                 --i;
-//             }
-//             return 1;   
-//         }
-//     }
-// }
-// Sanitise word for dictionary
+int supWord(unsigned int tree,char* wordToSup){
+    int i=0;
+    int j;
+    int sanReturn;
+    if((sanReturn = sanitiseWordForDictionary(wordToSup)) != 0){
+        return sanReturn;
+    }else{
+        while(wordToSup[i] != '\0'){
+            if(!map[tree].letter[wordToSup[i] - OFFSET_ISO8859]){
+                return 0;
+            }
+            tree = map[tree].letter[wordToSup[i] - OFFSET_ISO8859] ;
+            ++i;
+        }
+        if(map[tree].endOfWord == 0){
+            return 0;
+        }else{
+            map[tree].endOfWord = 0 ;
+            while(i >= 0){
+                for (j = 0; j <= LAST_LETTER_ACCEPTED - OFFSET_ISO8859; ++j){
+                    if(map[tree].letter[j]){
+                        return 1;
+                    }
+                }
+                // TODO
+                // tree = &tree;
+                // free(map[tree].letter[i]);
+                --i;
+            }
+            return 1;   
+        }
+    }
+}
+// @brief Sanitise word for dictionary
 // @return 0 if word is compatible with dictionnary
 // @return -1 if word is empty
 // @return -2 if word is incompatible with dictionnary
@@ -184,7 +185,7 @@ int sanitiseWordForDictionary(char* word){
     return 0;
 }
 // -------------------------- Programm functions's menu  --------------------------
-// Prompt a word and call addWord() to add it to the dictionary
+// @brief Prompt a word and call addWord() to add it to the dictionary
 // @param dictionary : pointer on dictionary in which we want to add a word
 void addWordMenu(dictionary* dictionary){
     int addWordReturn;
@@ -201,7 +202,7 @@ void addWordMenu(dictionary* dictionary){
         printf("Le mot %s contient des caractères non supportés %s\n",wordToInsert,dictionary->name );
     }
 }
-// Prompt a word and call searchWord() to search it to the dictionary
+// @brief Prompt a word and call searchWord() to search it to the dictionary
 // @param dictionary : pointer on dictionary in which we want to search a word
 void searchWordMenu(dictionary* dictionary){
     unsigned int tree = dictionary->tree;
@@ -225,7 +226,7 @@ void searchWordMenu(dictionary* dictionary){
         printf("DEBUG>>>Temps de recherche : %ldmicrosec\n",(finishMeasuringTime-startMeasuringTime));
     }
 }
-// Prompt user for a name and description and add a new dictionnnary to the library
+// @brief Prompt user for a name and description and add a new dictionnnary to the library
 // @param library : pointer on library
 // @param numberOfDic : Total number of dictionary in memory
 // @param dicInUse : pointer on dictionary in use
@@ -242,7 +243,7 @@ void addDicMenu(dictionary** library,int numberOfDic,dictionary** dicInUse){
 
     addDicAndUse(library,numberOfDic,dicName,dicDesc,dicInUse);
 }
-// Ask for dic to erase and call eraseDic
+// @brief Ask for dic to erase and call eraseDic
 // @param library : pointer on library
 // @param numberOfDic : Total number of dictionary in memory
 // @param dicInUse : pointer on dictionary in use
@@ -255,7 +256,7 @@ void eraseDicMenu(dictionary* library,int numberOfDic,dictionary** dicInUse){
 
     // eraseDic(library,numOfDicToDel);
 }
-// Prompt a file path and call loadDictionaryFromFile passing it the dicInUse
+// @brief Prompt a file path and call loadDictionaryFromFile passing it the dicInUse
 // @param library : pointer on library
 // @param numberOfDic : pointer on total number of dictionary in memory
 // @param dicInUse : pointer on dictionary in use
@@ -292,8 +293,7 @@ void buildDicWithFileMenu(dictionary** library,short* numberOfDic,dictionary** d
         printf("Le fichier '%s' n'éxiste pas\n",pathToDicFile);
     }
  }
-// Print the library and ask user to choose a dictionary
-// The choosen dictionary will be pointed by dicInUse
+// @brief Print the library and ask user to choose a dictionary. The choosen dictionary will be pointed by dicInUse
 // @param library : pointer on library
 // @param numberOfDic : Total number of dictionary in memory
 // @param dicInUse : pointer on dictionary in use
@@ -309,7 +309,7 @@ void chooseDicMenu(dictionary* library,int numberOfDic,dictionary** dicInUse){
     *dicInUse += numOfDicToUse-1; // using the dictionary n° numOfDicToUse of library
 }
 // -------------------------- Dictionary manipulation functions --------------------------
-// Add a new dictionary with the name and description passed as parameters
+// @brief Add a new dictionary with the name and description passed as parameters
 // @param library : pointer on library
 // @param numberOfDic : Total number of dictionary in memory
 // @param name : name of dictionary to create
@@ -332,7 +332,7 @@ void addDicAndUse(dictionary** library,int numberOfDic,char name[255],char desc[
 
     map[(*dicCreated)->tree].endOfWord = -1;
 }
-// Erase dictionary from memory
+// @brief Erase dictionary from memory
 void eraseDic(dictionary* library,int numberOfDicToDel){
     //TODO
     // dictionnnary* dicToDel = library;
@@ -353,7 +353,7 @@ void eraseDic(dictionary* library,int numberOfDicToDel){
 
     // map[(*dicCreated)->tree].endOfWord = -1;
 }
-// Read file and call addWord on each line
+// @brief Read file and call addWord on each line
 // @param pathToDicFile : path to dictionary file to load 
 // @param dicInUse : pointer on dictionary in use
 // @return -1 : failure on opening file
@@ -396,7 +396,7 @@ int loadDictionaryFromFile(char pathToDicFile[255],dictionary* dicInUse){
     }
     return 0;
 }
-// Print all the dictionnaries contained in the library
+// @brief Print all the dictionnaries contained in the library
 // @param library : pointer on library (first dictionary)
 // @param numberOfDic : number of dictionary in memory
 void printLibrary(dictionary* library, int numberOfDic){

@@ -26,8 +26,8 @@ int DamerauLevenshteinDistance(char *s1, char *s2) {
     return(matrix[s2len][s1len]);
 }
 
-// // Return the Damerau Levenshtein Distance between 2 strings.
-// // Distance correspond to number of deletion,insertion,substitution or transposition.
+// // @brief Return the Damerau Levenshtein Distance between 2 strings.
+// // @brief Distance correspond to number of deletion,insertion,substitution or transposition.
 // // @param str1 : string of first word to compare
 // // @param str2 : string of second word to compare
 // // @return levenstein distance as int
@@ -86,7 +86,7 @@ int DamerauLevenshteinDistance(char *s1, char *s2) {
 //     free(d); 
 //     return returnValue;
 // }
-// Return the lowest val between val1,val2 and val3
+// @brief Return the lowest val between val1,val2 and val3
 int minimum3(int val1, int val2, int val3){
     if(val1 <= val2){
         if(val1 <= val3){
@@ -101,7 +101,7 @@ int minimum3(int val1, int val2, int val3){
     }
     return 0;
 }
-// Return the lowest val between val1 and val2
+// @brief Return the lowest val between val1 and val2
 int minimum2(int val1, int val2){
     if(val1 <= val2){
         return val1;
@@ -110,7 +110,7 @@ int minimum2(int val1, int val2){
     }
     return 0;
 }
-// Print a bidemsionnal table using a simple table of int
+// @brief Print a bidemsionnal table using a simple table of int
 // @param tab : pointer on table of int
 // @param nbLine : number of line of bidimensionnal table
 // @param nbCol : number of column of bidimensionnal table
@@ -124,7 +124,7 @@ void printTab(int* tab,int nbLine,int nbCol){
     }
     printf("\n");
 }
-// Function used to manipulate a bidimensionnal table using a simple table
+// @brief Function used to manipulate a bidimensionnal table using a simple table
 // @return value of int in table at line 'line' and column 'column' 
 // @param tab : pointer on table of int
 // @param nbLine : number of line of bidimensionnal table
