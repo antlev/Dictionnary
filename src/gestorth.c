@@ -25,6 +25,7 @@ unsigned int getAllWordInDictionary(unsigned int tree,char* word,short level){
         if(DEBUG >= 3){
             printf("DEBUG>>End of word!!\n");
         }
+        
         while(word[i] != '\0'){
             if(DEBUG >= 3){
                 printf("%c",word[i] );
@@ -187,6 +188,9 @@ int printWordNotInDic(char* pathToFile,dictionary* dictionary,short proposeCorre
         }
     }
     fclose(fileToCorrect);
+    free(wordToCompare);
+    free(word);
+    free(similarWordFound);
 }
 // @brief Scan file pathToFile and write a correction into a new file suffixed by _corrected
 // @param pathToFile : string containing the path of the file to scan 
@@ -262,4 +266,10 @@ int proposeCorrection(char* pathToFile,unsigned int dictionary){
     }
     fclose(fileToCorrect);
     fclose(fileCorrected);
+
+    fclose(fileToCorrect);
+    free(wordToCompare);
+    free(word);
+    free(similarWordFound);
+    free(closestWord);
 }

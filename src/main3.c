@@ -47,7 +47,7 @@ int main(int argc,char *argv[]){
                 if(dicInUse != NULL){
                     chooseDicMenu(library,numberOfDic,&dicInUse);
                 }else{
-                    printf("Veuillez d'abord crÃ©er ou charger un dictionnaire\n");                
+                    printf("Veuillez d'abord créer ou charger un dictionnaire\n");                
                 }                
             break;
             case 3:
@@ -63,7 +63,7 @@ int main(int argc,char *argv[]){
                         while(userInput("Voulez vous supprimer un autre dictionnaire ? (O/N)\n>",again,2) != 0);
                     }while(*again == 'o' || *again == 'O');
                 }else{
-                    printf("Veuillez d'abord crÃ©er un dictionnaire\n");                
+                    printf("Veuillez d'abord créer un dictionnaire\n");                
                 }
             break;
             case 5:
@@ -98,7 +98,7 @@ int main(int argc,char *argv[]){
                         while((threshold = numericUserInput("Veuillez entrer un nouveau seuil\n>",input,255, 1, 10)) == -1);
                     }
                     do{
-    	                while(userInput("Veuillez entrer le mot Ã  rechercher dans le dictionnaire\n>",wordToFind,256) != 0);
+    	                while(userInput("Veuillez entrer le mot à rechercher dans le dictionnaire\n>",wordToFind,256) != 0);
 
                         printCloseWordInDic(dicInUse->tree,0,wordToFind,threshold,0,word,found);
                         if(DEBUG){
@@ -109,7 +109,7 @@ int main(int argc,char *argv[]){
                         }else{
                             printf("\n");
                         }
-                        while(userInput("Voulez vous effectuer une nouvelle recherche avancÃ©e\n>",input,2) != 0);
+                        while(userInput("Voulez vous effectuer une nouvelle recherche avancée\n>",input,2) != 0);
                     }while(*input == 'o' || *input == 'O');
                     free(wordToFind);
 
@@ -122,7 +122,7 @@ int main(int argc,char *argv[]){
                 if(dicInUse != NULL){
 					
                     do{
-                    	while(userInput("Veuillez entrer le fichier Ã  corriger\n>",pathToFile,256) != 0);
+                    	while(userInput("Veuillez entrer le fichier à corriger\n>",pathToFile,256) != 0);
                         printWordNotInDic(pathToFile,dicInUse,0);
                         while(userInput("Voulez vous re-afficher les mots non contenus dans le dictionnaire ?\n>",again,2) != 0);
                     } while(*again == 'o' || *again == 'O');
@@ -134,7 +134,7 @@ int main(int argc,char *argv[]){
             case 9:
                 if(dicInUse != NULL){	
     				do{	
-                    	while(userInput("Veuillez entrer le fichier Ã  corriger\n>",pathToFile,256) != 0);
+                    	while(userInput("Veuillez entrer le fichier à corriger\n>",pathToFile,256) != 0);
                         printWordNotInDic(pathToFile,dicInUse,1);
                         while(userInput("Voulez vous corriger un autre fichier ?\n>",again,2) != 0);
                     } while(*again == 'o' || *again == 'O');
@@ -149,7 +149,7 @@ int main(int argc,char *argv[]){
                     *found=0;
                     nbNodeParcoured=0;
                     do{
-                        while(userInput("Veuillez entrer le chemin du fichier Ã  corriger\n>",pathToFile,256) != 0);
+                        while(userInput("Veuillez entrer le chemin du fichier à corriger\n>",pathToFile,256) != 0);
                         proposeCorrection(pathToFile,dicInUse->tree);
                         while(userInput("Voulez vous corriger un autre fichier ?\n>",again,2) != 0);
                     } while(*again == 'o' || *again == 'O');

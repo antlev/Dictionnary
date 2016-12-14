@@ -254,6 +254,7 @@ void eraseDicMenu(dictionary* library,int numberOfDic,dictionary** dicInUse){
 
     while((numOfDicToDel = numericUserInput("Quel dictionnaire voulez vous supprimer ?\n>",input,4,1,(short)numberOfDic)) == -1);
 
+    free(input);
     // eraseDic(library,numOfDicToDel);
 }
 // @brief Prompt a file path and call loadDictionaryFromFile passing it the dicInUse

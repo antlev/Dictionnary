@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "../headers/gestbib.h"
+#include "../headers/gestreg.h"
 #include "../headers/utils.h"
 #include <sys/mman.h>
 
@@ -72,7 +73,19 @@ int main(int argc,char *argv[]){
                 }
             break;
             case 7:
-                // CODE REGEX
+                if(dicInUse != NULL){
+                    char* reg = malloc(sizeof(char)*256);
+                    char* word = malloc(sizeof(char)*256);
+                    do{
+                        while(userInput("Veuillez entrer une regex\n>",reg,256) != 0);
+                        getWordInDicWithReg(dicInUse->tree,word,0,reg);
+                        while(userInput("Voulez vous rechercher un autre mot ? (O/N)\n>",again,2) != 0);
+                    }while(*again == 'o' || *again == 'O');
+                    free(reg);
+                    free(word);
+                }else{
+                    printf("Veuillez d'abord charger un dictionnaire\n");
+                }
             break;
             case 8:
                 printf("Au-revoir\n");

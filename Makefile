@@ -51,8 +51,8 @@ bin/main2: src/main2.c src/gestrech.c src/utils.c
 bin/main3: src/main3.c src/gestbib.c src/gestrech.c src/gestorth.c src/utils.c
 	gcc -o bin/main3${POSTFIX} src/main3.c src/gestbib.c src/gestrech.c src/gestorth.c src/utils.c $(CFLAGS) $(LFLAGS)
 
-bin/main4: src/main4.c src/gestbib.c src/gestrech.c src/gestorth.c src/utils.c
-	gcc -o bin/main4${POSTFIX} src/main4.c src/gestbib.c src/gestrech.c src/gestorth.c src/utils.c $(CFLAGS) $(LFLAGS)
+bin/main4: src/main4.c src/gestreg.c src/gestbib.c src/gestrech.c src/gestorth.c src/utils.c
+	gcc -o bin/main4${POSTFIX} src/main4.c src/gestreg.c src/gestbib.c src/gestrech.c src/gestorth.c src/utils.c $(CFLAGS) $(LFLAGS)
 
 clean:
 	rm -f bin/main*
